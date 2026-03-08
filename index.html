@@ -124,38 +124,44 @@
         gap: 8px;
         align-items: center;
       }
-      #igdb-btn {
+      #cfg-btn {
         display: flex;
         align-items: center;
         gap: 6px;
-        padding: 0 12px;
+        padding: 0 14px;
         height: 34px;
         border-radius: 8px;
-        font-size: 11px;
+        font-size: 13px;
         font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
         border: 1px solid var(--border);
         background: rgba(255, 255, 255, 0.03);
         color: var(--muted);
         cursor: pointer;
         transition: all 0.2s;
         white-space: nowrap;
+        font-family: "Syne", sans-serif;
       }
-      #igdb-btn:hover {
+      #cfg-btn:hover {
         border-color: var(--border2);
         color: var(--text);
+        background: rgba(255, 255, 255, 0.06);
       }
-      #igdb-btn.connected {
+      #cfg-btn.igdb-on {
         border-color: rgba(0, 255, 148, 0.3);
         color: var(--green);
         background: rgba(0, 255, 148, 0.05);
+      }
+      #cfg-btn.igdb-on #igdb-status-dot {
+        display: inline-block !important;
+      }
+      .cfg-btn-label {
+        font-size: 12px;
       }
       .igdb-dot {
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background: currentColor;
+        background: var(--green);
         flex-shrink: 0;
       }
       #btn-add {
@@ -1278,32 +1284,118 @@
         font-style: italic;
       }
 
-      /* ── SETTINGS MODAL ─────────────────────────── */
+      /* ── SETTINGS MODAL (unified) ───────────────── */
       #settings-modal {
         background: var(--surface);
         border: 1px solid var(--border2);
-        border-radius: 18px;
+        border-radius: 20px;
         width: 100%;
-        max-width: 460px;
-        padding: 28px;
+        max-width: 520px;
+        max-height: 90vh;
+        overflow-y: auto;
         animation: pop-in 0.2s ease;
       }
-      .settings-hint {
+      .cfg-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 22px 24px 0;
+        gap: 12px;
+      }
+      .cfg-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 20px;
+      }
+      .cfg-close {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.06);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+      .cfg-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text);
+      }
+
+      /* tab strip */
+      .cfg-tabs {
+        display: flex;
+        gap: 0;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--border);
+        margin-top: 16px;
+      }
+      .cfg-tab {
+        padding: 11px 16px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--muted);
+        cursor: pointer;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .cfg-tab:hover {
+        color: #94a3b8;
+      }
+      .cfg-tab.active {
+        color: var(--text);
+        border-bottom-color: var(--green);
+      }
+
+      /* panels */
+      .cfg-panel {
+        display: none;
+        padding: 22px 24px 24px;
+      }
+      .cfg-panel.active {
+        display: block;
+      }
+
+      /* IGDB panel */
+      .cfg-hint {
         font-size: 12px;
         color: var(--muted);
         line-height: 1.65;
-        margin-bottom: 18px;
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid var(--border);
         border-radius: 8px;
         padding: 12px 14px;
+        margin-bottom: 18px;
       }
-      .settings-hint a {
+      .cfg-hint a {
         color: var(--blue);
         text-decoration: none;
       }
-      .settings-hint a:hover {
+      .cfg-hint a:hover {
         text-decoration: underline;
+      }
+      .cfg-hint code {
+        background: rgba(255, 255, 255, 0.07);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 11px;
       }
       .test-result {
         margin-top: 12px;
@@ -1326,6 +1418,66 @@
         border: 1px solid rgba(248, 113, 113, 0.2);
         color: var(--red);
         display: flex;
+      }
+
+      /* Tags panel */
+      .tagmgr-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-height: 52px;
+        margin: 4px 0 14px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .tagmgr-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: rgba(167, 139, 250, 0.12);
+        color: var(--purple);
+        border: 1px solid rgba(167, 139, 250, 0.2);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .tagmgr-del {
+        background: none;
+        border: none;
+        color: rgba(167, 139, 250, 0.5);
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1;
+        padding: 0;
+        transition: color 0.15s;
+      }
+      .tagmgr-del:hover {
+        color: var(--red);
+      }
+      .tagmgr-empty {
+        font-size: 12px;
+        color: var(--muted);
+        font-style: italic;
+      }
+      .tagmgr-create {
+        display: flex;
+        gap: 8px;
+      }
+      .tagmgr-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 12px;
+        line-height: 1.6;
+      }
+
+      .cfg-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 22px;
+        justify-content: flex-end;
       }
 
       /* ── DELETE ─────────────────────────────────── */
@@ -1474,42 +1626,25 @@
       }
 
       /* ── TAGS ────────────────────────────────────── */
-      .tag-input-wrap {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid var(--border);
-        border-radius: 9px;
-        padding: 7px 10px;
-        cursor: text;
-        min-height: 42px;
-        transition: border-color 0.2s;
-      }
-      .tag-input-wrap:focus-within {
-        border-color: rgba(0, 255, 148, 0.35);
-        background: rgba(0, 255, 148, 0.02);
-      }
       .tag-pill {
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 2px 9px;
+        padding: 3px 10px;
         border-radius: 20px;
         background: rgba(167, 139, 250, 0.15);
         color: var(--purple);
         border: 1px solid rgba(167, 139, 250, 0.25);
         font-size: 11px;
         font-weight: 700;
-        cursor: default;
+        white-space: nowrap;
       }
       .tag-pill-remove {
         background: none;
         border: none;
-        color: rgba(167, 139, 250, 0.6);
+        color: rgba(167, 139, 250, 0.5);
         cursor: pointer;
-        font-size: 13px;
+        font-size: 14px;
         line-height: 1;
         padding: 0 0 0 2px;
         transition: color 0.15s;
@@ -1517,26 +1652,95 @@
       .tag-pill-remove:hover {
         color: var(--red);
       }
-      .tag-input-inner {
-        border: none;
-        background: none;
-        outline: none;
+      .tag-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 10px 12px;
+        min-height: 44px;
+      }
+      .tag-sel-option {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.18s;
+        font-family: "Syne", sans-serif;
+      }
+      .tag-sel-option:hover {
+        border-color: rgba(167, 139, 250, 0.35);
+        color: var(--purple);
+        background: rgba(167, 139, 250, 0.08);
+      }
+      .tag-sel-option.selected {
+        background: rgba(167, 139, 250, 0.18);
+        color: var(--purple);
+        border-color: rgba(167, 139, 250, 0.4);
+      }
+      .tag-sel-option .check {
+        font-size: 10px;
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      .tag-sel-option.selected .check {
+        opacity: 1;
+      }
+      .tag-sel-empty {
+        font-size: 12px;
+        color: var(--muted);
+        font-style: italic;
+        align-self: center;
+      }
+      .tag-sel-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .tag-sel-new-input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 10px;
         font-family: "Outfit", sans-serif;
         font-size: 13px;
         color: var(--text);
-        min-width: 80px;
-        flex: 1;
+        outline: none;
+        transition: border-color 0.2s;
       }
-      .tag-input-inner::placeholder {
+      .tag-sel-new-input::placeholder {
         color: var(--muted);
       }
-      .tag-hint {
-        font-size: 10px;
-        color: var(--muted);
-        margin-top: 4px;
+      .tag-sel-new-input:focus {
+        border-color: rgba(0, 255, 148, 0.35);
       }
-
-      /* tag on card */
+      .tag-sel-add-btn {
+        padding: 7px 14px;
+        border-radius: 8px;
+        background: rgba(0, 255, 148, 0.1);
+        border: 1px solid rgba(0, 255, 148, 0.2);
+        color: var(--green);
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+      .tag-sel-add-btn:hover {
+        background: rgba(0, 255, 148, 0.18);
+      }
       .card-tag {
         font-size: 10px;
         padding: 1px 7px;
@@ -1546,8 +1750,6 @@
         border: 1px solid rgba(167, 139, 250, 0.2);
         font-weight: 600;
       }
-
-      /* tag filter row */
       #tag-filter-row {
         display: flex;
         align-items: center;
@@ -1590,6 +1792,67 @@
         color: var(--muted);
         font-weight: 600;
         white-space: nowrap;
+      }
+      /* ── TAG MANAGER MODAL ──────────────────────── */
+      #tagmgr-modal {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: 18px;
+        width: 100%;
+        max-width: 440px;
+        padding: 28px;
+        animation: pop-in 0.2s ease;
+      }
+      .tagmgr-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-height: 52px;
+        margin: 14px 0;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .tagmgr-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: rgba(167, 139, 250, 0.12);
+        color: var(--purple);
+        border: 1px solid rgba(167, 139, 250, 0.2);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .tagmgr-del {
+        background: none;
+        border: none;
+        color: rgba(167, 139, 250, 0.5);
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1;
+        padding: 0;
+        transition: color 0.15s;
+      }
+      .tagmgr-del:hover {
+        color: var(--red);
+      }
+      .tagmgr-empty {
+        font-size: 12px;
+        color: var(--muted);
+        font-style: italic;
+      }
+      .tagmgr-create {
+        display: flex;
+        gap: 8px;
+      }
+      .tagmgr-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 12px;
+        line-height: 1.6;
       }
 
       /* ── STATS PAGE ──────────────────────────────── */
@@ -1810,6 +2073,362 @@
         color: var(--muted);
       }
 
+      /* ── CALENDAR PAGE ───────────────────────────── */
+      #cal-page {
+        display: none;
+        padding: 24px;
+        max-width: 1100px;
+      }
+
+      .cal-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      .cal-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 22px;
+        color: var(--text);
+      }
+      .cal-nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .cal-nav-btn {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .cal-nav-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text);
+      }
+      .cal-month-label {
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--text);
+        min-width: 160px;
+        text-align: center;
+      }
+      .cal-platform-filter {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-left: auto;
+      }
+      .cal-plat-btn {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid var(--border);
+        background: none;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-family: "Syne", sans-serif;
+      }
+      .cal-plat-btn:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      .cal-plat-btn.active {
+        background: rgba(56, 189, 248, 0.15);
+        color: var(--blue);
+        border-color: rgba(56, 189, 248, 0.3);
+      }
+
+      /* grid */
+      .cal-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        background: var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .cal-day-hdr {
+        background: var(--card);
+        padding: 8px 4px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .cal-day {
+        background: var(--card);
+        min-height: 90px;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        position: relative;
+      }
+      .cal-day.other-month {
+        background: #0b0b15;
+      }
+      .cal-day.today {
+        background: #0f1a14;
+      }
+      .cal-day-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        margin-bottom: 2px;
+        align-self: flex-start;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+      .cal-day.today .cal-day-num {
+        background: var(--green);
+        color: #07070c;
+      }
+      .cal-release {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 5px;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+        transition: all 0.17s;
+        overflow: hidden;
+      }
+      .cal-release:hover {
+        background: rgba(56, 189, 248, 0.12);
+        border-color: rgba(56, 189, 248, 0.3);
+      }
+      .cal-release.in-wishlist {
+        background: rgba(252, 211, 77, 0.07);
+        border-color: rgba(252, 211, 77, 0.2);
+      }
+      .cal-release img {
+        width: 16px;
+        height: 21px;
+        border-radius: 2px;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+      .cal-release-ph {
+        width: 16px;
+        height: 21px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.08);
+        flex-shrink: 0;
+        font-size: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+      }
+      .cal-release-name {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 1;
+      }
+      .cal-more {
+        font-size: 9px;
+        color: var(--muted);
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        margin-top: 1px;
+      }
+
+      /* cal popup */
+      #cal-popup {
+        position: fixed;
+        z-index: 200;
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: 14px;
+        padding: 16px;
+        width: 260px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+        animation: pop-in 0.15s ease;
+        display: none;
+      }
+      #cal-popup.open {
+        display: block;
+      }
+      .cal-popup-cover {
+        width: 48px;
+        height: 64px;
+        border-radius: 6px;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+      .cal-popup-ph {
+        width: 48px;
+        height: 64px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.07);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+      .cal-popup-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 14px;
+        line-height: 1.3;
+      }
+      .cal-popup-meta {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 3px;
+        line-height: 1.5;
+      }
+      .cal-popup-plats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 6px;
+      }
+      .cal-popup-plat {
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .cal-add-btn {
+        width: 100%;
+        margin-top: 12px;
+        padding: 9px;
+        border-radius: 8px;
+        background: rgba(252, 211, 77, 0.12);
+        color: var(--yellow);
+        border: 1px solid rgba(252, 211, 77, 0.25);
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .cal-add-btn:hover {
+        background: rgba(252, 211, 77, 0.22);
+      }
+      .cal-add-btn.added {
+        background: rgba(0, 255, 148, 0.1);
+        color: var(--green);
+        border-color: rgba(0, 255, 148, 0.25);
+        cursor: default;
+      }
+      .cal-loading {
+        padding: 48px 24px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .cal-no-igdb {
+        text-align: center;
+        padding: 60px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      .cal-no-igdb .empty-icon {
+        font-size: 44px;
+      }
+      .cal-no-igdb h3 {
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .cal-no-igdb p {
+        font-size: 13px;
+        color: var(--muted);
+        max-width: 360px;
+        line-height: 1.6;
+      }
+
+      /* ── DATE FIELDS (modal) ─────────────────────── */
+      .date-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .date-info {
+        font-size: 11px;
+        color: var(--green);
+        font-weight: 600;
+        margin-top: 2px;
+      }
+
+      /* ── DATE DISPLAY (detail) ───────────────────── */
+      .d-dates-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .d-date-chip {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        flex: 1;
+        min-width: 0;
+      }
+      .d-date-chip-lbl {
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .d-date-chip-val {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .d-days-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 9px;
+        border-radius: 20px;
+        background: rgba(0, 255, 148, 0.1);
+        color: var(--green);
+        border: 1px solid rgba(0, 255, 148, 0.2);
+        align-self: center;
+        white-space: nowrap;
+      }
+
       /* ── RESPONSIVE ─────────────────────────────── */
       @media (max-width: 640px) {
         #detail-game-title {
@@ -1843,7 +2462,8 @@
         }
         #sort-row,
         #tag-filter-row,
-        #stats-page {
+        #stats-page,
+        #cal-page {
           padding: 10px 14px;
         }
         #game-grid {
@@ -1864,7 +2484,7 @@
         #btn-add .add-text {
           display: none;
         }
-        #igdb-btn .igdb-label {
+        .cfg-btn-label {
           display: none;
         }
         .charts-grid {
@@ -1873,36 +2493,15 @@
         .kpi-row {
           grid-template-columns: repeat(2, 1fr);
         }
-        #stats-bar {
-          padding: 12px 14px;
-          gap: 8px;
+        .cal-day {
+          min-height: 58px;
+          padding: 3px;
         }
-        #filter-row {
-          padding: 0 14px;
+        .cal-release-name {
+          display: none;
         }
-        #sort-row {
-          padding: 10px 14px;
-        }
-        #game-grid {
-          padding: 0 14px 32px;
-          gap: 10px;
-          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        }
-        #modal,
-        #settings-modal {
-          padding: 20px;
-        }
-        .form-grid {
+        .date-pair {
           grid-template-columns: 1fr;
-        }
-        .logo {
-          font-size: 15px;
-        }
-        #btn-add .add-text {
-          display: none;
-        }
-        #igdb-btn .igdb-label {
-          display: none;
         }
       }
     </style>
@@ -1916,9 +2515,13 @@
         <input type="text" id="search" placeholder="Buscar na biblioteca..." />
       </div>
       <div class="topbar-right">
-        <button id="igdb-btn">
-          <span class="igdb-dot"></span>
-          <span class="igdb-label">IGDB</span>
+        <button id="cfg-btn" title="Configurações">
+          <span
+            id="igdb-status-dot"
+            class="igdb-dot"
+            style="display: none"
+          ></span>
+          ⚙️ <span class="cfg-btn-label">Configurações</span>
         </button>
         <button id="btn-add">
           <span>+</span><span class="add-text">Adicionar Jogo</span>
@@ -1933,6 +2536,9 @@
       </button>
       <button class="page-tab" data-page="stats">
         <span class="page-tab-icon">📊</span> Estatísticas
+      </button>
+      <button class="page-tab" data-page="calendar">
+        <span class="page-tab-icon">📅</span> Lançamentos
       </button>
     </div>
     <div id="stats-bar">
@@ -2123,6 +2729,23 @@
     </div>
     <!-- /stats-page -->
 
+    <!-- CALENDAR PAGE -->
+    <div id="cal-page">
+      <div class="cal-header">
+        <div class="cal-title">📅 Lançamentos</div>
+        <div class="cal-nav">
+          <button class="cal-nav-btn" id="cal-prev">‹</button>
+          <div class="cal-month-label" id="cal-month-label">—</div>
+          <button class="cal-nav-btn" id="cal-next">›</button>
+        </div>
+        <div class="cal-platform-filter" id="cal-plat-filter"></div>
+      </div>
+      <div id="cal-body"></div>
+    </div>
+
+    <!-- cal popup -->
+    <div id="cal-popup"></div>
+
     <!-- ══ ADD/EDIT MODAL ════════════════════════════════════════ -->
     <div class="overlay" id="add-overlay">
       <div id="modal">
@@ -2206,23 +2829,68 @@
             />
           </div>
           <div class="form-field full">
-            <label>Tags Personalizadas</label>
+            <label>Período de Jogo</label>
+            <div class="date-pair">
+              <div>
+                <input
+                  type="date"
+                  class="form-input"
+                  id="f-date-start"
+                  title="Data de início"
+                />
+                <div
+                  style="
+                    font-size: 10px;
+                    color: var(--muted);
+                    margin-top: 4px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                  "
+                >
+                  Início
+                </div>
+              </div>
+              <div>
+                <input
+                  type="date"
+                  class="form-input"
+                  id="f-date-end"
+                  title="Data de fim"
+                />
+                <div
+                  style="
+                    font-size: 10px;
+                    color: var(--muted);
+                    margin-top: 4px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                  "
+                >
+                  Fim / Zerado em
+                </div>
+              </div>
+            </div>
             <div
-              class="tag-input-wrap"
-              id="tag-input-wrap"
-              onclick="document.getElementById('tag-input-inner').focus()"
-            >
-              <!-- pills injected here by JS -->
+              class="date-info"
+              id="date-duration"
+              style="display: none"
+            ></div>
+          </div>
+          <div class="form-field full">
+            <label>Tags Personalizadas</label>
+            <div class="tag-selector" id="tag-selector"></div>
+            <div class="tag-sel-actions">
               <input
                 type="text"
-                class="tag-input-inner"
-                id="tag-input-inner"
-                placeholder="Ex: rpg, soulslike, favorito..."
+                class="tag-sel-new-input"
+                id="tag-new-input"
+                placeholder="Nova tag (ex: favorito, soulslike...)"
               />
-            </div>
-            <div class="tag-hint">
-              Pressione <strong>Enter</strong> ou <strong>,</strong> para
-              adicionar
+              <button class="tag-sel-add-btn" id="tag-new-btn">
+                + Criar tag
+              </button>
             </div>
           </div>
           <div class="form-field full" id="color-row">
@@ -2292,6 +2960,11 @@
             <button class="d-btn d-btn-del" id="d-del-btn">🗑 Remover</button>
           </div>
 
+          <!-- 2b. DATES -->
+          <div id="d-dates-section" style="display: none">
+            <div class="d-dates-row" id="d-dates-row"></div>
+          </div>
+
           <!-- 3. NOTAS PESSOAIS -->
           <div>
             <div class="d-section-label">Notas Pessoais</div>
@@ -2345,53 +3018,101 @@
       </div>
     </div>
 
-    <!-- ══ SETTINGS MODAL ════════════════════════════════════════ -->
+    <!-- ══ SETTINGS MODAL (unified) ══════════════════════════════ -->
     <div class="overlay" id="settings-overlay">
       <div id="settings-modal">
-        <div class="modal-header">
-          <div class="modal-title">⚙️ Integração IGDB</div>
-          <button class="modal-close" id="settings-close">✕</button>
+        <!-- header -->
+        <div class="cfg-header">
+          <div class="cfg-title">⚙️ Configurações</div>
+          <button class="cfg-close" id="settings-close">✕</button>
         </div>
-        <div class="settings-hint">
-          Crie um app em
-          <a href="https://dev.twitch.tv/console/apps" target="_blank"
-            >dev.twitch.tv/console/apps</a
-          >
-          → categoria <strong>Application Integration</strong> → URL de redirect
-          <code>http://localhost</code>. Suas credenciais ficam salvas
-          <strong>apenas no seu navegador</strong>.
-        </div>
-        <div class="form-grid" style="grid-template-columns: 1fr">
-          <div class="form-field">
-            <label>Client ID</label
-            ><input
-              type="text"
-              class="form-input"
-              id="s-id"
-              placeholder="abc123xyz..."
-            />
-          </div>
-          <div class="form-field">
-            <label>Client Secret</label
-            ><input
-              type="password"
-              class="form-input"
-              id="s-secret"
-              placeholder="••••••••••••••••••"
-            />
-          </div>
-        </div>
-        <div id="test-result" class="test-result"></div>
-        <div class="form-actions">
-          <button class="btn-ghost" id="s-cancel">Cancelar</button>
-          <button
-            class="btn-ghost"
-            id="s-test"
-            style="color: var(--blue); border-color: rgba(56, 189, 248, 0.25)"
-          >
-            Testar
+
+        <!-- tab strip -->
+        <div class="cfg-tabs">
+          <button class="cfg-tab active" data-cfg="igdb">
+            🎮 Integração IGDB
           </button>
-          <button class="btn-primary" id="s-save">Salvar</button>
+          <button class="cfg-tab" data-cfg="tags">🏷️ Gerenciar Tags</button>
+        </div>
+
+        <!-- ── IGDB panel ── -->
+        <div class="cfg-panel active" id="cfg-igdb">
+          <div class="cfg-hint">
+            Crie um app em
+            <a href="https://dev.twitch.tv/console/apps" target="_blank"
+              >dev.twitch.tv/console/apps</a
+            >
+            → categoria <strong>Application Integration</strong> → URL de
+            redirect <code>http://localhost</code>. Suas credenciais ficam
+            salvas <strong>apenas no seu navegador</strong>.
+          </div>
+          <div class="form-grid" style="grid-template-columns: 1fr">
+            <div class="form-field">
+              <label>Client ID</label>
+              <input
+                type="text"
+                class="form-input"
+                id="s-id"
+                placeholder="abc123xyz..."
+              />
+            </div>
+            <div class="form-field">
+              <label>Client Secret</label>
+              <input
+                type="password"
+                class="form-input"
+                id="s-secret"
+                placeholder="••••••••••••••••••"
+              />
+            </div>
+          </div>
+          <div id="test-result" class="test-result"></div>
+          <div class="cfg-actions">
+            <button class="btn-ghost" id="s-cancel">Cancelar</button>
+            <button
+              class="btn-ghost"
+              id="s-test"
+              style="color: var(--blue); border-color: rgba(56, 189, 248, 0.25)"
+            >
+              Testar Conexão
+            </button>
+            <button class="btn-primary" id="s-save">Salvar</button>
+          </div>
+        </div>
+
+        <!-- ── Tags panel ── -->
+        <div class="cfg-panel" id="cfg-tags">
+          <div class="form-field">
+            <label>Suas Tags</label>
+            <div class="tagmgr-list" id="tagmgr-list"></div>
+          </div>
+          <div class="form-field">
+            <label>Criar Nova Tag</label>
+            <div class="tagmgr-create">
+              <input
+                type="text"
+                class="form-input"
+                id="tagmgr-input"
+                placeholder="Ex: favorito, platinado, soulslike..."
+                maxlength="28"
+              />
+              <button
+                class="btn-primary"
+                id="tagmgr-add"
+                style="white-space: nowrap"
+              >
+                + Adicionar
+              </button>
+            </div>
+          </div>
+          <p class="tagmgr-hint">
+            Tags criadas aqui ficam disponíveis em todos os jogos. Remover uma
+            tag da lista <strong>não</strong> a remove dos jogos que já a
+            utilizam.
+          </p>
+          <div class="cfg-actions">
+            <button class="btn-primary" id="tagmgr-done">Fechar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2715,8 +3436,15 @@
       let acTimer = null,
         acList = [],
         acFocus = -1;
-      let currentTags = []; // tags being edited in modal
-      let tagFilter = null; // active tag filter
+      let currentTags = [],
+        tagFilter = null;
+      // Calendar state
+      let calYear = new Date().getFullYear(),
+        calMonth = new Date().getMonth();
+      let calPlatFilter = "all",
+        calReleases = [],
+        calLoading = false,
+        calLoaded = false;
 
       // ═══════════════════════════════════════════════════
       //  HELPERS
@@ -2762,10 +3490,11 @@
       function makeCover(g, list) {
         const c = COLORS[g.colorIdx % COLORS.length];
         const fsz = list ? 24 : 46;
-        const fb = `<div class="cover-inner" style="background:${c.bg}"><span class="cover-letter" style="font-size:${fsz}px">${g.title[0].toUpperCase()}</span></div>`;
+        const fb = `<div class="cover-inner" style="background:${c.bg};display:none"><span class="cover-letter" style="font-size:${fsz}px">${g.title[0].toUpperCase()}</span></div>`;
         if (g.igdb?.cover_url)
-          return `<img class="cover-img" src="${esc(g.igdb.cover_url)}" alt="" loading="lazy" onerror="this.style.display='none'">${fb}`;
-        return fb;
+          return `<img class="cover-img" src="${esc(g.igdb.cover_url)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">${fb}`;
+        // manual — show letter placeholder
+        return `<div class="cover-inner" style="background:${c.bg}"><span class="cover-letter" style="font-size:${fsz}px">${g.title[0].toUpperCase()}</span></div>`;
       }
 
       function renderCard(g) {
@@ -2800,7 +3529,6 @@
 <div class="game-card" onclick="openDetail('${g.id}')" data-id="${g.id}">
   <div class="game-cover" style="position:relative">${makeCover(g, false)}
     <div class="cover-overlay"></div>
-    <div class="cover-status-badge">${badgeHtml(g.status)}</div>
   </div>
   <div class="game-body">
     <div class="game-title" title="${esc(g.title)}">${esc(g.title)}</div>
@@ -2878,52 +3606,91 @@
           const e = document.getElementById("c-" + k);
           if (e) e.textContent = cnt[k];
         });
-        // igdb btn
+        // cfg btn igdb status indicator
         const creds = IGDB.getCreds();
-        const igdbBtn = document.getElementById("igdb-btn");
+        const cfgBtn = document.getElementById("cfg-btn");
         const activeBadge = document.getElementById("igdb-active-badge");
         if (creds?.id && creds?.secret) {
-          igdbBtn.classList.add("connected");
-          igdbBtn.querySelector(".igdb-label").textContent = "IGDB ✓";
-          if (activeBadge) activeBadge.style.display = "inline";
+          cfgBtn.classList.add("igdb-on");
         } else {
-          igdbBtn.classList.remove("connected");
-          igdbBtn.querySelector(".igdb-label").textContent = "IGDB";
-          if (activeBadge) activeBadge.style.display = "none";
+          cfgBtn.classList.remove("igdb-on");
         }
-        // tag filter row — collect all tags across library
-        const allTagSet = new Set();
+        if (activeBadge)
+          activeBadge.style.display =
+            creds?.id && creds?.secret ? "inline" : "none";
+        // tag filter row — separate personal tags and IGDB genres
+        const personalTagSet = new Set();
+        const igdbGenreSet = new Set();
         games.forEach((g) => {
-          (g.tags || []).forEach((t) => allTagSet.add(t));
-          (g.igdb?.genres || []).forEach((t) => allTagSet.add(t));
+          (g.tags || []).forEach((t) => personalTagSet.add(t));
+          (g.igdb?.genres || []).forEach((t) => igdbGenreSet.add(t));
         });
         const tagRow = document.getElementById("tag-filter-row");
-        if (allTagSet.size > 0) {
+        if (personalTagSet.size > 0 || igdbGenreSet.size > 0) {
           tagRow.classList.remove("hidden");
-          tagRow.innerHTML = `<span id="tag-filter-lbl">Tag:</span>`;
-          [...allTagSet].sort().forEach((t) => {
-            const btn = document.createElement("button");
-            btn.className =
-              "tag-filter-btn" + (tagFilter === t ? " active" : "");
-            btn.textContent = t;
-            btn.onclick = () => {
-              tagFilter = tagFilter === t ? null : t;
-              render();
-            };
-            tagRow.appendChild(btn);
-          });
+          tagRow.innerHTML = "";
+          if (personalTagSet.size > 0) {
+            const lbl = document.createElement("span");
+            lbl.id = "tag-filter-lbl";
+            lbl.textContent = "Minhas tags:";
+            tagRow.appendChild(lbl);
+            [...personalTagSet].sort().forEach((t) => {
+              const btn = document.createElement("button");
+              btn.className =
+                "tag-filter-btn" + (tagFilter === t ? " active" : "");
+              btn.textContent = t;
+              btn.onclick = () => {
+                tagFilter = tagFilter === t ? null : t;
+                render();
+              };
+              tagRow.appendChild(btn);
+            });
+          }
+          if (igdbGenreSet.size > 0) {
+            const lbl = document.createElement("span");
+            lbl.style.cssText =
+              "font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;margin-left:8px";
+            lbl.textContent = "IGDB:";
+            tagRow.appendChild(lbl);
+            [...igdbGenreSet].sort().forEach((t) => {
+              const btn = document.createElement("button");
+              btn.className =
+                "tag-filter-btn" + (tagFilter === t ? " active" : "");
+              btn.style.cssText =
+                "background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.18);color:#38BDF8";
+              if (tagFilter === t)
+                btn.style.cssText +=
+                  "background:rgba(56,189,248,.18);border-color:rgba(56,189,248,.35)";
+              btn.textContent = t;
+              btn.onclick = () => {
+                tagFilter = tagFilter === t ? null : t;
+                render();
+              };
+              tagRow.appendChild(btn);
+            });
+          }
         } else tagRow.classList.add("hidden");
         // page visibility
         const libPage = document.getElementById("library-page");
         const statsPageEl = document.getElementById("stats-page");
+        const calPageEl = document.getElementById("cal-page");
         if (currentPage === "stats") {
           libPage.style.display = "none";
           statsPageEl.style.display = "block";
+          calPageEl.style.display = "none";
           renderStats();
+          return;
+        }
+        if (currentPage === "calendar") {
+          libPage.style.display = "none";
+          statsPageEl.style.display = "none";
+          calPageEl.style.display = "block";
+          renderCalendar();
           return;
         }
         libPage.style.display = "block";
         statsPageEl.style.display = "none";
+        calPageEl.style.display = "none";
         // grid
         const filtered = getFiltered();
         const grid = document.getElementById("game-grid");
@@ -3045,13 +3812,35 @@
             .join("");
         } else ssSec.style.display = "none";
 
-        // tags
+        // dates
+        const datesSec = document.getElementById("d-dates-section");
+        const datesRow = document.getElementById("d-dates-row");
+        if (g.dateStart || g.dateEnd) {
+          datesSec.style.display = "block";
+          const fmtDate = (iso) => {
+            if (!iso) return null;
+            const [y, m, d] = iso.split("-");
+            return `${d}/${m}/${y}`;
+          };
+          let chips = "";
+          if (g.dateStart)
+            chips += `<div class="d-date-chip"><div class="d-date-chip-lbl">Início</div><div class="d-date-chip-val">${fmtDate(g.dateStart)}</div></div>`;
+          if (g.dateEnd)
+            chips += `<div class="d-date-chip"><div class="d-date-chip-lbl">Fim / Zerado</div><div class="d-date-chip-val">${fmtDate(g.dateEnd)}</div></div>`;
+          if (g.dateStart && g.dateEnd) {
+            const diff = Math.round(
+              (new Date(g.dateEnd) - new Date(g.dateStart)) / 864e5,
+            );
+            if (diff > 0)
+              chips += `<span class="d-days-badge">⏱ ${diff} dias</span>`;
+          }
+          datesRow.innerHTML = chips;
+        } else datesSec.style.display = "none";
         const tagsSec = document.getElementById("d-tags-section");
         const tagsList = document.getElementById("d-tags-list");
-        const allDetailTags = [...(g.tags || []), ...(g.igdb?.genres || [])];
-        if (allDetailTags.length) {
+        if (g.tags?.length) {
           tagsSec.style.display = "block";
-          tagsList.innerHTML = allDetailTags
+          tagsList.innerHTML = g.tags
             .map(
               (t) =>
                 `<span class="tag-pill" style="cursor:default">${esc(t)}</span>`,
@@ -3154,16 +3943,17 @@
         currentTags = [];
         colorIdx = Math.floor(Math.random() * COLORS.length);
         document.getElementById("modal-title").textContent = "Adicionar Jogo";
-        ["f-title", "f-hours", "f-notes"].forEach(
+        ["f-title", "f-hours", "f-notes", "f-date-start", "f-date-end"].forEach(
           (id) => (document.getElementById(id).value = ""),
         );
         document.getElementById("f-platform").value = "";
         document.getElementById("f-status").value = "playing";
+        document.getElementById("date-duration").style.display = "none";
         setStars(0);
         buildSwatches();
         showIGDBPreview(null);
         closeAC();
-        renderTagPills();
+        renderTagSelector();
         document.getElementById("add-overlay").classList.add("open");
         setTimeout(() => document.getElementById("f-title").focus(), 60);
       }
@@ -3182,11 +3972,14 @@
         document.getElementById("f-status").value = g.status;
         document.getElementById("f-hours").value = g.hours || "";
         document.getElementById("f-notes").value = g.notes || "";
+        document.getElementById("f-date-start").value = g.dateStart || "";
+        document.getElementById("f-date-end").value = g.dateEnd || "";
+        updateDateDuration();
         setStars(stars);
         buildSwatches();
         showIGDBPreview(g.igdb || null);
         closeAC();
-        renderTagPills();
+        renderTagSelector();
         document.getElementById("add-overlay").classList.add("open");
         setTimeout(() => document.getElementById("f-title").focus(), 60);
       }
@@ -3217,6 +4010,8 @@
           colorIdx,
           notes: document.getElementById("f-notes").value.trim(),
           tags: currentTags.length ? [...currentTags] : undefined,
+          dateStart: document.getElementById("f-date-start").value || undefined,
+          dateEnd: document.getElementById("f-date-end").value || undefined,
           igdb: igdbSel || undefined,
           createdAt: editId
             ? games.find((g) => g.id === editId)?.createdAt || Date.now()
@@ -3384,20 +4179,51 @@
       }
 
       // ═══════════════════════════════════════════════════
-      //  SETTINGS
+      //  SETTINGS MODAL (unified)
       // ═══════════════════════════════════════════════════
-      function openSettings() {
+      let cfgActiveTab = "igdb";
+
+      function openSettings(tab = "igdb") {
+        cfgActiveTab = tab;
+        // populate IGDB fields
         const c = IGDB.getCreds();
         document.getElementById("s-id").value = c?.id || "";
         document.getElementById("s-secret").value = c?.secret || "";
         const tr = document.getElementById("test-result");
         tr.className = "test-result";
+        tr.style.display = "none";
         tr.textContent = "";
+        // populate tags
+        renderTagMgrList();
+        // set active tab
+        document
+          .querySelectorAll(".cfg-tab")
+          .forEach((b) => b.classList.toggle("active", b.dataset.cfg === tab));
+        document
+          .querySelectorAll(".cfg-panel")
+          .forEach((p) => p.classList.toggle("active", p.id === "cfg-" + tab));
         document.getElementById("settings-overlay").classList.add("open");
       }
+
       function closeSettings() {
         document.getElementById("settings-overlay").classList.remove("open");
       }
+
+      // Tab switching inside modal
+      document.querySelectorAll(".cfg-tab").forEach((btn) => {
+        btn.onclick = () => {
+          cfgActiveTab = btn.dataset.cfg;
+          document
+            .querySelectorAll(".cfg-tab")
+            .forEach((b) => b.classList.toggle("active", b === btn));
+          document
+            .querySelectorAll(".cfg-panel")
+            .forEach((p) =>
+              p.classList.toggle("active", p.id === "cfg-" + cfgActiveTab),
+            );
+          if (cfgActiveTab === "tags") renderTagMgrList();
+        };
+      });
 
       document.getElementById("settings-close").onclick = closeSettings;
       document.getElementById("s-cancel").onclick = closeSettings;
@@ -3424,6 +4250,7 @@
         const tr = document.getElementById("test-result");
         if (!id || !sec) {
           tr.className = "test-result err";
+          tr.style.display = "flex";
           tr.textContent = "⚠️ Preencha os campos primeiro.";
           return;
         }
@@ -3449,6 +4276,9 @@
         }
       };
 
+      document.getElementById("tagmgr-done").onclick = closeSettings;
+      document.getElementById("cfg-btn").onclick = () => openSettings("igdb");
+
       // ═══════════════════════════════════════════════════
       //  TOAST
       // ═══════════════════════════════════════════════════
@@ -3464,7 +4294,6 @@
       // ═══════════════════════════════════════════════════
       //  EVENTS
       // ═══════════════════════════════════════════════════
-      document.getElementById("igdb-btn").onclick = openSettings;
       document.getElementById("btn-add").onclick = openAdd;
       document.getElementById("empty-cta").onclick = openAdd;
       document.getElementById("modal-close").onclick = closeModal;
@@ -3485,6 +4314,7 @@
           closeDel();
           closeDetail();
           closeSettings();
+          closeTagMgr();
           closeAC();
         }
         if (
@@ -3545,62 +4375,521 @@
       });
 
       // ═══════════════════════════════════════════════════
-      //  TAG INPUT (modal)
+      //  GLOBAL TAG LIBRARY
       // ═══════════════════════════════════════════════════
-      function renderTagPills() {
-        const wrap = document.getElementById("tag-input-wrap");
-        const input = document.getElementById("tag-input-inner");
-        // remove existing pills
-        wrap.querySelectorAll(".tag-pill").forEach((el) => el.remove());
-        currentTags.forEach((t, i) => {
-          const pill = document.createElement("span");
-          pill.className = "tag-pill";
-          pill.innerHTML = `${esc(t)}<button class="tag-pill-remove" onclick="removeTag(${i})">×</button>`;
-          wrap.insertBefore(pill, input);
-        });
+      const TAGS_KEY = "gv_tags";
+      let globalTags = JSON.parse(localStorage.getItem(TAGS_KEY) || "[]");
+
+      function saveGlobalTags() {
+        localStorage.setItem(TAGS_KEY, JSON.stringify(globalTags));
       }
 
-      function removeTag(i) {
-        currentTags.splice(i, 1);
-        renderTagPills();
-      }
-
-      function addTag(raw) {
+      function createGlobalTag(raw) {
         const tag = raw
           .trim()
           .toLowerCase()
-          .replace(/[^a-záàâãéèêíïóôõöúüçñ0-9 _-]/gi, "")
-          .slice(0, 24);
-        if (!tag || currentTags.includes(tag) || currentTags.length >= 10)
-          return;
-        currentTags.push(tag);
-        renderTagPills();
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "") // strip accents for dedup
+          .replace(/[^a-z0-9 _-]/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 28);
+        const original = raw.trim().slice(0, 28); // keep original for display
+        if (!original) return false;
+        // dedup case-insensitive
+        if (globalTags.some((t) => t.toLowerCase() === original.toLowerCase()))
+          return false;
+        globalTags.push(original);
+        saveGlobalTags();
+        return true;
       }
 
+      function deleteGlobalTag(tag) {
+        globalTags = globalTags.filter((t) => t !== tag);
+        saveGlobalTags();
+        renderTagMgrList();
+        renderTagSelector(); // refresh selector in open modal
+      }
+
+      // ── Tag Manager Modal ──────────────────────────────
+      function renderTagMgrList() {
+        const el = document.getElementById("tagmgr-list");
+        if (!globalTags.length) {
+          el.innerHTML =
+            '<span class="tagmgr-empty">Nenhuma tag criada ainda.</span>';
+          return;
+        }
+        el.innerHTML = globalTags
+          .map(
+            (t) => `
+    <span class="tagmgr-pill">
+      ${esc(t)}
+      <button class="tagmgr-del" onclick="deleteGlobalTag('${esc(t)}')" title="Remover tag">×</button>
+    </span>`,
+          )
+          .join("");
+      }
+
+      function openTagMgr() {
+        openSettings("tags");
+      }
+      function closeTagMgr() {
+        closeSettings();
+      }
+
+      function doAddGlobalTag() {
+        const input = document.getElementById("tagmgr-input");
+        const val = input.value.trim();
+        if (!val) return;
+        if (createGlobalTag(val)) {
+          input.value = "";
+          renderTagMgrList();
+          renderTagSelector();
+          showToast(`🏷️ Tag "${val}" criada!`);
+        } else {
+          input.style.borderColor = "rgba(248,113,113,.5)";
+          setTimeout(() => (input.style.borderColor = ""), 1400);
+          showToast("⚠️ Tag já existe ou inválida.");
+        }
+      }
+      document.getElementById("tagmgr-add").onclick = doAddGlobalTag;
       document
-        .getElementById("tag-input-inner")
-        .addEventListener("keydown", function (e) {
-          if (e.key === "Enter" || e.key === ",") {
+        .getElementById("tagmgr-input")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
             e.preventDefault();
-            addTag(this.value);
-            this.value = "";
-          } else if (
-            e.key === "Backspace" &&
-            !this.value &&
-            currentTags.length
-          ) {
-            currentTags.pop();
-            renderTagPills();
+            doAddGlobalTag();
           }
         });
+
+      // ── Tag Selector (inside add/edit modal) ──────────
+      function renderTagSelector() {
+        const el = document.getElementById("tag-selector");
+        if (!el) return;
+        if (!globalTags.length) {
+          el.innerHTML =
+            '<span class="tag-sel-empty">Nenhuma tag criada. Use o botão 🏷️ no topo para criar suas tags.</span>';
+          return;
+        }
+        el.innerHTML = globalTags
+          .map((t) => {
+            const sel = currentTags.includes(t);
+            return `<button class="tag-sel-option${sel ? " selected" : ""}" onclick="toggleTag('${esc(t)}')">
+      <span class="check">✓</span>${esc(t)}
+    </button>`;
+          })
+          .join("");
+      }
+
+      function toggleTag(tag) {
+        const i = currentTags.indexOf(tag);
+        if (i >= 0) currentTags.splice(i, 1);
+        else currentTags.push(tag);
+        renderTagSelector();
+      }
+
+      // Inline "create + auto-select" from modal
+      document.getElementById("tag-new-btn").onclick = function () {
+        const input = document.getElementById("tag-new-input");
+        const val = input.value.trim();
+        if (!val) return;
+        if (createGlobalTag(val)) {
+          currentTags.push(val); // auto-select the new tag
+          input.value = "";
+          renderTagSelector();
+          renderTagMgrList(); // keep manager in sync if open
+          showToast(`🏷️ Tag "${val}" criada e selecionada!`);
+        } else {
+          // tag already exists — just select it
+          const existing = globalTags.find(
+            (t) => t.toLowerCase() === val.toLowerCase(),
+          );
+          if (existing && !currentTags.includes(existing)) {
+            currentTags.push(existing);
+            renderTagSelector();
+          }
+          input.value = "";
+        }
+      };
       document
-        .getElementById("tag-input-inner")
-        .addEventListener("blur", function () {
-          if (this.value.trim()) {
-            addTag(this.value);
-            this.value = "";
+        .getElementById("tag-new-input")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            document.getElementById("tag-new-btn").click();
           }
         });
+
+      // ═══════════════════════════════════════════════════
+      //  DATE DURATION HELPER
+      // ═══════════════════════════════════════════════════
+      function updateDateDuration() {
+        const s = document.getElementById("f-date-start").value;
+        const e = document.getElementById("f-date-end").value;
+        const el = document.getElementById("date-duration");
+        if (s && e && e > s) {
+          const diff = Math.round((new Date(e) - new Date(s)) / 864e5);
+          el.textContent = `⏱ ${diff} dia${diff !== 1 ? "s" : ""} entre início e fim`;
+          el.style.display = "block";
+        } else el.style.display = "none";
+      }
+      document
+        .getElementById("f-date-start")
+        .addEventListener("change", updateDateDuration);
+      document
+        .getElementById("f-date-end")
+        .addEventListener("change", updateDateDuration);
+
+      // ═══════════════════════════════════════════════════
+      //  CALENDAR ENGINE
+      // ═══════════════════════════════════════════════════
+      const MONTH_NAMES = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro",
+      ];
+      const DAY_NAMES = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+      // Two-step fetch: 1) release_dates (minimal fields) → 2) games by ID (full details)
+      async function fetchReleases(year, month) {
+        if (!IGDB.getCreds()?.id) return null;
+        const from = Math.floor(new Date(year, month, 1) / 1000);
+        const to = Math.floor(new Date(year, month + 1, 0, 23, 59, 59) / 1000);
+
+        // Step 1 — only basic scalar/shallow fields on release_dates
+        const rdRaw = await IGDB.query(
+          "release_dates",
+          `fields date,game,platform.name; where date >= ${from} & date <= ${to}; sort date asc; limit 100;`,
+        );
+        if (!Array.isArray(rdRaw) || !rdRaw.length)
+          return rdRaw === null ? null : [];
+
+        // Accumulate: game_id → { date, platforms[] }
+        const metaMap = new Map();
+        rdRaw.forEach((rd) => {
+          if (!rd.game || !rd.date) return;
+          const gid = typeof rd.game === "object" ? rd.game.id : rd.game;
+          if (!gid) return;
+          const pn = rd.platform?.name || "";
+          if (!metaMap.has(gid)) {
+            metaMap.set(gid, { date: rd.date, platforms: pn ? [pn] : [] });
+          } else {
+            const e = metaMap.get(gid);
+            if (rd.date < e.date) e.date = rd.date;
+            if (pn && !e.platforms.includes(pn)) e.platforms.push(pn);
+          }
+        });
+
+        const ids = [...metaMap.keys()].slice(0, 50);
+        if (!ids.length) return [];
+
+        // Step 2 — fetch full game details for those IDs
+        const gRaw = await IGDB.query(
+          "games",
+          `fields name,cover.image_id,genres.name,involved_companies.company.name,platforms.name,summary,rating; where id = (${ids.join(",")}); limit 50;`,
+        );
+        if (!Array.isArray(gRaw)) return [];
+
+        const gDetails = new Map(gRaw.map((g) => [g.id, g]));
+        const results = [];
+        metaMap.forEach((meta, gid) => {
+          const g = gDetails.get(gid);
+          if (!g) return;
+          results.push({
+            id: g.id,
+            name: g.name,
+            cover: g.cover || null,
+            first_release_date: meta.date,
+            platforms: (g.platforms || []).filter(Boolean),
+            genres: (g.genres || []).filter(Boolean),
+            involved_companies: (g.involved_companies || []).filter(Boolean),
+            summary: g.summary || "",
+            rating: g.rating || 0,
+          });
+        });
+        return results.sort(
+          (a, b) => a.first_release_date - b.first_release_date,
+        );
+      }
+
+      // ── Build the 7-column month grid ─────────────────
+      function buildCalGrid(year, month, releases) {
+        const body = document.getElementById("cal-body");
+        const firstDow = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+
+        // group by day-of-month
+        const byDay = {};
+        (releases || []).forEach((r) => {
+          if (!r.first_release_date) return;
+          const d = new Date(r.first_release_date * 1000);
+          if (d.getFullYear() === year && d.getMonth() === month) {
+            const k = d.getDate();
+            (byDay[k] = byDay[k] || []).push(r);
+          }
+        });
+
+        let html = `<div class="cal-grid">`;
+        DAY_NAMES.forEach((d) => {
+          html += `<div class="cal-day-hdr">${d}</div>`;
+        });
+
+        for (let i = 0; i < firstDow; i++)
+          html += `<div class="cal-day other-month"></div>`;
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const isToday =
+            today.getFullYear() === year &&
+            today.getMonth() === month &&
+            today.getDate() === d;
+          const rels = byDay[d] || [];
+          const shown = rels.slice(0, 3);
+          const extra = rels.length - 3;
+          html += `<div class="cal-day${isToday ? " today" : ""}">
+      <div class="cal-day-num">${d}</div>
+      ${shown
+        .map((r) => {
+          const inLib = games.some((g) => g.igdb?.id === r.id);
+          const img = r.cover?.image_id
+            ? `<img src="${IGDB.cover(r.cover.image_id, "cover_small")}" loading="lazy" onerror="this.style.display='none'">`
+            : `<div class="cal-release-ph">🎮</div>`;
+          return `<div class="cal-release${inLib ? " in-wishlist" : ""}" onclick="openCalPopup(event,${r.id})">${img}<span class="cal-release-name">${esc(r.name)}</span></div>`;
+        })
+        .join("")}
+      ${extra > 0 ? `<div class="cal-more">+${extra} mais</div>` : ""}
+    </div>`;
+        }
+
+        const total = firstDow + daysInMonth;
+        const trailing = (7 - (total % 7)) % 7;
+        for (let i = 0; i < trailing; i++)
+          html += `<div class="cal-day other-month"></div>`;
+        html += `</div>`;
+        body.innerHTML = html;
+      }
+
+      // ── Popup on release click ─────────────────────────
+      function openCalPopup(event, igdbId) {
+        const r = calReleases.find((x) => x.id === igdbId);
+        if (!r) return;
+        event.stopPropagation();
+        const popup = document.getElementById("cal-popup");
+        const inLib = games.some((g) => g.igdb?.id === igdbId);
+        const yr = r.first_release_date
+          ? new Date(r.first_release_date * 1000).toLocaleDateString("pt-BR")
+          : "—";
+        const dev =
+          r.involved_companies?.find((c) => c.company?.name)?.company?.name ||
+          "";
+        const plats = (r.platforms || [])
+          .map((p) => PLATFORM_MAP[p.name] || p.name)
+          .filter((v, i, a) => a.indexOf(v) === i);
+        const img = r.cover?.image_id
+          ? `<img class="cal-popup-cover" src="${IGDB.cover(r.cover.image_id, "cover_big")}" loading="lazy" onerror="this.style.display='none'">`
+          : `<div class="cal-popup-ph">🎮</div>`;
+        popup.innerHTML = `
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:4px">
+      ${img}
+      <div style="flex:1;min-width:0">
+        <div class="cal-popup-title">${esc(r.name)}</div>
+        <div class="cal-popup-meta">${yr}${dev ? " · " + esc(dev) : ""}</div>
+        <div class="cal-popup-plats">${plats.map((p) => `<span class="cal-popup-plat">${esc(p)}</span>`).join("")}</div>
+      </div>
+      <button onclick="document.getElementById('cal-popup').classList.remove('open')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;flex-shrink:0">✕</button>
+    </div>
+    <button class="cal-add-btn${inLib ? " added" : ""}" onclick="calAddToWishlist(${igdbId})">
+      ${inLib ? "✅ Na Wishlist" : "⭐ Adicionar à Wishlist"}
+    </button>`;
+        const rect = event.currentTarget.getBoundingClientRect();
+        const pw = 260,
+          ph = 200;
+        let left = rect.left + window.scrollX;
+        let top = rect.bottom + window.scrollY + 6;
+        if (left + pw > window.innerWidth - 12)
+          left = window.innerWidth - pw - 12;
+        if (top + ph > window.innerHeight + window.scrollY)
+          top = rect.top + window.scrollY - ph - 6;
+        popup.style.left = left + "px";
+        popup.style.top = top + "px";
+        popup.classList.add("open");
+      }
+      document.addEventListener("click", (e) => {
+        if (
+          !e.target.closest("#cal-popup") &&
+          !e.target.closest(".cal-release")
+        )
+          document.getElementById("cal-popup").classList.remove("open");
+      });
+
+      // ── Platform filter chips ──────────────────────────
+      function buildCalPlatFilter(releases) {
+        const plats = new Set();
+        (releases || []).forEach((r) =>
+          (r.platforms || []).forEach((p) => {
+            const n = PLATFORM_MAP[p.name] || p.name;
+            if (n) plats.add(n);
+          }),
+        );
+        const wrap = document.getElementById("cal-plat-filter");
+        wrap.innerHTML = ["all", ...[...plats].sort()]
+          .map(
+            (p) =>
+              `<button class="cal-plat-btn${calPlatFilter === p ? " active" : ""}" onclick="setCalPlat('${esc(p)}')">${p === "all" ? "Todas" : esc(p)}</button>`,
+          )
+          .join("");
+      }
+
+      function setCalPlat(p) {
+        calPlatFilter = p;
+        buildCalPlatFilter(calReleases);
+        const filtered =
+          calPlatFilter === "all"
+            ? calReleases
+            : calReleases.filter((r) =>
+                (r.platforms || []).some(
+                  (pl) => (PLATFORM_MAP[pl.name] || pl.name) === calPlatFilter,
+                ),
+              );
+        buildCalGrid(calYear, calMonth, filtered);
+      }
+
+      // ── Add release to Wishlist ────────────────────────
+      function calAddToWishlist(igdbId) {
+        const r = calReleases.find((x) => x.id === igdbId);
+        if (!r) return;
+        if (games.some((g) => g.igdb?.id === igdbId)) {
+          showToast("ℹ️ Jogo já está na biblioteca.");
+          return;
+        }
+        const cov = r.cover?.image_id
+          ? IGDB.cover(r.cover.image_id, "cover_big")
+          : null;
+        const yr = r.first_release_date
+          ? new Date(r.first_release_date * 1000).getFullYear()
+          : null;
+        const dev =
+          r.involved_companies?.find((c) => c.company?.name)?.company?.name ||
+          null;
+        const game = {
+          id: uid(),
+          title: r.name,
+          platform: r.platforms?.[0]?.name
+            ? PLATFORM_MAP[r.platforms[0].name] || r.platforms[0].name
+            : "",
+          status: "wishlist",
+          rating: 0,
+          hours: 0,
+          colorIdx: Math.floor(Math.random() * COLORS.length),
+          notes: "",
+          igdb: {
+            id: r.id,
+            name: r.name,
+            cover_url: cov,
+            summary: r.summary || "",
+            genres: (r.genres || []).map((g) => g.name),
+            rating: r.rating || 0,
+            year: yr,
+            developer: dev,
+            platforms: (r.platforms || []).map(
+              (p) => PLATFORM_MAP[p.name] || p.name,
+            ),
+            screenshots: [],
+          },
+          createdAt: Date.now(),
+        };
+        games.unshift(game);
+        saveGames(games);
+        showToast(`⭐ "${r.name}" adicionado à Wishlist!`);
+        const btn = document.querySelector("#cal-popup .cal-add-btn");
+        if (btn) {
+          btn.textContent = "✅ Na Wishlist";
+          btn.classList.add("added");
+        }
+        buildCalGrid(calYear, calMonth, calReleases);
+      }
+
+      // ── Main calendar render ───────────────────────────
+      async function renderCalendar() {
+        const body = document.getElementById("cal-body");
+        document.getElementById("cal-month-label").textContent =
+          `${MONTH_NAMES[calMonth]} ${calYear}`;
+
+        if (!IGDB.getCreds()?.id) {
+          body.innerHTML = `<div class="cal-no-igdb"><div class="empty-icon">🔗</div><h3>IGDB não configurado</h3><p>Configure suas credenciais IGDB em ⚙️ Configurações para ver os lançamentos do mês.</p><button class="btn-primary" onclick="openSettings('igdb')" style="margin-top:8px">Configurar IGDB</button></div>`;
+          document.getElementById("cal-plat-filter").innerHTML = "";
+          return;
+        }
+
+        body.innerHTML = `<div class="cal-loading">⏳ Buscando lançamentos de ${MONTH_NAMES[calMonth]} ${calYear}...</div>`;
+        document.getElementById("cal-plat-filter").innerHTML = "";
+
+        try {
+          const releases = await fetchReleases(calYear, calMonth);
+
+          if (releases === null) {
+            body.innerHTML = `<div class="cal-no-igdb"><div class="empty-icon">🔑</div><h3>Falha na autenticação</h3><p>Verifique suas credenciais IGDB em ⚙️ Configurações.</p><button class="btn-primary" onclick="openSettings('igdb')" style="margin-top:8px">Verificar credenciais</button></div>`;
+            return;
+          }
+
+          calReleases = releases;
+          const filtered =
+            calPlatFilter === "all"
+              ? calReleases
+              : calReleases.filter((r) =>
+                  (r.platforms || []).some(
+                    (p) => (PLATFORM_MAP[p.name] || p.name) === calPlatFilter,
+                  ),
+                );
+
+          buildCalGrid(calYear, calMonth, filtered);
+
+          if (calReleases.length) {
+            buildCalPlatFilter(calReleases);
+          } else {
+            const note = document.createElement("p");
+            note.style.cssText =
+              "text-align:center;padding:14px;font-size:12px;color:var(--muted);margin-top:8px;";
+            note.textContent = `Nenhum lançamento encontrado na IGDB para ${MONTH_NAMES[calMonth]} ${calYear}.`;
+            body.appendChild(note);
+          }
+        } catch (e) {
+          console.error("[GameVault] Calendar error:", e);
+          body.innerHTML = `<div class="cal-no-igdb"><div class="empty-icon">⚠️</div><h3>Erro ao buscar lançamentos</h3><p style="font-size:12px;word-break:break-all">${esc(String(e))}</p></div>`;
+        }
+      }
+
+      document.getElementById("cal-prev").onclick = () => {
+        calMonth--;
+        if (calMonth < 0) {
+          calMonth = 11;
+          calYear--;
+        }
+        calReleases = [];
+        document.getElementById("cal-month-label").textContent =
+          `${MONTH_NAMES[calMonth]} ${calYear}`;
+        renderCalendar();
+      };
+      document.getElementById("cal-next").onclick = () => {
+        calMonth++;
+        if (calMonth > 11) {
+          calMonth = 0;
+          calYear++;
+        }
+        calReleases = [];
+        document.getElementById("cal-month-label").textContent =
+          `${MONTH_NAMES[calMonth]} ${calYear}`;
+        renderCalendar();
+      };
 
       // ═══════════════════════════════════════════════════
       //  PAGE NAVIGATION
