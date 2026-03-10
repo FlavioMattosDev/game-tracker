@@ -45,6 +45,11 @@
         min-height: 100vh;
         overflow-x: hidden;
       }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
       ::-webkit-scrollbar {
         width: 5px;
         height: 5px;
@@ -1765,6 +1770,49 @@
       #tag-filter-row.hidden {
         display: none;
       }
+      #year-filter-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 24px;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+      #year-filter-row::-webkit-scrollbar {
+        display: none;
+      }
+      #year-filter-row.hidden {
+        display: none;
+      }
+      #year-filter-lbl {
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .year-filter-btn {
+        padding: 3px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid var(--border);
+        background: none;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .year-filter-btn:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      .year-filter-btn.active {
+        background: rgba(0, 255, 148, 0.12);
+        color: var(--green);
+        border-color: rgba(0, 255, 148, 0.3);
+      }
       .tag-filter-btn {
         padding: 4px 12px;
         border-radius: 20px;
@@ -1941,7 +1989,8 @@
       .chart-sub {
         font-size: 11px;
         color: var(--muted);
-        margin-top: -8px;
+        margin-top: 3px;
+        margin-bottom: 4px;
       }
       canvas.chart {
         width: 100% !important;
@@ -2181,11 +2230,13 @@
         gap: 3px;
         position: relative;
       }
-      .cal-day.other-month {
-        background: #0b0b15;
+      .cal-day.has-releases {
+        cursor: pointer;
       }
-      .cal-day.today {
-        background: #0f1a14;
+      .cal-day.has-releases:hover {
+        background: rgba(56, 189, 248, 0.05);
+        outline: 1px solid rgba(56, 189, 248, 0.18);
+        outline-offset: -1px;
       }
       .cal-day-num {
         font-family: "JetBrains Mono", monospace;
@@ -2262,89 +2313,300 @@
         margin-top: 1px;
       }
 
-      /* cal popup */
-      #cal-popup {
-        position: fixed;
-        z-index: 200;
+      /* cal day modal */
+      #cal-day-modal {
         background: var(--surface);
         border: 1px solid var(--border2);
-        border-radius: 14px;
-        padding: 16px;
-        width: 260px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-        animation: pop-in 0.15s ease;
-        display: none;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 480px;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        animation: pop-in 0.2s ease;
       }
-      #cal-popup.open {
-        display: block;
+      .cal-day-modal-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px 14px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
       }
-      .cal-popup-cover {
-        width: 48px;
-        height: 64px;
-        border-radius: 6px;
+      .cal-day-modal-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 17px;
+      }
+      .cal-day-count {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 9px;
+        border-radius: 20px;
+        background: rgba(56, 189, 248, 0.12);
+        color: var(--blue);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+      }
+      .cal-day-list {
+        overflow-y: auto;
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .cal-day-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .cal-day-row:hover {
+        background: rgba(56, 189, 248, 0.08);
+        border-color: rgba(56, 189, 248, 0.25);
+      }
+      .cal-day-row.in-lib {
+        border-color: rgba(252, 211, 77, 0.25);
+        background: rgba(252, 211, 77, 0.05);
+      }
+      .cal-day-cover {
+        width: 40px;
+        height: 53px;
+        border-radius: 5px;
         object-fit: cover;
         flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.06);
       }
-      .cal-popup-ph {
-        width: 48px;
-        height: 64px;
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.07);
+      .cal-day-cover-ph {
+        width: 40px;
+        height: 53px;
+        border-radius: 5px;
         flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.06);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 18px;
       }
-      .cal-popup-title {
-        font-family: "Syne", sans-serif;
-        font-weight: 800;
-        font-size: 14px;
-        line-height: 1.3;
+      .cal-day-info {
+        flex: 1;
+        min-width: 0;
       }
-      .cal-popup-meta {
+      .cal-day-name {
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .cal-day-meta {
         font-size: 11px;
         color: var(--muted);
-        margin-top: 3px;
-        line-height: 1.5;
+        margin-top: 2px;
       }
-      .cal-popup-plats {
+      .cal-day-plats {
         display: flex;
-        flex-wrap: wrap;
         gap: 4px;
-        margin-top: 6px;
+        flex-wrap: wrap;
+        margin-top: 4px;
       }
-      .cal-popup-plat {
+      .cal-day-plat {
         font-size: 10px;
-        padding: 2px 7px;
+        padding: 1px 6px;
         border-radius: 4px;
         background: rgba(255, 255, 255, 0.06);
         color: var(--muted);
         font-weight: 600;
       }
-      .cal-add-btn {
+      .cal-day-score {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--green);
+        flex-shrink: 0;
+      }
+      .cal-day-inlib {
+        font-size: 10px;
+        color: var(--yellow);
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      /* cal game detail modal */
+      #cal-game-modal {
+        background: var(--surface);
+        border: 1px solid var(--border2);
+        border-radius: 20px;
         width: 100%;
-        margin-top: 12px;
-        padding: 9px;
+        max-width: 640px;
+        max-height: 92vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        animation: pop-in 0.2s ease;
+        position: relative;
+      }
+      #cal-game-modal .cgm-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 10;
+        width: 32px;
+        height: 32px;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      #cal-game-modal .cgm-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+      }
+      #cal-game-back {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0 20px 0 0;
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        transition: color 0.2s;
+      }
+      #cal-game-back:hover {
+        color: var(--text);
+      }
+      .cgm-hero {
+        height: 180px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px 20px 0 0;
+        flex-shrink: 0;
+      }
+      .cgm-hero-bg {
+        position: absolute;
+        inset: -30px;
+        background-size: cover;
+        background-position: center;
+        filter: blur(28px) brightness(0.32) saturate(1.5);
+        transform: scale(1.15);
+      }
+      .cgm-hero-content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        display: flex;
+        align-items: flex-end;
+        padding: 20px;
+        background: linear-gradient(
+          to top,
+          rgba(14, 14, 26, 1) 0%,
+          rgba(14, 14, 26, 0.5) 50%,
+          transparent 100%
+        );
+        gap: 16px;
+      }
+      .cgm-cover {
+        width: 80px;
+        height: 107px;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+        flex-shrink: 0;
+        border: 2px solid rgba(255, 255, 255, 0.12);
+        background: #0d0d1a;
+      }
+      .cgm-cover-ph {
+        width: 80px;
+        height: 107px;
+        border-radius: 8px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        border: 2px solid rgba(255, 255, 255, 0.08);
+      }
+      .cgm-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 20px;
+        line-height: 1.25;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+      }
+      .cgm-sub {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 4px;
+      }
+      .cgm-genres {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 7px;
+      }
+      .cgm-genre {
+        font-size: 10px;
+        padding: 2px 9px;
+        border-radius: 20px;
+        background: rgba(167, 139, 250, 0.15);
+        color: var(--purple);
+        border: 1px solid rgba(167, 139, 250, 0.25);
+        font-weight: 700;
+      }
+      .cgm-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .cgm-wishlist-btn {
+        width: 100%;
+        padding: 13px;
+        border-radius: 10px;
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
         background: rgba(252, 211, 77, 0.12);
         color: var(--yellow);
         border: 1px solid rgba(252, 211, 77, 0.25);
-        font-family: "Syne", sans-serif;
-        font-weight: 700;
-        font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
       }
-      .cal-add-btn:hover {
+      .cgm-wishlist-btn:hover:not(.added) {
         background: rgba(252, 211, 77, 0.22);
       }
-      .cal-add-btn.added {
+      .cgm-wishlist-btn.added {
         background: rgba(0, 255, 148, 0.1);
         color: var(--green);
         border-color: rgba(0, 255, 148, 0.25);
         cursor: default;
       }
+      .cgm-section-lbl {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
       .cal-loading {
         padding: 48px 24px;
         text-align: center;
@@ -2431,6 +2693,11 @@
 
       /* ── RESPONSIVE ─────────────────────────────── */
       @media (max-width: 640px) {
+        html,
+        body {
+          overflow-x: hidden;
+          width: 100%;
+        }
         #detail-game-title {
           font-size: 16px;
         }
@@ -2460,8 +2727,16 @@
         #page-nav {
           padding: 0 14px;
         }
+        #page-nav {
+          overflow-x: auto;
+          flex-wrap: nowrap;
+        }
+        #page-nav::-webkit-scrollbar {
+          display: none;
+        }
         #sort-row,
         #tag-filter-row,
+        #year-filter-row,
         #stats-page,
         #cal-page {
           padding: 10px 14px;
@@ -2627,6 +2902,11 @@
       <span id="tag-filter-lbl">Tag:</span>
     </div>
 
+    <!-- YEAR FILTER ROW -->
+    <div id="year-filter-row" class="hidden">
+      <span id="year-filter-lbl">📅 Zerado em:</span>
+    </div>
+
     <!-- LIBRARY PAGE -->
     <div id="library-page">
       <div id="game-grid"></div>
@@ -2725,6 +3005,15 @@
           </div>
           <div id="chart-top-rated"></div>
         </div>
+
+        <!-- Zerados por Ano (full width) -->
+        <div class="chart-card full" id="chart-year-card">
+          <div>
+            <div class="chart-title">🏆 Zerados por Ano</div>
+            <div class="chart-sub">Quantos jogos você zerou em cada ano</div>
+          </div>
+          <canvas id="chart-years" height="120"></canvas>
+        </div>
       </div>
     </div>
     <!-- /stats-page -->
@@ -2743,8 +3032,77 @@
       <div id="cal-body"></div>
     </div>
 
-    <!-- cal popup -->
-    <div id="cal-popup"></div>
+    <!-- CAL DAY MODAL -->
+    <div class="overlay" id="cal-day-overlay">
+      <div id="cal-day-modal">
+        <div class="cal-day-modal-hdr">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div class="cal-day-modal-title" id="cal-day-modal-title">—</div>
+            <span class="cal-day-count" id="cal-day-modal-count"></span>
+          </div>
+          <button class="modal-close" id="cal-day-close">✕</button>
+        </div>
+        <div class="cal-day-list" id="cal-day-list"></div>
+      </div>
+    </div>
+
+    <!-- CAL GAME DETAIL MODAL -->
+    <div class="overlay" id="cal-game-overlay">
+      <div id="cal-game-modal">
+        <div class="cgm-hero" id="cgm-hero">
+          <div class="cgm-hero-bg" id="cgm-hero-bg"></div>
+          <div class="cgm-hero-content">
+            <img
+              class="cgm-cover"
+              id="cgm-cover"
+              src=""
+              alt=""
+              style="display: none"
+            />
+            <div class="cgm-cover-ph" id="cgm-cover-ph">🎮</div>
+            <div style="min-width: 0; flex: 1">
+              <div class="cgm-title" id="cgm-title">—</div>
+              <div class="cgm-sub" id="cgm-sub"></div>
+              <div class="cgm-genres" id="cgm-genres"></div>
+            </div>
+          </div>
+        </div>
+        <button class="cgm-close" id="cgm-close-btn">✕</button>
+        <div class="cgm-body">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <button id="cal-game-back">← Voltar</button>
+          </div>
+          <button class="cgm-wishlist-btn" id="cgm-wishlist-btn">
+            ⭐ Adicionar à Wishlist
+          </button>
+          <div class="igdb-rating-bar" id="cgm-score-bar" style="display: none">
+            <div>
+              <div class="igdb-score-num" id="cgm-score-num">—</div>
+              <div class="igdb-score-label">IGDB Score</div>
+            </div>
+            <div class="igdb-bar-track">
+              <div
+                class="igdb-bar-fill"
+                id="cgm-score-fill"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+          <div id="cgm-summary-wrap" style="display: none">
+            <div class="cgm-section-lbl">Sobre o Jogo</div>
+            <div
+              id="cgm-summary"
+              style="font-size: 13px; color: #94a3b8; line-height: 1.75"
+            ></div>
+          </div>
+          <div class="d-info-grid" id="cgm-info-grid"></div>
+          <div id="cgm-ss-wrap" style="display: none">
+            <div class="cgm-section-lbl">Screenshots</div>
+            <div class="screenshots-strip" id="cgm-screenshots"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- ══ ADD/EDIT MODAL ════════════════════════════════════════ -->
     <div class="overlay" id="add-overlay">
@@ -3437,7 +3795,8 @@
         acList = [],
         acFocus = -1;
       let currentTags = [],
-        tagFilter = null;
+        tagFilter = null,
+        yearFilter = null;
       // Calendar state
       let calYear = new Date().getFullYear(),
         calMonth = new Date().getMonth();
@@ -3568,6 +3927,12 @@
             );
           });
         }
+        if (yearFilter) {
+          a = a.filter((g) => {
+            const yr = g.dateEnd ? new Date(g.dateEnd).getFullYear() : null;
+            return yr === yearFilter;
+          });
+        }
         if (sort === "title") a.sort((a, b) => a.title.localeCompare(b.title));
         if (sort === "rating") a.sort((a, b) => b.rating - a.rating);
         if (sort === "hours") a.sort((a, b) => b.hours - a.hours);
@@ -3670,6 +4035,43 @@
             });
           }
         } else tagRow.classList.add("hidden");
+
+        // ── Year filter row ──
+        const yearRow = document.getElementById("year-filter-row");
+        const completedYears = [
+          ...new Set(
+            games
+              .filter((g) => g.dateEnd)
+              .map((g) => new Date(g.dateEnd).getFullYear()),
+          ),
+        ].sort((a, b) => b - a);
+
+        // Reset stale yearFilter
+        if (yearFilter && !completedYears.includes(yearFilter))
+          yearFilter = null;
+
+        if (completedYears.length > 0) {
+          yearRow.classList.remove("hidden");
+          yearRow.innerHTML = '<span id="year-filter-lbl">📅 Zerado em:</span>';
+          completedYears.forEach((yr) => {
+            const count = games.filter(
+              (g) => g.dateEnd && new Date(g.dateEnd).getFullYear() === yr,
+            ).length;
+            const btn = document.createElement("button");
+            btn.className =
+              "year-filter-btn" + (yearFilter === yr ? " active" : "");
+            btn.textContent = `${yr} (${count})`;
+            btn.onclick = () => {
+              yearFilter = yearFilter === yr ? null : yr;
+              render();
+            };
+            yearRow.appendChild(btn);
+          });
+        } else {
+          yearRow.classList.add("hidden");
+          yearFilter = null;
+        }
+
         // page visibility
         const libPage = document.getElementById("library-page");
         const statsPageEl = document.getElementById("stats-page");
@@ -3678,6 +4080,10 @@
           libPage.style.display = "none";
           statsPageEl.style.display = "block";
           calPageEl.style.display = "none";
+          document.getElementById("filter-row").style.display = "none";
+          document.getElementById("sort-row").style.display = "none";
+          document.getElementById("tag-filter-row").style.display = "none";
+          document.getElementById("year-filter-row").style.display = "none";
           renderStats();
           return;
         }
@@ -3685,12 +4091,20 @@
           libPage.style.display = "none";
           statsPageEl.style.display = "none";
           calPageEl.style.display = "block";
+          document.getElementById("filter-row").style.display = "none";
+          document.getElementById("sort-row").style.display = "none";
+          document.getElementById("tag-filter-row").style.display = "none";
+          document.getElementById("year-filter-row").style.display = "none";
           renderCalendar();
           return;
         }
         libPage.style.display = "block";
         statsPageEl.style.display = "none";
         calPageEl.style.display = "none";
+        document.getElementById("filter-row").style.display = "flex";
+        document.getElementById("sort-row").style.display = "flex";
+        document.getElementById("tag-filter-row").style.display = "";
+        document.getElementById("year-filter-row").style.display = "";
         // grid
         const filtered = getFiltered();
         const grid = document.getElementById("game-grid");
@@ -4316,6 +4730,8 @@
           closeSettings();
           closeTagMgr();
           closeAC();
+          document.getElementById("cal-day-overlay").classList.remove("open");
+          document.getElementById("cal-game-overlay").classList.remove("open");
         }
         if (
           (e.ctrlKey || e.metaKey) &&
@@ -4379,6 +4795,20 @@
       // ═══════════════════════════════════════════════════
       const TAGS_KEY = "gv_tags";
       let globalTags = JSON.parse(localStorage.getItem(TAGS_KEY) || "[]");
+
+      // Sync: any tag already used in a game but missing from globalTags gets added back
+      (function syncTagsFromGames() {
+        games.forEach((g) =>
+          (g.tags || []).forEach((t) => {
+            if (
+              t &&
+              !globalTags.some((x) => x.toLowerCase() === t.toLowerCase())
+            )
+              globalTags.push(t);
+          }),
+        );
+        saveGlobalTags();
+      })();
 
       function saveGlobalTags() {
         localStorage.setItem(TAGS_KEY, JSON.stringify(globalTags));
@@ -4655,7 +5085,8 @@
           const rels = byDay[d] || [];
           const shown = rels.slice(0, 3);
           const extra = rels.length - 3;
-          html += `<div class="cal-day${isToday ? " today" : ""}">
+          const hasRels = rels.length > 0;
+          html += `<div class="cal-day${isToday ? " today" : ""}${hasRels ? " has-releases" : ""}" ${hasRels ? `onclick="openCalDay(${d})"` : ""}>
       <div class="cal-day-num">${d}</div>
       ${shown
         .map((r) => {
@@ -4663,7 +5094,7 @@
           const img = r.cover?.image_id
             ? `<img src="${IGDB.cover(r.cover.image_id, "cover_small")}" loading="lazy" onerror="this.style.display='none'">`
             : `<div class="cal-release-ph">🎮</div>`;
-          return `<div class="cal-release${inLib ? " in-wishlist" : ""}" onclick="openCalPopup(event,${r.id})">${img}<span class="cal-release-name">${esc(r.name)}</span></div>`;
+          return `<div class="cal-release${inLib ? " in-wishlist" : ""}">${img}<span class="cal-release-name">${esc(r.name)}</span></div>`;
         })
         .join("")}
       ${extra > 0 ? `<div class="cal-more">+${extra} mais</div>` : ""}
@@ -4678,58 +5109,192 @@
         body.innerHTML = html;
       }
 
-      // ── Popup on release click ─────────────────────────
-      function openCalPopup(event, igdbId) {
+      // ── Day modal: all releases for a day ─────────────
+      function openCalDay(day) {
+        const rels = calReleases.filter((r) => {
+          if (!r.first_release_date) return false;
+          const d = new Date(r.first_release_date * 1000);
+          return (
+            d.getFullYear() === calYear &&
+            d.getMonth() === calMonth &&
+            d.getDate() === day
+          );
+        });
+        if (!rels.length) return;
+
+        const dateLabel = new Date(calYear, calMonth, day).toLocaleDateString(
+          "pt-BR",
+          { weekday: "long", day: "numeric", month: "long" },
+        );
+        document.getElementById("cal-day-modal-title").textContent =
+          dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1);
+        document.getElementById("cal-day-modal-count").textContent =
+          rels.length + (rels.length === 1 ? " jogo" : " jogos");
+
+        document.getElementById("cal-day-list").innerHTML = rels
+          .map((r) => {
+            const inLib = games.some((g) => g.igdb?.id === r.id);
+            const dev =
+              r.involved_companies?.find((c) => c.company?.name)?.company
+                ?.name || "";
+            const plats = (r.platforms || [])
+              .map((p) => PLATFORM_MAP[p.name] || p.name)
+              .filter((v, i, a) => a.indexOf(v) === i)
+              .slice(0, 4);
+            const score = r.rating ? Math.round(r.rating) : null;
+            const img = r.cover?.image_id
+              ? `<img class="cal-day-cover" src="${IGDB.cover(r.cover.image_id, "cover_big")}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+              : "";
+            return `<div class="cal-day-row${inLib ? " in-lib" : ""}" onclick="openCalGame(${r.id})">
+      ${img}<div class="cal-day-cover-ph" style="${r.cover?.image_id ? "display:none" : ""}">🎮</div>
+      <div class="cal-day-info">
+        <div class="cal-day-name">${esc(r.name)}</div>
+        ${dev ? `<div class="cal-day-meta">${esc(dev)}</div>` : ""}
+        <div class="cal-day-plats">${plats.map((p) => `<span class="cal-day-plat">${esc(p)}</span>`).join("")}</div>
+      </div>
+      ${score ? `<span class="cal-day-score">${score}</span>` : ""}
+      ${inLib ? `<span class="cal-day-inlib">★ Wishlist</span>` : ""}
+    </div>`;
+          })
+          .join("");
+
+        document.getElementById("cal-day-overlay").classList.add("open");
+      }
+
+      // ── Game detail modal ──────────────────────────────
+      async function openCalGame(igdbId) {
         const r = calReleases.find((x) => x.id === igdbId);
         if (!r) return;
-        event.stopPropagation();
-        const popup = document.getElementById("cal-popup");
-        const inLib = games.some((g) => g.igdb?.id === igdbId);
-        const yr = r.first_release_date
-          ? new Date(r.first_release_date * 1000).toLocaleDateString("pt-BR")
-          : "—";
+
+        // populate immediately with what we have
+        const coverUrl = r.cover?.image_id
+          ? IGDB.cover(r.cover.image_id, "cover_big")
+          : null;
         const dev =
           r.involved_companies?.find((c) => c.company?.name)?.company?.name ||
           "";
+        const yr = r.first_release_date
+          ? new Date(r.first_release_date * 1000).getFullYear()
+          : "";
         const plats = (r.platforms || [])
           .map((p) => PLATFORM_MAP[p.name] || p.name)
           .filter((v, i, a) => a.indexOf(v) === i);
-        const img = r.cover?.image_id
-          ? `<img class="cal-popup-cover" src="${IGDB.cover(r.cover.image_id, "cover_big")}" loading="lazy" onerror="this.style.display='none'">`
-          : `<div class="cal-popup-ph">🎮</div>`;
-        popup.innerHTML = `
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:4px">
-      ${img}
-      <div style="flex:1;min-width:0">
-        <div class="cal-popup-title">${esc(r.name)}</div>
-        <div class="cal-popup-meta">${yr}${dev ? " · " + esc(dev) : ""}</div>
-        <div class="cal-popup-plats">${plats.map((p) => `<span class="cal-popup-plat">${esc(p)}</span>`).join("")}</div>
-      </div>
-      <button onclick="document.getElementById('cal-popup').classList.remove('open')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;flex-shrink:0">✕</button>
-    </div>
-    <button class="cal-add-btn${inLib ? " added" : ""}" onclick="calAddToWishlist(${igdbId})">
-      ${inLib ? "✅ Na Wishlist" : "⭐ Adicionar à Wishlist"}
-    </button>`;
-        const rect = event.currentTarget.getBoundingClientRect();
-        const pw = 260,
-          ph = 200;
-        let left = rect.left + window.scrollX;
-        let top = rect.bottom + window.scrollY + 6;
-        if (left + pw > window.innerWidth - 12)
-          left = window.innerWidth - pw - 12;
-        if (top + ph > window.innerHeight + window.scrollY)
-          top = rect.top + window.scrollY - ph - 6;
-        popup.style.left = left + "px";
-        popup.style.top = top + "px";
-        popup.classList.add("open");
+        const inLib = games.some((g) => g.igdb?.id === igdbId);
+
+        // hero
+        const heroBg = document.getElementById("cgm-hero-bg");
+        heroBg.style.backgroundImage = coverUrl ? `url(${coverUrl})` : "";
+        const covImg = document.getElementById("cgm-cover");
+        const covPh = document.getElementById("cgm-cover-ph");
+        if (coverUrl) {
+          covImg.src = coverUrl;
+          covImg.style.display = "block";
+          covPh.style.display = "none";
+        } else {
+          covImg.style.display = "none";
+          covPh.style.display = "flex";
+        }
+        document.getElementById("cgm-title").textContent = r.name;
+        document.getElementById("cgm-sub").textContent = [dev, yr]
+          .filter(Boolean)
+          .join(" · ");
+        document.getElementById("cgm-genres").innerHTML = (r.genres || [])
+          .map((g) => `<span class="cgm-genre">${esc(g.name || g)}</span>`)
+          .join("");
+
+        // wishlist btn
+        const wBtn = document.getElementById("cgm-wishlist-btn");
+        wBtn.textContent = inLib ? "✅ Na Wishlist" : "⭐ Adicionar à Wishlist";
+        wBtn.className = "cgm-wishlist-btn" + (inLib ? " added" : "");
+        wBtn.onclick = inLib
+          ? null
+          : () => {
+              calAddToWishlist(igdbId);
+              wBtn.textContent = "✅ Na Wishlist";
+              wBtn.classList.add("added");
+            };
+
+        // score
+        const scoreBar = document.getElementById("cgm-score-bar");
+        const scoreFill = document.getElementById("cgm-score-fill");
+        if (r.rating) {
+          scoreBar.style.display = "flex";
+          document.getElementById("cgm-score-num").textContent = Math.round(
+            r.rating,
+          );
+          setTimeout(() => {
+            scoreFill.style.width = r.rating + "%";
+          }, 120);
+        } else {
+          scoreBar.style.display = "none";
+          scoreFill.style.width = "0%";
+        }
+
+        // summary
+        const sumWrap = document.getElementById("cgm-summary-wrap");
+        if (r.summary) {
+          sumWrap.style.display = "block";
+          document.getElementById("cgm-summary").textContent = r.summary;
+        } else sumWrap.style.display = "none";
+
+        // info chips
+        const chips = [];
+        if (dev) chips.push(["Desenvolvedor", dev]);
+        if (yr) chips.push(["Lançamento", yr]);
+        if (plats.length) chips.push(["Plataformas", plats.join(", ")]);
+        document.getElementById("cgm-info-grid").innerHTML = chips
+          .map(
+            ([l, v]) =>
+              `<div class="d-info-card"><div class="d-info-lbl">${l}</div><div class="d-info-val">${esc(String(v))}</div></div>`,
+          )
+          .join("");
+
+        // screenshots — fetch on demand
+        const ssWrap = document.getElementById("cgm-ss-wrap");
+        const ssEl = document.getElementById("cgm-screenshots");
+        ssWrap.style.display = "none";
+        ssEl.innerHTML = "";
+
+        document.getElementById("cal-game-overlay").classList.add("open");
+
+        // async: fetch screenshots
+        try {
+          const details = await IGDB.query(
+            "games",
+            `fields screenshots.image_id; where id = ${igdbId};`,
+          );
+          const sids = details?.[0]?.screenshots;
+          if (sids?.length) {
+            ssWrap.style.display = "block";
+            ssEl.innerHTML = sids
+              .slice(0, 8)
+              .map(
+                (s) =>
+                  `<img class="ss-thumb" src="${IGDB.screen(s.image_id, "screenshot_big")}" loading="lazy"
+          onclick="openLightbox('${IGDB.screen(s.image_id, "screenshot_huge")}')" alt="screenshot">`,
+              )
+              .join("");
+          }
+        } catch (e) {
+          /* screenshots optional */
+        }
       }
-      document.addEventListener("click", (e) => {
-        if (
-          !e.target.closest("#cal-popup") &&
-          !e.target.closest(".cal-release")
-        )
-          document.getElementById("cal-popup").classList.remove("open");
-      });
+
+      // Wire up modal close / back buttons
+      document.getElementById("cal-day-close").onclick = () =>
+        document.getElementById("cal-day-overlay").classList.remove("open");
+      document.getElementById("cal-day-overlay").onclick = function (e) {
+        if (e.target === this) this.classList.remove("open");
+      };
+
+      document.getElementById("cgm-close-btn").onclick = () =>
+        document.getElementById("cal-game-overlay").classList.remove("open");
+      document.getElementById("cal-game-back").onclick = () => {
+        document.getElementById("cal-game-overlay").classList.remove("open");
+      };
+      document.getElementById("cal-game-overlay").onclick = function (e) {
+        if (e.target === this) this.classList.remove("open");
+      };
 
       // ── Platform filter chips ──────────────────────────
       function buildCalPlatFilter(releases) {
@@ -4810,12 +5375,13 @@
         games.unshift(game);
         saveGames(games);
         showToast(`⭐ "${r.name}" adicionado à Wishlist!`);
-        const btn = document.querySelector("#cal-popup .cal-add-btn");
-        if (btn) {
-          btn.textContent = "✅ Na Wishlist";
-          btn.classList.add("added");
-        }
         buildCalGrid(calYear, calMonth, calReleases);
+        const wBtn = document.getElementById("cgm-wishlist-btn");
+        if (wBtn) {
+          wBtn.textContent = "✅ Na Wishlist";
+          wBtn.classList.add("added");
+          wBtn.onclick = null;
+        }
       }
 
       // ── Main calendar render ───────────────────────────
@@ -5256,6 +5822,73 @@
               )
               .join("")
           : '<div style="font-size:12px;color:var(--muted)">Nenhum jogo avaliado ainda.</div>';
+
+        // ── Zerados por Ano ──────────────────────────────
+        const yearCard = document.getElementById("chart-year-card");
+        // Use dateEnd regardless of status — any game with completion date counts
+        const completedWithDate = games.filter((g) => g.dateEnd);
+        if (!completedWithDate.length) {
+          yearCard.style.display = "none";
+        } else {
+          yearCard.style.display = "";
+          const yearMap = {};
+          completedWithDate.forEach((g) => {
+            const yr = new Date(g.dateEnd).getFullYear();
+            yearMap[yr] = (yearMap[yr] || 0) + 1;
+          });
+          const years = Object.keys(yearMap).sort();
+          const counts = years.map((y) => yearMap[y]);
+          destroyChart("years");
+          // Re-use existing canvas but reset its size to prevent runaway growth
+          const canvas = document.getElementById("chart-years");
+          canvas.style.height = "160px";
+          canvas.style.maxHeight = "160px";
+          const ctxY = canvas.getContext("2d");
+          chartInstances["years"] = new Chart(ctxY, {
+            type: "bar",
+            data: {
+              labels: years,
+              datasets: [
+                {
+                  label: "Jogos zerados",
+                  data: counts,
+                  backgroundColor: years.map(
+                    (_, i) => CHART_COLORS[i % CHART_COLORS.length] + "99",
+                  ),
+                  borderColor: years.map(
+                    (_, i) => CHART_COLORS[i % CHART_COLORS.length],
+                  ),
+                  borderWidth: 2,
+                  borderRadius: 6,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              aspectRatio: 4,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: (ctx) => {
+                      const yr = ctx.label;
+                      const titles = completedWithDate
+                        .filter((g) => new Date(g.dateEnd).getFullYear() == yr)
+                        .map((g) => g.title)
+                        .join(", ");
+                      return ` ${ctx.raw} jogo(s): ${titles.length > 80 ? titles.slice(0, 80) + "…" : titles}`;
+                    },
+                  },
+                },
+              },
+              scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { grid: { display: false } },
+              },
+            },
+          });
+        }
       }
 
       // ═══════════════════════════════════════════════════
