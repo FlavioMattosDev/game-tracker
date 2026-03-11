@@ -9,6 +9,7 @@
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
       *,
       *::before,
@@ -196,6 +197,11 @@
       }
 
       /* ── STATS ──────────────────────────────────── */
+      #page-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
       #stats-bar {
         display: flex;
         gap: 12px;
@@ -340,7 +346,7 @@
 
       /* ── GAME GRID ──────────────────────────────── */
       #game-grid {
-        padding: 0 24px 40px;
+        padding: 24px 24px 40px;
         display: grid;
         gap: 14px;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -1903,11 +1909,619 @@
         line-height: 1.6;
       }
 
-      /* ── STATS PAGE ──────────────────────────────── */
+      /* ── BACKUP PANEL ────────────────────────────── */
+      .backup-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .backup-section-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--text);
+      }
+      .backup-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.65;
+        margin: 0;
+      }
+      .backup-desc code {
+        background: rgba(255, 255, 255, 0.07);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 11px;
+        color: var(--green);
+      }
+      .backup-info {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .backup-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 20px 0;
+      }
+      .backup-file-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px dashed var(--border2);
+        color: var(--muted);
+        transition: all 0.2s;
+        margin-top: 4px;
+      }
+      .backup-file-label:hover {
+        border-color: rgba(56, 189, 248, 0.4);
+        color: var(--blue);
+        background: rgba(56, 189, 248, 0.06);
+      }
+      .backup-file-label.has-file {
+        border-color: rgba(0, 255, 148, 0.35);
+        color: var(--green);
+        background: rgba(0, 255, 148, 0.06);
+      }
+      .backup-import-status {
+        font-size: 12px;
+        margin-top: 8px;
+        line-height: 1.6;
+        min-height: 18px;
+      }
+
+      /* ── PASSPORT ────────────────────────────────── */
+      #passport-card {
+        width: 600px;
+        min-height: 340px;
+        background: linear-gradient(
+          135deg,
+          #0d0d1a 0%,
+          #12122a 60%,
+          #0a1628 100%
+        );
+        border-radius: 20px;
+        padding: 32px;
+        font-family: "Outfit", sans-serif;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+      #passport-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse at 80% 20%,
+            rgba(0, 255, 148, 0.08) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 20% 80%,
+            rgba(56, 189, 248, 0.06) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+      }
+      .pp-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        position: relative;
+      }
+      .pp-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #00ff94, #38bdf8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        box-shadow: 0 8px 24px rgba(0, 255, 148, 0.25);
+      }
+      .pp-identity {
+        flex: 1;
+        min-width: 0;
+      }
+      .pp-name {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 22px;
+        letter-spacing: -0.02em;
+      }
+      .pp-tagline {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-top: 3px;
+      }
+      .pp-logo {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.15);
+        letter-spacing: 0.05em;
+      }
+      .pp-stats-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      .pp-stat {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 12px 10px;
+        text-align: center;
+      }
+      .pp-stat-val {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 1;
+      }
+      .pp-stat-lbl {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .pp-section-lbl {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 8px;
+      }
+      .pp-games-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      .pp-game-cover {
+        width: 52px;
+        height: 70px;
+        border-radius: 7px;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .pp-game-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+      }
+      .pp-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+      }
+      .pp-genres {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .pp-genre {
+        font-size: 10px;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-weight: 700;
+        background: rgba(0, 255, 148, 0.12);
+        color: #00ff94;
+        border: 1px solid rgba(0, 255, 148, 0.2);
+      }
+      .pp-date {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.25);
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* ── LISTS PAGE ──────────────────────────────── */
+      .lists-page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .lists-page-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 22px;
+        margin: 0 0 4px;
+      }
+      .lists-page-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0;
+      }
+      #lists-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+      }
+      .list-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          transform 0.15s;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        overflow: hidden;
+      }
+      .list-card:hover {
+        border-color: var(--border2);
+        transform: translateY(-2px);
+      }
+      .list-card-accent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+      }
+      .list-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .list-card-name {
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .list-card-count {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: "JetBrains Mono", monospace;
+        white-space: nowrap;
+      }
+      .list-card-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      .list-card-covers {
+        display: flex;
+        gap: 5px;
+      }
+      .list-card-cover {
+        width: 40px;
+        height: 54px;
+        border-radius: 6px;
+        background: var(--border2);
+        flex-shrink: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+      .list-card-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .list-card-cover-more {
+        width: 40px;
+        height: 54px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px dashed var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      /* List detail */
+      .list-detail-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .list-back-btn {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--muted);
+        padding: 7px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .list-back-btn:hover {
+        color: var(--text);
+        border-color: var(--border2);
+      }
+      .list-detail-meta {
+        flex: 1;
+        min-width: 0;
+      }
+      .list-detail-name {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 20px;
+      }
+      .list-detail-desc-text {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .list-detail-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .list-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+      }
+      .list-game-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: border-color 0.2s;
+      }
+      .list-game-card:hover {
+        border-color: var(--border2);
+      }
+      .list-game-card-cover {
+        width: 100%;
+        aspect-ratio: 3/4;
+        background: var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        overflow: hidden;
+      }
+      .list-game-card-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .list-game-card-body {
+        padding: 10px 12px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .list-game-card-title {
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .list-game-card-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        border-top: 1px solid var(--border);
+        gap: 8px;
+      }
+      .list-remove-btn {
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 14px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        transition: color 0.15s;
+      }
+      .list-remove-btn:hover {
+        color: #f87171;
+      }
+      .btn-add-to-lib {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: rgba(0, 255, 148, 0.1);
+        border: 1px solid rgba(0, 255, 148, 0.25);
+        color: var(--green);
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .btn-add-to-lib:hover {
+        background: rgba(0, 255, 148, 0.2);
+      }
+      .lists-empty-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+      }
+      #lists-empty,
+      #list-detail-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 60px 24px;
+        color: var(--muted);
+      }
+      #lists-empty h3,
+      #list-detail-empty h3 {
+        color: var(--text);
+        font-size: 18px;
+        margin: 0 0 8px;
+      }
+      #lists-empty p,
+      #list-detail-empty p {
+        font-size: 13px;
+        margin: 0 0 20px;
+      }
+      /* Game search modal (IGDB) for lists */
+      #game-picker-modal {
+        background: var(--modal);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        width: min(540px, 95vw);
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+      #lp-results-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 50vh;
+        overflow-y: auto;
+      }
+      .lp-result-card {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        transition: border-color 0.15s;
+      }
+      .lp-result-card:hover {
+        border-color: var(--border2);
+      }
+      .lp-result-cover {
+        width: 52px;
+        height: 70px;
+        border-radius: 8px;
+        object-fit: cover;
+        flex-shrink: 0;
+        background: var(--border2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        overflow: hidden;
+      }
+      .lp-result-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+      .lp-result-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .lp-result-title {
+        font-weight: 700;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .lp-result-meta {
+        font-size: 11px;
+        color: var(--muted);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .lp-result-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 6px;
+        flex-wrap: wrap;
+      }
+      .lp-in-list-badge {
+        font-size: 10px;
+        color: var(--green);
+        font-weight: 700;
+      }
+      #lp-ac-box {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        z-index: 200;
+      }
+      /* List editor modal */
+      #list-editor-modal {
+        background: var(--modal);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        width: min(480px, 95vw);
+      }
+      .list-color-swatches {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .list-color-swatch {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition:
+          transform 0.15s,
+          border-color 0.15s;
+      }
+      .list-color-swatch.active,
+      .list-color-swatch:hover {
+        transform: scale(1.2);
+        border-color: #fff;
+      }
+
       #stats-page {
         display: none;
         padding: 24px;
-        max-width: 1100px;
       }
       #stats-page.active {
         display: block;
@@ -2126,7 +2740,6 @@
       #cal-page {
         display: none;
         padding: 24px;
-        max-width: 1100px;
       }
 
       .cal-header {
@@ -2809,6 +3422,9 @@
       <button class="page-tab active" data-page="library">
         <span class="page-tab-icon">🎮</span> Biblioteca
       </button>
+      <button class="page-tab" data-page="lists">
+        <span class="page-tab-icon">📋</span> Listas
+      </button>
       <button class="page-tab" data-page="stats">
         <span class="page-tab-icon">📊</span> Estatísticas
       </button>
@@ -2907,130 +3523,196 @@
       <span id="year-filter-lbl">📅 Zerado em:</span>
     </div>
 
-    <!-- LIBRARY PAGE -->
-    <div id="library-page">
-      <div id="game-grid"></div>
-      <div id="empty-state">
-        <div class="empty-icon">🎮</div>
-        <h3>Sua biblioteca está vazia</h3>
-        <p>
-          Adicione seus jogos para acompanhar progresso, notas e horas jogadas.
-        </p>
-        <button id="empty-cta">+ Adicionar Primeiro Jogo</button>
-      </div>
-    </div>
-    <!-- /library-page -->
-
-    <!-- STATS PAGE -->
-    <div id="stats-page">
-      <!-- KPIs -->
-      <div class="kpi-row" id="kpi-row"></div>
-
-      <div class="charts-grid">
-        <!-- Status Donut -->
-        <div class="chart-card" id="chart-status-card">
-          <div>
-            <div class="chart-title">Distribuição por Status</div>
-            <div class="chart-sub">Como está sua biblioteca</div>
-          </div>
-          <div
-            style="display: flex; align-items: center; gap: 20px; min-width: 0"
-          >
-            <canvas
-              id="chart-donut"
-              width="130"
-              height="130"
-              style="flex-shrink: 0"
-            ></canvas>
-            <div class="donut-legend" id="donut-legend"></div>
-          </div>
-        </div>
-
-        <!-- Rating distribution -->
-        <div class="chart-card" id="chart-rating-card">
-          <div>
-            <div class="chart-title">Distribuição de Notas</div>
-            <div class="chart-sub">Quantos jogos por estrela</div>
-          </div>
-          <canvas id="chart-rating" height="130"></canvas>
-        </div>
-
-        <!-- Hours by platform -->
-        <div class="chart-card">
-          <div>
-            <div class="chart-title">Horas por Plataforma</div>
-            <div class="chart-sub">Onde você mais joga</div>
-          </div>
-          <div
-            id="chart-platforms"
-            style="display: flex; flex-direction: column; gap: 10px"
-          ></div>
-        </div>
-
-        <!-- Top genres -->
-        <div class="chart-card">
-          <div>
-            <div class="chart-title">Gêneros Favoritos</div>
-            <div class="chart-sub">Baseado nos seus jogos</div>
-          </div>
-          <div
-            id="chart-genres"
-            style="display: flex; flex-direction: column; gap: 10px"
-          ></div>
-        </div>
-
-        <!-- Games over time (full width) -->
-        <div class="chart-card full">
-          <div>
-            <div class="chart-title">Jogos Adicionados</div>
-            <div class="chart-sub">Últimos 12 meses</div>
-          </div>
-          <canvas id="chart-timeline" height="120"></canvas>
-        </div>
-
-        <!-- Top by hours -->
-        <div class="chart-card">
-          <div>
-            <div class="chart-title">Mais Horas Jogadas</div>
-            <div class="chart-sub">Top 5 por tempo</div>
-          </div>
-          <div id="chart-top-hours"></div>
-        </div>
-
-        <!-- Top rated -->
-        <div class="chart-card">
-          <div>
-            <div class="chart-title">Melhores Notas</div>
-            <div class="chart-sub">Top 5 avaliados</div>
-          </div>
-          <div id="chart-top-rated"></div>
-        </div>
-
-        <!-- Zerados por Ano (full width) -->
-        <div class="chart-card full" id="chart-year-card">
-          <div>
-            <div class="chart-title">🏆 Zerados por Ano</div>
-            <div class="chart-sub">Quantos jogos você zerou em cada ano</div>
-          </div>
-          <canvas id="chart-years" height="120"></canvas>
+    <div id="page-content">
+      <!-- LIBRARY PAGE -->
+      <div id="library-page">
+        <div id="game-grid"></div>
+        <div id="empty-state">
+          <div class="empty-icon">🎮</div>
+          <h3>Sua biblioteca está vazia</h3>
+          <p>
+            Adicione seus jogos para acompanhar progresso, notas e horas
+            jogadas.
+          </p>
+          <button id="empty-cta">+ Adicionar Primeiro Jogo</button>
         </div>
       </div>
-    </div>
-    <!-- /stats-page -->
+      <!-- /library-page -->
 
-    <!-- CALENDAR PAGE -->
-    <div id="cal-page">
-      <div class="cal-header">
-        <div class="cal-title">📅 Lançamentos</div>
-        <div class="cal-nav">
-          <button class="cal-nav-btn" id="cal-prev">‹</button>
-          <div class="cal-month-label" id="cal-month-label">—</div>
-          <button class="cal-nav-btn" id="cal-next">›</button>
+      <!-- STATS PAGE -->
+      <div id="stats-page">
+        <!-- KPIs -->
+        <div class="kpi-row" id="kpi-row"></div>
+
+        <div class="charts-grid">
+          <!-- Status Donut -->
+          <div class="chart-card" id="chart-status-card">
+            <div>
+              <div class="chart-title">Distribuição por Status</div>
+              <div class="chart-sub">Como está sua biblioteca</div>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                min-width: 0;
+              "
+            >
+              <canvas
+                id="chart-donut"
+                width="130"
+                height="130"
+                style="flex-shrink: 0"
+              ></canvas>
+              <div class="donut-legend" id="donut-legend"></div>
+            </div>
+          </div>
+
+          <!-- Rating distribution -->
+          <div class="chart-card" id="chart-rating-card">
+            <div>
+              <div class="chart-title">Distribuição de Notas</div>
+              <div class="chart-sub">Quantos jogos por estrela</div>
+            </div>
+            <canvas id="chart-rating" height="130"></canvas>
+          </div>
+
+          <!-- Hours by platform -->
+          <div class="chart-card">
+            <div>
+              <div class="chart-title">Horas por Plataforma</div>
+              <div class="chart-sub">Onde você mais joga</div>
+            </div>
+            <div
+              id="chart-platforms"
+              style="display: flex; flex-direction: column; gap: 10px"
+            ></div>
+          </div>
+
+          <!-- Top genres -->
+          <div class="chart-card">
+            <div>
+              <div class="chart-title">Gêneros Favoritos</div>
+              <div class="chart-sub">Baseado nos seus jogos</div>
+            </div>
+            <div
+              id="chart-genres"
+              style="display: flex; flex-direction: column; gap: 10px"
+            ></div>
+          </div>
+
+          <!-- Games over time (full width) -->
+          <div class="chart-card full">
+            <div>
+              <div class="chart-title">Jogos Adicionados</div>
+              <div class="chart-sub">Últimos 12 meses</div>
+            </div>
+            <canvas id="chart-timeline" height="120"></canvas>
+          </div>
+
+          <!-- Top by hours -->
+          <div class="chart-card">
+            <div>
+              <div class="chart-title">Mais Horas Jogadas</div>
+              <div class="chart-sub">Top 5 por tempo</div>
+            </div>
+            <div id="chart-top-hours"></div>
+          </div>
+
+          <!-- Top rated -->
+          <div class="chart-card">
+            <div>
+              <div class="chart-title">Melhores Notas</div>
+              <div class="chart-sub">Top 5 avaliados</div>
+            </div>
+            <div id="chart-top-rated"></div>
+          </div>
+
+          <!-- Zerados por Ano (full width) -->
+          <div class="chart-card full" id="chart-year-card">
+            <div>
+              <div class="chart-title">🏆 Zerados por Ano</div>
+              <div class="chart-sub">Quantos jogos você zerou em cada ano</div>
+            </div>
+            <canvas id="chart-years" height="120"></canvas>
+          </div>
         </div>
-        <div class="cal-platform-filter" id="cal-plat-filter"></div>
       </div>
-      <div id="cal-body"></div>
+      <!-- /stats-page -->
+
+      <!-- CALENDAR PAGE -->
+      <div id="cal-page">
+        <div class="cal-header">
+          <div class="cal-title">📅 Lançamentos</div>
+          <div class="cal-nav">
+            <button class="cal-nav-btn" id="cal-prev">‹</button>
+            <div class="cal-month-label" id="cal-month-label">—</div>
+            <button class="cal-nav-btn" id="cal-next">›</button>
+          </div>
+          <div class="cal-platform-filter" id="cal-plat-filter"></div>
+        </div>
+        <div id="cal-body"></div>
+      </div>
+      <!-- /cal-page -->
+
+      <!-- LISTS PAGE -->
+      <div id="lists-page" style="display: none; padding: 24px">
+        <!-- Lists grid view -->
+        <div id="lists-grid-view">
+          <div class="lists-page-header">
+            <div>
+              <h2 class="lists-page-title">📋 Minhas Listas</h2>
+              <p class="lists-page-sub">
+                Organize seus jogos em coleções personalizadas
+              </p>
+            </div>
+            <button class="btn-primary" id="list-new-btn">+ Nova Lista</button>
+          </div>
+          <div id="lists-grid"></div>
+          <div id="lists-empty" style="display: none">
+            <div class="lists-empty-icon">📋</div>
+            <h3>Nenhuma lista ainda</h3>
+            <p>
+              Crie sua primeira lista para organizar jogos em coleções
+              temáticas.
+            </p>
+            <button class="btn-primary" onclick="openListEditor()">
+              + Criar Lista
+            </button>
+          </div>
+        </div>
+
+        <!-- List detail view -->
+        <div id="lists-detail-view" style="display: none">
+          <div class="list-detail-header">
+            <button class="list-back-btn" id="list-back-btn">← Listas</button>
+            <div class="list-detail-meta" id="list-detail-meta"></div>
+            <div class="list-detail-actions">
+              <button class="btn-ghost" id="list-edit-btn">✏️ Editar</button>
+              <button
+                class="btn-ghost"
+                id="list-delete-btn"
+                style="color: #f87171; border-color: rgba(248, 113, 113, 0.25)"
+              >
+                🗑 Excluir
+              </button>
+              <button class="btn-primary" id="list-add-game-btn">
+                + Adicionar Jogo
+              </button>
+            </div>
+          </div>
+          <div id="list-detail-grid" class="list-detail-grid"></div>
+          <div id="list-detail-empty" style="display: none">
+            <div class="lists-empty-icon">🎮</div>
+            <h3>Lista vazia</h3>
+            <p>Clique em "Adicionar Jogo" para colocar jogos aqui.</p>
+          </div>
+        </div>
+      </div>
+      <!-- /lists-page -->
     </div>
+    <!-- /page-content -->
 
     <!-- CAL DAY MODAL -->
     <div class="overlay" id="cal-day-overlay">
@@ -3391,6 +4073,8 @@
             🎮 Integração IGDB
           </button>
           <button class="cfg-tab" data-cfg="tags">🏷️ Gerenciar Tags</button>
+          <button class="cfg-tab" data-cfg="backup">📤 Backup</button>
+          <button class="cfg-tab" data-cfg="passport">🪪 Passport</button>
         </div>
 
         <!-- ── IGDB panel ── -->
@@ -3471,6 +4155,175 @@
           <div class="cfg-actions">
             <button class="btn-primary" id="tagmgr-done">Fechar</button>
           </div>
+        </div>
+
+        <!-- ── Backup panel ── -->
+        <div class="cfg-panel" id="cfg-backup">
+          <div class="backup-section">
+            <div class="backup-section-title">⬆️ Exportar Biblioteca</div>
+            <p class="backup-desc">
+              Salva todos os seus jogos, tags e configurações em um arquivo
+              <code>.json</code> no seu computador.
+            </p>
+            <div class="backup-info" id="backup-info-export"></div>
+            <button
+              class="btn-primary"
+              id="backup-export-btn"
+              style="margin-top: 12px"
+            >
+              ⬇️ Baixar backup.json
+            </button>
+          </div>
+
+          <div class="backup-divider"></div>
+
+          <div class="backup-section">
+            <div class="backup-section-title">⬇️ Importar Biblioteca</div>
+            <p class="backup-desc">
+              Restaura a biblioteca a partir de um arquivo
+              <code>.json</code> exportado anteriormente.
+              <strong style="color: var(--yellow)"
+                >⚠️ Os dados atuais serão substituídos.</strong
+              >
+            </p>
+            <label class="backup-file-label" id="backup-file-label">
+              <input
+                type="file"
+                id="backup-import-input"
+                accept=".json"
+                style="display: none"
+              />
+              📂 Escolher arquivo .json
+            </label>
+            <div class="backup-import-status" id="backup-import-status"></div>
+            <div class="cfg-actions" style="margin-top: 12px">
+              <button
+                class="btn-ghost"
+                id="backup-cancel-import"
+                style="display: none"
+              >
+                Cancelar
+              </button>
+              <button
+                class="btn-primary"
+                id="backup-import-btn"
+                style="display: none"
+              >
+                ✅ Confirmar Importação
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Passport panel ── -->
+        <div class="cfg-panel" id="cfg-passport">
+          <p class="backup-desc" style="margin-bottom: 16px">
+            Seu card de jogador — compartilhe sua jornada. Clique em
+            <strong>Gerar</strong> para criar e depois em
+            <strong>Baixar PNG</strong> para salvar.
+          </p>
+          <div class="cfg-actions" style="margin-bottom: 16px">
+            <button class="btn-primary" id="passport-generate-btn">
+              🎨 Gerar Passport
+            </button>
+            <button
+              class="btn-ghost"
+              id="passport-download-btn"
+              style="display: none"
+            >
+              ⬇️ Baixar PNG
+            </button>
+          </div>
+          <div
+            id="passport-preview"
+            style="
+              display: none;
+              overflow: auto;
+              border-radius: 12px;
+              border: 1px solid var(--border);
+            "
+          ></div>
+        </div>
+      </div>
+      <!-- /settings-modal -->
+    </div>
+    <!-- /settings-overlay -->
+
+    <!-- ══ LIST EDITOR MODAL ══════════════════════════════════════ -->
+    <div class="overlay" id="list-editor-overlay">
+      <div id="list-editor-modal">
+        <div class="modal-header">
+          <h3 id="list-editor-title">Nova Lista</h3>
+          <button class="modal-close" id="list-editor-close">✕</button>
+        </div>
+        <div class="form-field">
+          <label>Nome da Lista <span style="color: #f87171">*</span></label>
+          <input
+            type="text"
+            class="form-input"
+            id="list-name-input"
+            placeholder="Ex: Jogos de Perseguição, Co-op com amigos..."
+            maxlength="48"
+          />
+        </div>
+        <div class="form-field">
+          <label
+            >Descrição
+            <span style="color: var(--muted)">(opcional)</span></label
+          >
+          <input
+            type="text"
+            class="form-input"
+            id="list-desc-input"
+            placeholder="Uma breve descrição..."
+            maxlength="120"
+          />
+        </div>
+        <div class="form-field">
+          <label>Cor de Destaque</label>
+          <div id="list-color-swatches" class="list-color-swatches"></div>
+        </div>
+        <div class="cfg-actions">
+          <button class="btn-ghost" id="list-editor-cancel">Cancelar</button>
+          <button class="btn-primary" id="list-editor-save">
+            Salvar Lista
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LIST GAME SEARCH MODAL (IGDB) ═════════════════════════ -->
+    <div class="overlay" id="game-picker-overlay">
+      <div id="game-picker-modal">
+        <div class="modal-header">
+          <h3>Adicionar Jogo à Lista</h3>
+          <button class="modal-close" id="game-picker-close">✕</button>
+        </div>
+        <div style="position: relative; margin-bottom: 14px">
+          <span
+            id="lp-search-icon"
+            style="
+              position: absolute;
+              left: 12px;
+              top: 50%;
+              transform: translateY(-50%);
+              pointer-events: none;
+            "
+            >🔍</span
+          >
+          <input
+            type="text"
+            class="form-input"
+            id="game-picker-search"
+            placeholder="Buscar jogo no IGDB..."
+            style="padding-left: 36px"
+            autocomplete="off"
+          />
+          <div id="lp-ac-box" class="ac-box" style="display: none"></div>
+        </div>
+        <div id="lp-results-list"></div>
+        <div class="cfg-actions">
+          <button class="btn-ghost" id="game-picker-cancel">Fechar</button>
         </div>
       </div>
     </div>
@@ -4076,10 +4929,12 @@
         const libPage = document.getElementById("library-page");
         const statsPageEl = document.getElementById("stats-page");
         const calPageEl = document.getElementById("cal-page");
+        const listsPageEl = document.getElementById("lists-page");
         if (currentPage === "stats") {
           libPage.style.display = "none";
           statsPageEl.style.display = "block";
           calPageEl.style.display = "none";
+          listsPageEl.style.display = "none";
           document.getElementById("filter-row").style.display = "none";
           document.getElementById("sort-row").style.display = "none";
           document.getElementById("tag-filter-row").style.display = "none";
@@ -4091,6 +4946,7 @@
           libPage.style.display = "none";
           statsPageEl.style.display = "none";
           calPageEl.style.display = "block";
+          listsPageEl.style.display = "none";
           document.getElementById("filter-row").style.display = "none";
           document.getElementById("sort-row").style.display = "none";
           document.getElementById("tag-filter-row").style.display = "none";
@@ -4098,9 +4954,22 @@
           renderCalendar();
           return;
         }
+        if (currentPage === "lists") {
+          libPage.style.display = "none";
+          statsPageEl.style.display = "none";
+          calPageEl.style.display = "none";
+          listsPageEl.style.display = "block";
+          document.getElementById("filter-row").style.display = "none";
+          document.getElementById("sort-row").style.display = "none";
+          document.getElementById("tag-filter-row").style.display = "none";
+          document.getElementById("year-filter-row").style.display = "none";
+          renderListsPage();
+          return;
+        }
         libPage.style.display = "block";
         statsPageEl.style.display = "none";
         calPageEl.style.display = "none";
+        listsPageEl.style.display = "none";
         document.getElementById("filter-row").style.display = "flex";
         document.getElementById("sort-row").style.display = "flex";
         document.getElementById("tag-filter-row").style.display = "";
@@ -5892,8 +6761,789 @@
       }
 
       // ═══════════════════════════════════════════════════
-      //  INIT
+      //  BACKUP — EXPORT / IMPORT
       // ═══════════════════════════════════════════════════
+
+      function openBackupPanel() {
+        // Refresh export info
+        const info = document.getElementById("backup-info-export");
+        if (info) {
+          const gCount = games.length;
+          const tCount = globalTags.length;
+          const sizeKb = (
+            JSON.stringify({ games, tags: globalTags }).length / 1024
+          ).toFixed(1);
+          info.textContent = `📦 ${gCount} jogo(s) · ${tCount} tag(s) · ~${sizeKb} KB`;
+        }
+        // Reset import state
+        resetImportState();
+      }
+
+      function resetImportState() {
+        const lbl = document.getElementById("backup-file-label");
+        const status = document.getElementById("backup-import-status");
+        const cancelBtn = document.getElementById("backup-cancel-import");
+        const importBtn = document.getElementById("backup-import-btn");
+        const input = document.getElementById("backup-import-input");
+        if (lbl) {
+          lbl.classList.remove("has-file");
+          lbl.childNodes[lbl.childNodes.length - 1].textContent =
+            " 📂 Escolher arquivo .json";
+        }
+        if (status) status.innerHTML = "";
+        if (cancelBtn) cancelBtn.style.display = "none";
+        if (importBtn) importBtn.style.display = "none";
+        if (input) input.value = "";
+      }
+
+      // ── Export ──────────────────────────────────────
+      document.getElementById("backup-export-btn").onclick = () => {
+        const payload = {
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          games,
+          tags: globalTags,
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const date = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `gamevault-backup-${date}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("✅ Backup exportado com sucesso!");
+      };
+
+      // ── Import — file picker ─────────────────────────
+      document.getElementById("backup-import-input").onchange = function () {
+        const file = this.files[0];
+        if (!file) return;
+        const lbl = document.getElementById("backup-file-label");
+        const status = document.getElementById("backup-import-status");
+        const cancelBtn = document.getElementById("backup-cancel-import");
+        const importBtn = document.getElementById("backup-import-btn");
+
+        lbl.classList.add("has-file");
+        // Update label text node
+        lbl.childNodes[lbl.childNodes.length - 1].textContent =
+          ` ✅ ${file.name}`;
+        status.innerHTML =
+          '<span style="color:var(--muted)">Lendo arquivo...</span>';
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (!data.games || !Array.isArray(data.games))
+              throw new Error(
+                'Formato inválido: campo "games" não encontrado.',
+              );
+            const gCount = data.games.length;
+            const tCount = Array.isArray(data.tags) ? data.tags.length : 0;
+            const exported = data.exportedAt
+              ? new Date(data.exportedAt).toLocaleDateString("pt-BR")
+              : "—";
+            status.innerHTML = `
+        <span style="color:var(--green)">✔ Arquivo válido</span>
+        <span style="color:var(--muted);margin-left:10px">${gCount} jogos · ${tCount} tags · exportado em ${exported}</span>
+        <br><span style="color:var(--yellow);font-size:11px">⚠️ Os ${games.length} jogos atuais serão substituídos.</span>`;
+            cancelBtn.style.display = "";
+            importBtn.style.display = "";
+            // Store parsed data for confirmation step
+            importBtn._pendingData = data;
+          } catch (err) {
+            status.innerHTML = `<span style="color:#f87171">❌ Erro: ${esc(err.message)}</span>`;
+            lbl.classList.remove("has-file");
+            lbl.childNodes[lbl.childNodes.length - 1].textContent =
+              " 📂 Escolher arquivo .json";
+          }
+        };
+        reader.readAsText(file);
+      };
+
+      // ── Import — confirm ────────────────────────────
+      document.getElementById("backup-import-btn").onclick = function () {
+        const data = this._pendingData;
+        if (!data) return;
+        games = data.games;
+        saveGames(games);
+        if (Array.isArray(data.tags) && data.tags.length) {
+          globalTags = data.tags;
+          saveGlobalTags();
+        }
+        closeSettings();
+        render();
+        showToast(`✅ ${games.length} jogos importados com sucesso!`);
+      };
+
+      document.getElementById("backup-cancel-import").onclick =
+        resetImportState;
+
+      // Trigger openBackupPanel when backup tab is clicked
+      document.querySelectorAll(".cfg-tab").forEach((btn) => {
+        if (btn.dataset.cfg === "backup") {
+          btn.addEventListener("click", openBackupPanel);
+        }
+      });
+
+      // ═══════════════════════════════════════════════════
+      //  GAMING PASSPORT
+      // ═══════════════════════════════════════════════════
+
+      function buildPassportData() {
+        const totalHours = games.reduce(
+          (s, g) => s + (parseFloat(g.hours) || 0),
+          0,
+        );
+        const completed = games.filter((g) => g.status === "completed");
+        const rated = games.filter((g) => g.rating > 0);
+        const avgRating = rated.length
+          ? (rated.reduce((s, g) => s + g.rating, 0) / rated.length).toFixed(1)
+          : "—";
+        const allGenres = [];
+        games.forEach((g) => {
+          (g.igdb?.genres || []).forEach((t) =>
+            allGenres.push(typeof t === "string" ? t : t),
+          );
+          (g.tags || []).forEach((t) => allGenres.push(t));
+        });
+        const genreFreq = allGenres.reduce((a, t) => {
+          a[t] = (a[t] || 0) + 1;
+          return a;
+        }, {});
+        const topGenres = Object.entries(genreFreq)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3)
+          .map((e) => e[0]);
+        // recent completed or any games for covers
+        const recentGames = [...completed]
+          .sort(
+            (a, b) =>
+              (b.dateEnd || b.createdAt || 0) - (a.dateEnd || a.createdAt || 0),
+          )
+          .slice(0, 6);
+        if (recentGames.length < 6) {
+          const others = games
+            .filter((g) => g.status !== "completed")
+            .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          for (const g of others) {
+            if (recentGames.length >= 6) break;
+            if (!recentGames.find((x) => x.id === g.id)) recentGames.push(g);
+          }
+        }
+        return {
+          totalHours,
+          completed: completed.length,
+          total: games.length,
+          avgRating,
+          topGenres,
+          recentGames,
+          rated: rated.length,
+        };
+      }
+
+      function renderPassportCard(preview) {
+        if (!games.length) {
+          showToast("⚠️ Adicione jogos antes de gerar o Passport.");
+          return;
+        }
+        const d = buildPassportData();
+        const hoursStr =
+          d.totalHours % 1 === 0
+            ? d.totalHours + "h"
+            : d.totalHours.toFixed(1) + "h";
+        const dateStr = new Date()
+          .toLocaleDateString("pt-BR", { month: "short", year: "numeric" })
+          .toUpperCase();
+
+        // Build covers HTML — use real img tags; html2canvas will capture them
+        const coversHtml = d.recentGames
+          .map((g) => {
+            if (g.igdb?.cover_url) {
+              return `<div class="pp-game-cover" style="overflow:hidden"><img src="${g.igdb.cover_url}" crossorigin="anonymous"></div>`;
+            }
+            const c = COLORS[g.colorIdx % COLORS.length];
+            return `<div class="pp-game-cover" style="background:${c.bg};font-size:20px">${g.title[0].toUpperCase()}</div>`;
+          })
+          .join("");
+
+        const genresHtml = d.topGenres
+          .map((g) => `<span class="pp-genre">${esc(g)}</span>`)
+          .join("");
+
+        preview.innerHTML = `
+  <div id="passport-card">
+    <div class="pp-header">
+      <div class="pp-avatar">🎮</div>
+      <div class="pp-identity">
+        <div class="pp-name">Gaming Passport</div>
+        <div class="pp-tagline">${d.total} jogo${d.total !== 1 ? "s" : ""} na biblioteca · ${d.completed} zerado${d.completed !== 1 ? "s" : ""}</div>
+      </div>
+      <div class="pp-logo">GAMEVAULT</div>
+    </div>
+
+    <div class="pp-stats-row">
+      <div class="pp-stat">
+        <div class="pp-stat-val" style="color:#00FF94">${hoursStr}</div>
+        <div class="pp-stat-lbl">Horas</div>
+      </div>
+      <div class="pp-stat">
+        <div class="pp-stat-val" style="color:#38BDF8">${d.completed}</div>
+        <div class="pp-stat-lbl">Zerados</div>
+      </div>
+      <div class="pp-stat">
+        <div class="pp-stat-val" style="color:#FCD34D">${d.avgRating}${d.avgRating !== "—" ? "★" : ""}</div>
+        <div class="pp-stat-lbl">Nota Média</div>
+      </div>
+      <div class="pp-stat">
+        <div class="pp-stat-val" style="color:#A78BFA">${d.total}</div>
+        <div class="pp-stat-lbl">Total</div>
+      </div>
+    </div>
+
+    ${
+      d.recentGames.length
+        ? `
+    <div class="pp-section-lbl">Jogos Recentes</div>
+    <div class="pp-games-row">${coversHtml}</div>
+    `
+        : ""
+    }
+
+    <div class="pp-footer">
+      <div class="pp-genres">${genresHtml}</div>
+      <div class="pp-date">${dateStr}</div>
+    </div>
+  </div>`;
+      }
+
+      document.getElementById("passport-generate-btn").onclick = () => {
+        const preview = document.getElementById("passport-preview");
+        preview.style.display = "block";
+        renderPassportCard(preview);
+        document.getElementById("passport-download-btn").style.display = "";
+      };
+
+      document.getElementById("passport-download-btn").onclick = async () => {
+        const card = document.getElementById("passport-card");
+        if (!card) return;
+        const btn = document.getElementById("passport-download-btn");
+        btn.textContent = "⏳ Gerando...";
+        btn.disabled = true;
+        try {
+          const canvas = await html2canvas(card, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: null,
+            logging: false,
+          });
+          const a = document.createElement("a");
+          a.download = `gamevault-passport-${new Date().toISOString().slice(0, 10)}.png`;
+          a.href = canvas.toDataURL("image/png");
+          a.click();
+          showToast("✅ Passport salvo como PNG!");
+        } catch (e) {
+          showToast("❌ Erro ao gerar PNG. Tente novamente.");
+          console.error(e);
+        } finally {
+          btn.textContent = "⬇️ Baixar PNG";
+          btn.disabled = false;
+        }
+      };
+
+      // Trigger render on tab click
+      document.querySelectorAll(".cfg-tab").forEach((btn) => {
+        if (btn.dataset.cfg === "passport") {
+          btn.addEventListener("click", () => {
+            // Reset so user presses Generate each time (fresh data)
+            document.getElementById("passport-preview").style.display = "none";
+            document.getElementById("passport-download-btn").style.display =
+              "none";
+          });
+        }
+      });
+
+      // ═══════════════════════════════════════════════════
+      //  LISTS ENGINE
+      // ═══════════════════════════════════════════════════
+
+      const LISTS_KEY = "gv_lists";
+      const LIST_COLORS = [
+        "#00FF94",
+        "#38BDF8",
+        "#A78BFA",
+        "#FB923C",
+        "#F472B6",
+        "#FCD34D",
+        "#34D399",
+        "#F87171",
+      ];
+
+      function loadLists() {
+        try {
+          return JSON.parse(localStorage.getItem(LISTS_KEY)) || [];
+        } catch {
+          return [];
+        }
+      }
+      function saveLists(a) {
+        localStorage.setItem(LISTS_KEY, JSON.stringify(a));
+      }
+
+      let lists = loadLists();
+      let currentListId = null;
+      let listEditorId = null;
+      let listColorIdx = 0;
+      let gamePicker_listId = null;
+
+      // Each list: { id, name, description, color, entries: [{igdbId, igdbData}], createdAt }
+      // igdbData: { id, name, cover_url, summary, genres[], rating, year, developer, platforms[] }
+
+      // ── helpers ─────────────────────────────────────────────────
+      function listEntryKey(entry) {
+        return String(entry.igdbId);
+      }
+
+      function listHasEntry(list, igdbId) {
+        return list.entries.some((e) => String(e.igdbId) === String(igdbId));
+      }
+
+      // ── Page routing ─────────────────────────────────────────────
+      function renderListsPage() {
+        if (currentListId) renderListDetail(currentListId);
+        else renderListsGrid();
+      }
+
+      // ── Lists grid ───────────────────────────────────────────────
+      function renderListsGrid() {
+        document.getElementById("lists-grid-view").style.display = "block";
+        document.getElementById("lists-detail-view").style.display = "none";
+        const grid = document.getElementById("lists-grid");
+        const empty = document.getElementById("lists-empty");
+        if (!lists.length) {
+          grid.innerHTML = "";
+          grid.style.display = "none";
+          empty.style.display = "flex";
+          return;
+        }
+        empty.style.display = "none";
+        grid.style.display = "grid";
+        grid.innerHTML = lists
+          .map((l) => {
+            const entries = l.entries || [];
+            const covers = entries
+              .slice(0, 4)
+              .map((e) => {
+                if (e.igdbData?.cover_url)
+                  return `<div class="list-card-cover"><img src="${e.igdbData.cover_url}"></div>`;
+                return `<div class="list-card-cover">${esc((e.igdbData?.name || "?")[0])}</div>`;
+              })
+              .join("");
+            const extra =
+              entries.length > 4
+                ? `<div class="list-card-cover-more">+${entries.length - 4}</div>`
+                : "";
+            return `<div class="list-card" onclick="openListDetail('${l.id}')">
+      <div class="list-card-accent" style="background:${l.color || LIST_COLORS[0]}"></div>
+      <div class="list-card-top">
+        <div class="list-card-name">${esc(l.name)}</div>
+        <div class="list-card-count">${entries.length} jogo${entries.length !== 1 ? "s" : ""}</div>
+      </div>
+      ${l.description ? `<div class="list-card-desc">${esc(l.description)}</div>` : ""}
+      ${entries.length ? `<div class="list-card-covers">${covers}${extra}</div>` : ""}
+    </div>`;
+          })
+          .join("");
+      }
+
+      // ── List detail ──────────────────────────────────────────────
+      function renderListDetail(listId) {
+        const l = lists.find((x) => x.id === listId);
+        if (!l) {
+          currentListId = null;
+          renderListsGrid();
+          return;
+        }
+        document.getElementById("lists-grid-view").style.display = "none";
+        document.getElementById("lists-detail-view").style.display = "block";
+        document.getElementById("list-detail-meta").innerHTML = `
+    <div class="list-detail-name" style="border-left:3px solid ${l.color || LIST_COLORS[0]};padding-left:10px">${esc(l.name)}</div>
+    ${l.description ? `<div class="list-detail-desc-text">${esc(l.description)}</div>` : ""}`;
+
+        const entries = l.entries || [];
+        const grid = document.getElementById("list-detail-grid");
+        const empty = document.getElementById("list-detail-empty");
+
+        if (!entries.length) {
+          grid.innerHTML = "";
+          grid.style.display = "none";
+          empty.style.display = "flex";
+          return;
+        }
+        empty.style.display = "none";
+        grid.style.display = "grid";
+
+        grid.innerHTML = entries
+          .map((entry) => {
+            const d = entry.igdbData || {};
+            const name = esc(d.name || "Jogo desconhecido");
+            const year = d.year ? `<span>${d.year}</span>` : "";
+            const plats = (d.platforms || [])
+              .slice(0, 2)
+              .map((p) => esc(p))
+              .join(", ");
+            const igdbScore = d.rating
+              ? `<span style="color:var(--yellow)">⭐ ${(d.rating / 20).toFixed(1)}</span>`
+              : "";
+            const coverHtml = d.cover_url
+              ? `<img src="${d.cover_url}" style="width:100%;height:100%;object-fit:cover">`
+              : `<span style="font-size:32px">${(d.name || "?")[0].toUpperCase()}</span>`;
+            const inLib = games.some(
+              (g) => g.igdb?.id && String(g.igdb.id) === String(entry.igdbId),
+            );
+
+            return `<div class="list-game-card">
+      <div class="list-game-card-cover">${coverHtml}</div>
+      <div class="list-game-card-body">
+        <div class="list-game-card-title" title="${name}">${name}</div>
+        <div class="lp-result-meta">${year}${plats ? `<span>${plats}</span>` : ""}${igdbScore}</div>
+      </div>
+      <div class="list-game-card-foot">
+        ${
+          inLib
+            ? `<span style="font-size:10px;color:var(--green);font-weight:700">✔ Na biblioteca</span>`
+            : `<button class="btn-add-to-lib" onclick="addIgdbEntryToLib('${l.id}',${entry.igdbId})">＋ Biblioteca</button>`
+        }
+        <button class="list-remove-btn" title="Remover da lista" onclick="removeEntryFromList('${l.id}',${entry.igdbId})">✕</button>
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function openListDetail(listId) {
+        currentListId = listId;
+        renderListDetail(listId);
+      }
+
+      document.getElementById("list-back-btn").onclick = () => {
+        currentListId = null;
+        renderListsGrid();
+      };
+
+      // ── Entry operations ─────────────────────────────────────────
+      function removeEntryFromList(listId, igdbId) {
+        const l = lists.find((x) => x.id === listId);
+        if (!l) return;
+        l.entries = (l.entries || []).filter(
+          (e) => String(e.igdbId) !== String(igdbId),
+        );
+        saveLists(lists);
+        renderListDetail(listId);
+      }
+
+      function addIgdbEntryToLib(listId, igdbId) {
+        // Find the entry to get its igdbData, then open the add modal pre-filled
+        const l = lists.find((x) => x.id === listId);
+        if (!l) return;
+        const entry = (l.entries || []).find(
+          (e) => String(e.igdbId) === String(igdbId),
+        );
+        if (!entry?.igdbData) return;
+        // Pre-fill modal with IGDB data (same as picking from autocomplete)
+        const d = entry.igdbData;
+        openAdd();
+        // small delay to let modal open first
+        setTimeout(() => {
+          document.getElementById("title").value = d.name || "";
+          showIGDBPreview(d);
+        }, 50);
+      }
+
+      function deleteList(listId) {
+        lists = lists.filter((l) => l.id !== listId);
+        saveLists(lists);
+        currentListId = null;
+        renderListsGrid();
+        showToast("🗑 Lista removida.");
+      }
+
+      // ── List editor modal ────────────────────────────────────────
+      function openListEditor(listId = null) {
+        listEditorId = listId;
+        const l = listId ? lists.find((x) => x.id === listId) : null;
+        document.getElementById("list-editor-title").textContent = l
+          ? "Editar Lista"
+          : "Nova Lista";
+        document.getElementById("list-name-input").value = l ? l.name : "";
+        document.getElementById("list-desc-input").value = l
+          ? l.description || ""
+          : "";
+        listColorIdx = l ? Math.max(0, LIST_COLORS.indexOf(l.color)) : 0;
+        buildListColorSwatches();
+        document.getElementById("list-editor-overlay").classList.add("open");
+      }
+
+      function buildListColorSwatches() {
+        document.getElementById("list-color-swatches").innerHTML =
+          LIST_COLORS.map(
+            (c, i) =>
+              `<div class="list-color-swatch${i === listColorIdx ? " active" : ""}" style="background:${c}" onclick="pickListColor(${i})"></div>`,
+          ).join("");
+      }
+      function pickListColor(i) {
+        listColorIdx = i;
+        buildListColorSwatches();
+      }
+      function closeListEditor() {
+        document.getElementById("list-editor-overlay").classList.remove("open");
+      }
+
+      document.getElementById("list-editor-close").onclick = closeListEditor;
+      document.getElementById("list-editor-cancel").onclick = closeListEditor;
+      document.getElementById("list-new-btn").onclick = () => openListEditor();
+
+      document.getElementById("list-editor-save").onclick = () => {
+        const name = document.getElementById("list-name-input").value.trim();
+        if (!name) {
+          showToast("⚠️ Dê um nome à lista.");
+          return;
+        }
+        const desc = document.getElementById("list-desc-input").value.trim();
+        const color = LIST_COLORS[listColorIdx];
+        if (listEditorId) {
+          const l = lists.find((x) => x.id === listEditorId);
+          if (l) {
+            l.name = name;
+            l.description = desc;
+            l.color = color;
+          }
+        } else {
+          lists.push({
+            id: uid(),
+            name,
+            description: desc,
+            color,
+            entries: [],
+            createdAt: Date.now(),
+          });
+        }
+        saveLists(lists);
+        closeListEditor();
+        if (currentListId) renderListDetail(currentListId);
+        else renderListsGrid();
+        showToast(listEditorId ? "✏️ Lista atualizada!" : "✅ Lista criada!");
+      };
+
+      document.getElementById("list-edit-btn").onclick = () =>
+        openListEditor(currentListId);
+      document.getElementById("list-delete-btn").onclick = () => {
+        const l = lists.find((x) => x.id === currentListId);
+        if (!l) return;
+        if (
+          confirm(
+            `Excluir "${l.name}"? Os jogos não serão removidos da biblioteca.`,
+          )
+        )
+          deleteList(currentListId);
+      };
+
+      // ── IGDB game search modal ───────────────────────────────────
+      let lpAcTimer = null;
+      let lpAcList = [];
+
+      function openGamePicker(listId) {
+        gamePicker_listId = listId;
+        document.getElementById("game-picker-search").value = "";
+        document.getElementById("lp-results-list").innerHTML =
+          `<p style="color:var(--muted);font-size:13px;text-align:center;padding:32px 0">Digite o nome de um jogo para buscar no IGDB.</p>`;
+        document.getElementById("lp-ac-box").style.display = "none";
+        document.getElementById("game-picker-overlay").classList.add("open");
+        setTimeout(
+          () => document.getElementById("game-picker-search").focus(),
+          100,
+        );
+      }
+
+      function closeGamePicker() {
+        document.getElementById("game-picker-overlay").classList.remove("open");
+        lpAcList = [];
+      }
+
+      function renderLpResults(results) {
+        const l = lists.find((x) => x.id === gamePicker_listId);
+        const container = document.getElementById("lp-results-list");
+        if (!results.length) {
+          container.innerHTML = `<p style="color:var(--muted);font-size:13px;text-align:center;padding:24px 0">Nenhum resultado encontrado.</p>`;
+          return;
+        }
+        container.innerHTML = results
+          .map((r) => {
+            const cover_url = r.cover?.image_id
+              ? IGDB.cover(r.cover.image_id)
+              : null;
+            const year = IGDB.year(r.first_release_date);
+            const genres = (r.genres || [])
+              .map((g) => g.name)
+              .slice(0, 3)
+              .join(", ");
+            const platforms = (r.platforms || [])
+              .map((p) => p.name)
+              .slice(0, 2)
+              .join(", ");
+            const score = r.rating ? `⭐ ${(r.rating / 20).toFixed(1)}` : "";
+            const igdbId = r.id;
+            const inList = l && listHasEntry(l, igdbId);
+            const inLib = games.some(
+              (g) => g.igdb?.id && String(g.igdb.id) === String(igdbId),
+            );
+
+            return `<div class="lp-result-card">
+      <div class="lp-result-cover">${cover_url ? `<img src="${cover_url}">` : `<span>${(r.name || "?")[0]}</span>`}</div>
+      <div class="lp-result-body">
+        <div class="lp-result-title">${esc(r.name)}</div>
+        <div class="lp-result-meta">
+          ${year ? `<span>${year}</span>` : ""}
+          ${platforms ? `<span>${esc(platforms)}</span>` : ""}
+          ${genres ? `<span>${esc(genres)}</span>` : ""}
+          ${score ? `<span style="color:var(--yellow)">${score}</span>` : ""}
+        </div>
+        <div class="lp-result-actions">
+          <button class="btn-add-to-lib" style="${inList ? "background:rgba(0,255,148,.18);border-color:rgba(0,255,148,.5)" : ""}"
+            onclick="toggleIgdbInList(${JSON.stringify(JSON.stringify(r))})">
+            ${inList ? "✔ Na lista" : "＋ Adicionar à lista"}
+          </button>
+          ${inLib ? `<span class="lp-in-list-badge">✔ Na biblioteca</span>` : ""}
+        </div>
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function toggleIgdbInList(rJson) {
+        const r = JSON.parse(rJson);
+        const l = lists.find((x) => x.id === gamePicker_listId);
+        if (!l) return;
+        if (!l.entries) l.entries = [];
+        const igdbId = r.id;
+        if (listHasEntry(l, igdbId)) {
+          l.entries = l.entries.filter(
+            (e) => String(e.igdbId) !== String(igdbId),
+          );
+        } else {
+          const cover_url = r.cover?.image_id
+            ? IGDB.cover(r.cover.image_id)
+            : null;
+          const developer =
+            (r.involved_companies || []).find((c) => c.developer)?.company
+              ?.name ||
+            (r.involved_companies || [])[0]?.company?.name ||
+            null;
+          l.entries.push({
+            igdbId: igdbId,
+            igdbData: {
+              id: igdbId,
+              name: r.name,
+              cover_url,
+              summary: r.summary || null,
+              genres: (r.genres || []).map((g) => g.name),
+              rating: r.rating || null,
+              year: IGDB.year(r.first_release_date),
+              developer,
+              platforms: (r.platforms || []).map((p) => p.name),
+            },
+          });
+        }
+        saveLists(lists);
+        // Re-render the current results to update button state
+        renderLpResults(lpAcList);
+        if (currentListId === gamePicker_listId)
+          renderListDetail(gamePicker_listId);
+        else if (currentPage === "lists") renderListsGrid();
+      }
+
+      // IGDB search input handler
+      document
+        .getElementById("game-picker-search")
+        .addEventListener("input", function () {
+          const q = this.value.trim();
+          clearTimeout(lpAcTimer);
+          if (q.length < 2) {
+            document.getElementById("lp-results-list").innerHTML =
+              `<p style="color:var(--muted);font-size:13px;text-align:center;padding:32px 0">Digite ao menos 2 caracteres para buscar.</p>`;
+            lpAcList = [];
+            return;
+          }
+          document.getElementById("lp-results-list").innerHTML =
+            `<p style="color:var(--muted);font-size:13px;text-align:center;padding:32px 0">🔍 Buscando...</p>`;
+          lpAcTimer = setTimeout(async () => {
+            const creds = IGDB.getCreds();
+            if (!creds?.id || !creds?.secret) {
+              document.getElementById("lp-results-list").innerHTML =
+                `<p style="color:var(--yellow);font-size:13px;text-align:center;padding:24px 0">⚠️ Configure o IGDB em Configurações para buscar jogos.</p>`;
+              return;
+            }
+            const results = await IGDB.search(q);
+            lpAcList = results;
+            renderLpResults(results);
+          }, 400);
+        });
+
+      document.getElementById("game-picker-close").onclick = closeGamePicker;
+      document.getElementById("game-picker-cancel").onclick = closeGamePicker;
+      document.getElementById("list-add-game-btn").onclick = () =>
+        openGamePicker(currentListId);
+      document.getElementById("game-picker-overlay").onclick = (e) => {
+        if (e.target === e.currentTarget) closeGamePicker();
+      };
+      document.getElementById("list-editor-overlay").onclick = (e) => {
+        if (e.target === e.currentTarget) closeListEditor();
+      };
+
+      // ── Backup integration ───────────────────────────────────────
+      document.getElementById("backup-export-btn").onclick = () => {
+        const payload = {
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          games,
+          tags: globalTags,
+          lists,
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `gamevault-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("✅ Backup exportado com sucesso!");
+      };
+
+      document.getElementById("backup-import-btn").onclick = function () {
+        const data = this._pendingData;
+        if (!data) return;
+        games = data.games;
+        saveGames(games);
+        if (Array.isArray(data.tags) && data.tags.length) {
+          globalTags = data.tags;
+          saveGlobalTags();
+        }
+        if (Array.isArray(data.lists)) {
+          lists = data.lists;
+          saveLists(lists);
+        }
+        closeSettings();
+        render();
+        showToast(`✅ ${games.length} jogos importados com sucesso!`);
+      };
+
       Chart.defaults.color = "#64748B";
       Chart.defaults.font.family = "'Outfit', sans-serif";
       Chart.defaults.borderColor = "rgba(255,255,255,.06)";
