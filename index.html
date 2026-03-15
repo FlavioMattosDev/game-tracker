@@ -1239,7 +1239,7 @@ body.bulk-mode .game-card.selected { border-color: var(--green); box-shadow: 0 0
 }
 /* grid view: pill overlaid on the cover, top-right */
 .card-year-overlay {
-  position: absolute; top: 8px; right: 8px; z-index: 3;
+  position: absolute; top: 8px; right: 8px; z-index: 4;
   font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800;
   color: #07070C; background: var(--green);
   border-radius: 6px; padding: 2px 8px;
@@ -2635,8 +2635,8 @@ function renderCard(g){
   ${checkHtml}
   <div class="game-cover" style="position:relative">${makeCover(g,false)}
     <div class="cover-overlay"></div>
-    ${yearBadge ? `<span class="card-year-overlay">${new Date(g.dateEnd).getFullYear()}</span>` : ''}
   </div>
+  ${yearBadge ? `<span class="card-year-overlay">${new Date(g.dateEnd).getFullYear()}</span>` : ''}
   <div class="game-body">
     <div class="game-title" title="${esc(g.title)}">${esc(g.title)}</div>
     <div class="game-meta">
