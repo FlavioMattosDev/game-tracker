@@ -1906,15 +1906,72 @@
       }
 
       /* ── DELETE ─────────────────────────────────── */
-      #del-modal {
+      /* ── DUPLICATE MODAL ─────────────────────────── */
+      #dup-modal {
         background: var(--surface);
-        border: 1px solid rgba(248, 113, 113, 0.25);
-        border-radius: 14px;
+        border: 1px solid var(--border2);
+        border-radius: 18px;
         padding: 28px;
-        max-width: 360px;
+        max-width: 440px;
         width: 100%;
-        text-align: center;
         animation: pop-in 0.2s ease;
+      }
+      #dup-modal .dup-icon {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+      #dup-modal h3 {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: 18px;
+        margin-bottom: 8px;
+      }
+      #dup-modal p {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+      .dup-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .dup-option-btn {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        text-align: left;
+        padding: 14px 16px;
+        border-radius: 12px;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.02);
+        transition: all 0.18s;
+        width: 100%;
+      }
+      .dup-option-btn:hover {
+        border-color: var(--border2);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .dup-option-btn.primary {
+        border-color: rgba(0, 255, 148, 0.25);
+        background: rgba(0, 255, 148, 0.06);
+      }
+      .dup-option-btn.primary:hover {
+        border-color: rgba(0, 255, 148, 0.45);
+        background: rgba(0, 255, 148, 0.1);
+      }
+      .dup-option-title {
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--text);
+      }
+      .dup-option-desc {
+        font-size: 11px;
+        color: var(--muted);
       }
       #del-modal h3 {
         font-family: "Syne", sans-serif;
@@ -4336,6 +4393,166 @@
         border-radius: 2px;
       }
 
+      /* ── SHORTCUTS PANEL ────────────────────────── */
+      .shortcut-group-label {
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding: 14px 0 6px;
+      }
+      .shortcut-group-label:first-child {
+        padding-top: 0;
+      }
+      .shortcut-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-bottom: 4px;
+      }
+      .shortcut-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .shortcut-key {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 28px;
+        height: 24px;
+        padding: 0 7px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 6px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text);
+        flex-shrink: 0;
+      }
+      .shortcut-combo {
+        letter-spacing: -0.02em;
+      }
+      .shortcut-plus {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .shortcut-desc {
+        font-size: 12px;
+        color: var(--muted);
+        margin-left: 4px;
+      }
+
+      /* ── LISTS FILTER BAR ────────────────────────── */
+      .lists-filter-bar {
+        padding: 12px 0 0;
+        margin-bottom: 4px;
+      }
+      .lists-sort-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0 16px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 20px;
+      }
+      .lists-sort-label {
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .lists-sort-btns {
+        display: flex;
+        gap: 4px;
+      }
+      .lists-sort-btn {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        font-family: "Syne", sans-serif;
+        letter-spacing: 0.04em;
+        border: 1px solid var(--border);
+        background: none;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+      .lists-sort-btn:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      .lists-sort-btn.active {
+        background: rgba(0, 255, 148, 0.1);
+        color: var(--green);
+        border-color: rgba(0, 255, 148, 0.3);
+      }
+
+      /* ── EXTRA FILTERS TOGGLE (Tags & Anos) ──────── */
+      #extra-filters-toggle-bar {
+        padding: 6px 24px 0;
+      }
+      #extra-filters-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      #extra-filters-btn:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      #extra-filters-btn.open {
+        border-color: rgba(167, 139, 250, 0.35);
+        color: var(--purple);
+        background: rgba(167, 139, 250, 0.06);
+      }
+      #extra-filters-icon {
+        font-size: 11px;
+        transition: transform 0.15s;
+        display: inline-block;
+      }
+      #extra-filters-btn.open #extra-filters-icon {
+        transform: rotate(90deg);
+      }
+
+      /* ── SHOW MORE BUTTON ────────────────────────── */
+      .show-more-btn {
+        font-size: 11px;
+        font-weight: 700;
+        font-family: "Syne", sans-serif;
+        color: var(--muted);
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 3px 10px;
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .show-more-btn:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+
       /* ── STREAK WIDGET ───────────────────────────── */
       .streak-row {
         display: flex;
@@ -4742,6 +4959,7 @@
           </div>
           <div class="content-page-sub" id="content-page-sub"></div>
         </div>
+        <div id="content-header-actions"></div>
       </div>
 
       <!-- GOALS BAR -->
@@ -4755,7 +4973,6 @@
         <span class="goal-count" id="goal-count">0/0</span>
       </div>
 
-      <!-- FILTER TABS -->
       <div id="filter-row">
         <button class="filter-tab active" data-filter="all">
           Todos <span class="tab-count" id="c-all">0</span>
@@ -4783,6 +5000,7 @@
           <option value="title">Título A-Z</option>
           <option value="rating">Maior Nota</option>
           <option value="hours">Mais Horas</option>
+          <option value="year">Por Ano Zerado</option>
         </select>
         <div id="view-toggle">
           <button class="view-btn active" id="vbtn-grid">⊞</button>
@@ -4818,13 +5036,21 @@
       <!-- BULK TAG DROPDOWN -->
       <div id="bulk-tag-menu"></div>
 
-      <!-- TAG FILTER ROW -->
-      <div id="tag-filter-row" class="hidden">
-        <span id="tag-filter-lbl">Tag:</span>
+      <!-- TAG + YEAR FILTER ROWS (collapsible) -->
+      <div id="extra-filters-wrap" style="display: none">
+        <div id="extra-filters-toggle-bar">
+          <button id="extra-filters-btn" onclick="toggleExtraFilters()">
+            <span id="extra-filters-icon">▸</span>
+            <span id="extra-filters-label">Filtros</span>
+          </button>
+        </div>
+        <div id="extra-filters-body" style="display: none">
+          <div id="tag-filter-row" class="hidden">
+            <span id="tag-filter-lbl">Tag:</span>
+          </div>
+          <div id="year-filter-row" class="hidden"></div>
+        </div>
       </div>
-
-      <!-- YEAR FILTER ROW -->
-      <div id="year-filter-row" class="hidden"></div>
 
       <div id="page-content">
         <!-- LIBRARY PAGE -->
@@ -4850,30 +5076,6 @@
           <!-- KPIs -->
           <div class="kpi-row" id="kpi-row"></div>
 
-          <!-- Activity Heatmap -->
-          <div id="heatmap-section">
-            <div
-              class="stats-section-title"
-              style="font-size: 14px; margin-bottom: 12px"
-            >
-              📅 Atividade (últimos 12 meses)
-            </div>
-            <div class="heatmap-months" id="heatmap-months"></div>
-            <div class="heatmap-grid" id="heatmap-grid"></div>
-            <div class="heatmap-legend">
-              <span>Menos</span>
-              <div
-                class="heatmap-legend-cell"
-                style="background: rgba(255, 255, 255, 0.06)"
-              ></div>
-              <div class="heatmap-legend-cell l1"></div>
-              <div class="heatmap-legend-cell l2"></div>
-              <div class="heatmap-legend-cell l3"></div>
-              <div class="heatmap-legend-cell l4"></div>
-              <span>Mais atividade</span>
-            </div>
-          </div>
-
           <div class="charts-grid">
             <!-- Status Donut -->
             <div class="chart-card" id="chart-status-card">
@@ -4885,14 +5087,16 @@
                 style="
                   display: flex;
                   align-items: center;
-                  gap: 20px;
+                  justify-content: center;
+                  gap: 24px;
                   min-width: 0;
+                  flex: 1;
                 "
               >
                 <canvas
                   id="chart-donut"
-                  width="130"
-                  height="130"
+                  width="150"
+                  height="150"
                   style="flex-shrink: 0"
                 ></canvas>
                 <div class="donut-legend" id="donut-legend"></div>
@@ -4932,29 +5136,56 @@
               ></div>
             </div>
 
-            <!-- Games over time (full width) -->
-            <div class="chart-card full">
-              <div>
-                <div class="chart-title">Jogos Adicionados</div>
-                <div class="chart-sub">Últimos 12 meses</div>
-              </div>
-              <canvas id="chart-timeline" height="120"></canvas>
-            </div>
-
             <!-- Top by hours -->
             <div class="chart-card">
-              <div>
-                <div class="chart-title">Mais Horas Jogadas</div>
-                <div class="chart-sub">Top 5 por tempo</div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  gap: 8px;
+                "
+              >
+                <div>
+                  <div class="chart-title">Mais Horas Jogadas</div>
+                  <div class="chart-sub" id="top-hours-sub">
+                    Top 5 por tempo
+                  </div>
+                </div>
+                <button
+                  class="show-more-btn"
+                  id="top-hours-toggle"
+                  onclick="toggleTopList('hours')"
+                >
+                  Ver mais
+                </button>
               </div>
               <div id="chart-top-hours"></div>
             </div>
 
             <!-- Top rated -->
             <div class="chart-card">
-              <div>
-                <div class="chart-title">Melhores Notas</div>
-                <div class="chart-sub">Top 5 avaliados</div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  gap: 8px;
+                "
+              >
+                <div>
+                  <div class="chart-title">Melhores Notas</div>
+                  <div class="chart-sub" id="top-rated-sub">
+                    Top 5 avaliados
+                  </div>
+                </div>
+                <button
+                  class="show-more-btn"
+                  id="top-rated-toggle"
+                  onclick="toggleTopList('rated')"
+                >
+                  Ver mais
+                </button>
               </div>
               <div id="chart-top-rated"></div>
             </div>
@@ -4969,6 +5200,15 @@
               </div>
               <canvas id="chart-years" height="120"></canvas>
             </div>
+
+            <!-- Games over time (full width) — moved to end -->
+            <div class="chart-card full">
+              <div>
+                <div class="chart-title">Jogos Adicionados</div>
+                <div class="chart-sub">Últimos 12 meses</div>
+              </div>
+              <canvas id="chart-timeline" height="120"></canvas>
+            </div>
           </div>
         </div>
         <!-- /stats-page -->
@@ -4976,7 +5216,6 @@
         <!-- CALENDAR PAGE -->
         <div id="cal-page">
           <div class="cal-header">
-            <div class="cal-title">📅 Lançamentos</div>
             <div class="cal-nav">
               <button class="cal-nav-btn" id="cal-prev">‹</button>
               <div class="cal-month-label" id="cal-month-label">—</div>
@@ -4992,16 +5231,61 @@
         <div id="lists-page" style="display: none; padding: 24px">
           <!-- Lists grid view -->
           <div id="lists-grid-view">
-            <div class="lists-page-header">
-              <div>
-                <h2 class="lists-page-title">📋 Minhas Listas</h2>
-                <p class="lists-page-sub">
-                  Organize seus jogos em coleções personalizadas
-                </p>
+            <!-- Filter bar -->
+            <div class="lists-filter-bar">
+              <div style="position: relative; width: 100%; max-width: 400px">
+                <span
+                  style="
+                    position: absolute;
+                    left: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: var(--muted);
+                    font-size: 13px;
+                    pointer-events: none;
+                  "
+                  >🔍</span
+                >
+                <input
+                  type="text"
+                  id="lists-search"
+                  placeholder="Buscar lista..."
+                  class="form-input"
+                  style="
+                    padding-left: 32px;
+                    height: 34px;
+                    font-size: 13px;
+                    width: 100%;
+                  "
+                  oninput="renderListsGrid()"
+                />
               </div>
-              <button class="btn-primary" id="list-new-btn">
-                + Nova Lista
-              </button>
+            </div>
+            <div class="lists-sort-row">
+              <span class="lists-sort-label">Ordenar por</span>
+              <div class="lists-sort-btns">
+                <button
+                  class="lists-sort-btn active"
+                  data-sort="recent"
+                  onclick="setListsSort(this, 'recent')"
+                >
+                  Recente
+                </button>
+                <button
+                  class="lists-sort-btn"
+                  data-sort="name"
+                  onclick="setListsSort(this, 'name')"
+                >
+                  A–Z
+                </button>
+                <button
+                  class="lists-sort-btn"
+                  data-sort="count"
+                  onclick="setListsSort(this, 'count')"
+                >
+                  Mais jogos
+                </button>
+              </div>
             </div>
             <div id="lists-grid"></div>
             <div id="lists-empty" style="display: none">
@@ -5069,29 +5353,14 @@
 
         <!-- PASSPORT PAGE -->
         <div id="passport-page">
-          <div class="passport-page-header">
-            <div>
-              <div class="passport-page-title">🎫 Gaming Passaporte</div>
-              <div class="passport-page-sub">
-                Seu card de jogador — gerado automaticamente com seus dados
-              </div>
-            </div>
-            <div class="passport-page-actions">
-              <button class="btn-primary" id="passport-generate-btn">
-                🔄 Atualizar
-              </button>
-              <button
-                class="btn-ghost"
-                id="passport-download-btn"
-                style="display: none"
-              >
-                ⬇️ Baixar PNG
-              </button>
-            </div>
-          </div>
           <div id="passport-card-wrap">
             <div id="passport-card"></div>
           </div>
+        </div>
+        <!-- Passport buttons (rendered into content-header-actions by JS) -->
+        <div style="display: none">
+          <button id="passport-generate-btn">🔄 Atualizar</button>
+          <button id="passport-download-btn">⬇️ Baixar PNG</button>
         </div>
       </div>
       <!-- /page-content -->
@@ -5709,6 +5978,7 @@
           <button class="cfg-tab active" data-cfg="igdb">🎮 IGDB</button>
           <button class="cfg-tab" data-cfg="tags">🏷️ Tags</button>
           <button class="cfg-tab" data-cfg="prefs">🎯 Preferências</button>
+          <button class="cfg-tab" data-cfg="shortcuts">⌨️ Atalhos</button>
           <button class="cfg-tab" data-cfg="backup">📤 Backup</button>
         </div>
 
@@ -5884,6 +6154,77 @@
             </div>
             <div class="cfg-actions">
               <button class="btn-primary" id="cfg-dice-save">Salvar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Shortcuts panel ── -->
+        <div class="cfg-panel" id="cfg-shortcuts">
+          <div class="shortcut-group-label">Navegação</div>
+          <div class="shortcut-list">
+            <div class="shortcut-row">
+              <span class="shortcut-key">1</span
+              ><span class="shortcut-desc">Ir para Biblioteca</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-key">2</span
+              ><span class="shortcut-desc">Ir para Listas</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-key">3</span
+              ><span class="shortcut-desc">Ir para Estatísticas</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-key">4</span
+              ><span class="shortcut-desc">Ir para Lançamentos</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-key">5</span
+              ><span class="shortcut-desc">Ir para Passaporte</span>
+            </div>
+          </div>
+          <div class="shortcut-group-label">Biblioteca</div>
+          <div class="shortcut-list">
+            <div class="shortcut-row">
+              <span class="shortcut-key">N</span
+              ><span class="shortcut-desc">Adicionar novo jogo</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-key">R</span
+              ><span class="shortcut-desc">Sortear jogo aleatório</span>
+            </div>
+            <div class="shortcut-row">
+              <kbd class="shortcut-key shortcut-combo">Ctrl</kbd
+              ><span class="shortcut-plus">+</span
+              ><span class="shortcut-key">K</span
+              ><span class="shortcut-desc">Focar na busca</span>
+            </div>
+          </div>
+          <div class="shortcut-group-label">Modais</div>
+          <div class="shortcut-list">
+            <div class="shortcut-row">
+              <kbd class="shortcut-key shortcut-combo">Ctrl</kbd
+              ><span class="shortcut-plus">+</span
+              ><span class="shortcut-key">↵</span
+              ><span class="shortcut-desc">Salvar formulário aberto</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-key">Esc</span
+              ><span class="shortcut-desc">Fechar modal / popover</span>
+            </div>
+            <div class="shortcut-row">
+              <span class="shortcut-key">←</span
+              ><span class="shortcut-key">→</span
+              ><span class="shortcut-desc"
+                >Navegar screenshots no lightbox</span
+              >
+            </div>
+          </div>
+          <div class="shortcut-group-label">Seleção em lote</div>
+          <div class="shortcut-list">
+            <div class="shortcut-row">
+              <span class="shortcut-key">Esc</span
+              ><span class="shortcut-desc">Cancelar modo de seleção</span>
             </div>
           </div>
         </div>
@@ -6076,6 +6417,37 @@
         <div id="lp-results-list"></div>
         <div class="cfg-actions">
           <button class="btn-ghost" id="game-picker-cancel">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DUPLICATE GAME MODAL ═══════════════════════════════════ -->
+    <div class="overlay" id="dup-overlay">
+      <div id="dup-modal">
+        <div class="dup-icon">🎮</div>
+        <h3>Jogo já na biblioteca</h3>
+        <p id="dup-msg">Este jogo já existe. O que deseja fazer?</p>
+        <div class="dup-options">
+          <button class="dup-option-btn primary" id="dup-update-btn">
+            <span class="dup-option-title">✏️ Atualizar informações</span>
+            <span class="dup-option-desc"
+              >Substitui os dados do jogo existente pelas novas
+              informações</span
+            >
+          </button>
+          <button class="dup-option-btn" id="dup-newrun-btn">
+            <span class="dup-option-title">🔄 Novo run / Replay</span>
+            <span class="dup-option-desc"
+              >Adiciona como entrada separada — ideal para quem zerou
+              novamente</span
+            >
+          </button>
+          <button class="dup-option-btn" id="dup-cancel-btn">
+            <span class="dup-option-title">✕ Cancelar</span>
+            <span class="dup-option-desc"
+              >Volta ao formulário para continuar editando</span
+            >
+          </button>
         </div>
       </div>
     </div>
@@ -6515,7 +6887,7 @@
           ...(g.igdb?.genres?.slice(0, 2) || []),
         ].slice(0, 2);
         const progressBar =
-          g.status === "playing" && g.progress > 0
+          g.progress > 0
             ? `<div class="progress-wrap"><div class="goal-track" style="flex:1"><div class="goal-fill" style="width:${g.progress}%"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green)">${g.progress}%</span></div>`
             : "";
         const selected = bulkSelected.has(g.id);
@@ -6603,6 +6975,7 @@
         }
         if (yearFilter) {
           a = a.filter((g) => {
+            if (g.status !== "completed") return false;
             const yr = g.dateEnd ? new Date(g.dateEnd).getFullYear() : null;
             return yr === yearFilter;
           });
@@ -6611,6 +6984,12 @@
         if (sort === "rating") a.sort((a, b) => b.rating - a.rating);
         if (sort === "hours") a.sort((a, b) => b.hours - a.hours);
         if (sort === "recent") a.sort((a, b) => b.createdAt - a.createdAt);
+        if (sort === "year")
+          a.sort((a, b) => {
+            const ya = a.dateEnd ? new Date(a.dateEnd).getFullYear() : 0;
+            const yb = b.dateEnd ? new Date(b.dateEnd).getFullYear() : 0;
+            return yb - ya;
+          });
         return a;
       }
 
@@ -6666,12 +7045,27 @@
             `${lists.length} lista${lists.length !== 1 ? "s" : ""} personalizadas`,
           ],
           stats: ["📊 Estatísticas", "Análise da sua biblioteca"],
-          calendar: ["📅 Lançamentos", "Próximos e recentes"],
+          calendar: ["📅 Lançamentos", "Jogos próximos e recentes"],
           passport: ["🎫 Passaporte", "Seu card de jogador"],
         };
         const [ptitle, psub] = PAGE_TITLES[currentPage] || ["GameVault", ""];
         document.getElementById("content-page-title").textContent = ptitle;
         document.getElementById("content-page-sub").textContent = psub;
+        // Always show content-header
+        document.getElementById("content-header").style.display = "";
+        // Populate right-side actions per page
+        const actionsEl = document.getElementById("content-header-actions");
+        if (actionsEl) {
+          if (currentPage === "lists" && !currentListId) {
+            actionsEl.innerHTML = `<button class="btn-primary" id="list-new-btn-hdr" onclick="openListEditor()">+ Nova Lista</button>`;
+          } else if (currentPage === "passport") {
+            actionsEl.innerHTML = `
+        <button class="btn-primary" onclick="document.getElementById('passport-generate-btn').click()">🔄 Atualizar</button>
+        <button class="btn-ghost" id="passport-download-hdr" style="display:none" onclick="document.getElementById('passport-download-btn').click()">⬇️ Baixar PNG</button>`;
+          } else {
+            actionsEl.innerHTML = "";
+          }
+        }
 
         // ── goals bar (library only) ──
         const goalsBar = document.getElementById("goals-bar");
@@ -6781,7 +7175,7 @@
         const completedYears = [
           ...new Set(
             games
-              .filter((g) => g.dateEnd)
+              .filter((g) => g.status === "completed" && g.dateEnd)
               .map((g) => new Date(g.dateEnd).getFullYear()),
           ),
         ].sort((a, b) => b - a);
@@ -6795,7 +7189,10 @@
           yearRow.innerHTML = '<span id="year-filter-lbl">📅 Zerado em:</span>';
           completedYears.forEach((yr) => {
             const count = games.filter(
-              (g) => g.dateEnd && new Date(g.dateEnd).getFullYear() === yr,
+              (g) =>
+                g.status === "completed" &&
+                g.dateEnd &&
+                new Date(g.dateEnd).getFullYear() === yr,
             ).length;
             const btn = document.createElement("button");
             btn.className =
@@ -6812,6 +7209,10 @@
           yearFilter = null;
         }
 
+        // Show extra-filters-wrap only when there's something inside (stored for library section below)
+        const hasTags = personalTagSet.size > 0 || igdbGenreSet.size > 0;
+        const hasYears = completedYears.length > 0;
+
         // page visibility
         const libPage = document.getElementById("library-page");
         const statsPageEl = document.getElementById("stats-page");
@@ -6820,20 +7221,16 @@
         const passportPage = document.getElementById("passport-page");
         const filterRow = document.getElementById("filter-row");
         const sortRowEl = document.getElementById("sort-row");
-        const tagRow2 = document.getElementById("tag-filter-row");
-        const yearRow2 = document.getElementById("year-filter-row");
+        const extraWrap = document.getElementById("extra-filters-wrap");
 
-        // Hide all, show active
+        // Hide all pages and extra rows
         [libPage, statsPageEl, calPageEl, listsPageEl, passportPage].forEach(
           (p) => {
             if (p) p.style.display = "none";
           },
         );
-        [filterRow, sortRowEl].forEach((r) => {
-          if (r) r.style.display = "none";
-        });
-        tagRow2.style.display = "none";
-        yearRow2.style.display = "none";
+        sortRowEl.style.display = "none";
+        if (extraWrap) extraWrap.style.display = "none";
 
         if (currentPage === "stats") {
           statsPageEl.style.display = "block";
@@ -6860,8 +7257,35 @@
         libPage.style.display = "block";
         filterRow.style.display = "flex";
         sortRowEl.style.display = "flex";
-        tagRow2.style.display = "";
-        yearRow2.style.display = "";
+        // show extra filters toggle only when tags or years exist
+        if (extraWrap)
+          extraWrap.style.display = hasTags || hasYears ? "block" : "none";
+
+        if (currentPage === "stats") {
+          statsPageEl.style.display = "block";
+          renderStats();
+          return;
+        }
+        if (currentPage === "calendar") {
+          calPageEl.style.display = "block";
+          renderCalendar();
+          return;
+        }
+        if (currentPage === "lists") {
+          listsPageEl.style.display = "block";
+          renderListsPage();
+          return;
+        }
+        if (currentPage === "passport") {
+          passportPage.classList.add("active");
+          passportPage.style.display = "block";
+          renderPassportPage();
+          return;
+        }
+        // library (default)
+        libPage.style.display = "block";
+        filterRow.style.display = "flex";
+        sortRowEl.style.display = "flex";
         // grid
         const filtered = getFiltered();
         const grid = document.getElementById("game-grid");
@@ -7233,6 +7657,10 @@
         closeAC();
       }
 
+      // pending game object while waiting for duplicate resolution
+      let _pendingGame = null;
+      let _dupExistingId = null;
+
       function saveGame() {
         const title = document.getElementById("f-title").value.trim();
         if (!title) {
@@ -7251,10 +7679,7 @@
           status: document.getElementById("f-status").value,
           rating: stars,
           hours: parseFloat(document.getElementById("f-hours").value) || 0,
-          progress:
-            document.getElementById("f-status").value === "playing"
-              ? parseInt(document.getElementById("f-progress").value) || 0
-              : undefined,
+          progress: parseInt(document.getElementById("f-progress").value) || 0,
           colorIdx,
           notes: document.getElementById("f-notes").value.trim(),
           tags: currentTags.length ? [...currentTags] : undefined,
@@ -7265,14 +7690,72 @@
             ? games.find((g) => g.id === editId)?.createdAt || Date.now()
             : Date.now(),
         };
-        if (editId)
-          ((games = games.map((g) => (g.id === editId ? game : g))),
-            showToast("✅ Jogo atualizado!"));
-        else (games.unshift(game), showToast("🎮 Jogo adicionado!"));
+
+        // Only check duplicates when adding a new game (not editing)
+        if (!editId) {
+          const dup = games.find((g) => {
+            // Match by IGDB ID if both have one
+            if (game.igdb?.id && g.igdb?.id)
+              return String(game.igdb.id) === String(g.igdb.id);
+            // Otherwise match by title (case-insensitive)
+            return g.title.toLowerCase() === title.toLowerCase();
+          });
+          if (dup) {
+            _pendingGame = game;
+            _dupExistingId = dup.id;
+            document.getElementById("dup-msg").innerHTML =
+              `<strong style="color:var(--text)">${esc(dup.title)}</strong> já está na biblioteca como <span style="color:${STATUS[dup.status]?.color}">${STATUS[dup.status]?.label}</span>. O que deseja fazer?`;
+            document.getElementById("dup-overlay").classList.add("open");
+            return;
+          }
+        }
+
+        _commitSave(game, editId ? "update" : "add");
+      }
+
+      function _commitSave(game, mode) {
+        if (mode === "update") {
+          // Preserve original id and createdAt
+          game.id = _dupExistingId || game.id;
+          game.createdAt =
+            games.find((g) => g.id === game.id)?.createdAt || game.createdAt;
+          games = games.map((g) => (g.id === game.id ? game : g));
+          showToast("✅ Jogo atualizado!");
+        } else {
+          games.unshift(game);
+          showToast("🎮 Jogo adicionado!");
+        }
+        _pendingGame = null;
+        _dupExistingId = null;
         saveGames(games);
         closeModal();
         render();
       }
+
+      function closeDupModal() {
+        document.getElementById("dup-overlay").classList.remove("open");
+        _pendingGame = null;
+        _dupExistingId = null;
+      }
+
+      document.getElementById("dup-update-btn").onclick = () => {
+        const g = _pendingGame;
+        if (!g) return;
+        document.getElementById("dup-overlay").classList.remove("open");
+        _commitSave(g, "update");
+      };
+      document.getElementById("dup-newrun-btn").onclick = () => {
+        const g = _pendingGame;
+        if (!g) return;
+        document.getElementById("dup-overlay").classList.remove("open");
+        _pendingGame = null;
+        _dupExistingId = null;
+        _commitSave({ ...g, id: uid(), createdAt: Date.now() }, "add");
+      };
+      document.getElementById("dup-cancel-btn").onclick = closeDupModal;
+      document.getElementById("dup-overlay").onclick = function (e) {
+        if (e.target === this) closeDupModal();
+      };
 
       // ═══════════════════════════════════════════════════
       //  IGDB AUTOCOMPLETE
@@ -8535,8 +9018,7 @@
       // ── onStatusChange: show/hide progress field ──────
       function onStatusChange(val) {
         const wrap = document.getElementById("f-progress-wrap");
-        if (val === "playing") wrap.classList.add("visible");
-        else wrap.classList.remove("visible");
+        wrap.classList.add("visible");
       }
 
       // ── Quick Status Popover ──────────────────────────
@@ -8727,6 +9209,7 @@
           closeTagMgr();
           closeAC();
           closeBulkMenus();
+          closeDupModal();
           document.getElementById("cal-day-overlay").classList.remove("open");
           document.getElementById("cal-game-overlay").classList.remove("open");
           document.getElementById("status-popover").classList.remove("open");
@@ -8765,6 +9248,10 @@
         }
         if (e.key === "4") {
           navigateTo("calendar");
+          return;
+        }
+        if (e.key === "5") {
+          navigateTo("passport");
           return;
         }
         if (e.key === "r" || e.key === "R") {
@@ -8835,80 +9322,17 @@
         document.getElementById("streak-row").innerHTML = `
     <div class="streak-card">
       <span class="streak-icon">🔥</span>
-      <div><div class="streak-val" style="color:var(--orange)">${currentStreak}</div><div class="streak-label">Meses seguidos<br>zerado algo</div></div>
+      <div><div class="streak-val" style="color:var(--orange)">${currentStreak}</div><div class="streak-label">Meses consecutivos<br>com jogo zerado</div></div>
     </div>
     <div class="streak-card">
       <span class="streak-icon">🏆</span>
-      <div><div class="streak-val" style="color:var(--yellow)">${longestStreak}</div><div class="streak-label">Melhor sequência<br>de meses</div></div>
+      <div><div class="streak-val" style="color:var(--yellow)">${longestStreak}</div><div class="streak-label">Recorde de meses<br>zerand seguidos</div></div>
     </div>
     <div class="streak-card">
       <span class="streak-icon">⚡</span>
-      <div><div class="streak-val" style="color:var(--blue)">${avgDays > 0 ? Math.round(avgDays) + "d" : "—"}</div><div class="streak-label">Dias médios<br>por conclusão</div></div>
+      <div><div class="streak-val" style="color:var(--blue)">${avgDays > 0 ? Math.round(avgDays) + "d" : "—"}</div><div class="streak-label">Média de dias<br>para zerar um jogo</div></div>
     </div>`;
 
-        // ── HEATMAP ───────────────────────────────────────
-        const heatData = {};
-        games.forEach((g) => {
-          const dates = [
-            g.dateEnd,
-            g.dateStart,
-            g.createdAt && new Date(g.createdAt).toISOString().slice(0, 10),
-          ].filter(Boolean);
-          dates.forEach((d) => {
-            if (d) heatData[d] = (heatData[d] || 0) + 1;
-          });
-        });
-        const heatStart = new Date(
-          now.getFullYear() - 1,
-          now.getMonth() + 1,
-          1,
-        );
-        const weeks = [];
-        let wk = [];
-        const startDow = heatStart.getDay();
-        for (let i = 0; i < startDow; i++) wk.push(null);
-        const cursor = new Date(heatStart);
-        const monthPositions = [];
-        while (cursor <= now) {
-          if (cursor.getDate() === 1)
-            monthPositions.push({
-              w: weeks.length,
-              m: cursor.toLocaleString("pt-BR", { month: "short" }),
-            });
-          const key = cursor.toISOString().slice(0, 10);
-          wk.push({ date: key, count: heatData[key] || 0 });
-          if (cursor.getDay() === 6) {
-            weeks.push(wk);
-            wk = [];
-          }
-          cursor.setDate(cursor.getDate() + 1);
-        }
-        if (wk.length) weeks.push(wk);
-        const maxCount = Math.max(...Object.values(heatData), 1);
-        document.getElementById("heatmap-grid").innerHTML = weeks
-          .map(
-            (w) => `
-    <div class="heatmap-col">${w
-      .map((d) =>
-        d === null
-          ? '<div class="heatmap-cell" style="opacity:0"></div>'
-          : `<div class="heatmap-cell ${d.count === 0 ? "" : d.count / maxCount > 0.75 ? "l4" : d.count / maxCount > 0.5 ? "l3" : d.count / maxCount > 0.25 ? "l2" : "l1"}"
-         title="${d.date}: ${d.count} atividade(s)"></div>`,
-      )
-      .join("")}</div>`,
-          )
-          .join("");
-        const labelsEl = document.getElementById("heatmap-months");
-        labelsEl.innerHTML = "";
-        monthPositions.forEach((mp, i) => {
-          const next = monthPositions[i + 1];
-          const wCount = next ? next.w - mp.w : weeks.length - mp.w;
-          const span = document.createElement("span");
-          span.className = "heatmap-month-label";
-          span.style.minWidth = wCount * 15 + "px";
-          span.textContent = mp.m;
-          labelsEl.appendChild(span);
-        });
         const totalHours = games.reduce(
           (s, g) => s + (parseFloat(g.hours) || 0),
           0,
@@ -9191,10 +9615,20 @@
         });
 
         // ── TOP BY HOURS ──────────────────────────────────
-        const topHours = [...games]
+        const allHours = [...games]
           .filter((g) => g.hours > 0)
-          .sort((a, b) => b.hours - a.hours)
-          .slice(0, 5);
+          .sort((a, b) => b.hours - a.hours);
+        const showAllHours = topListState.hours;
+        const topHours = showAllHours ? allHours : allHours.slice(0, 5);
+        const toggleH = document.getElementById("top-hours-toggle");
+        const subH = document.getElementById("top-hours-sub");
+        if (toggleH) {
+          toggleH.textContent = showAllHours ? "Ver menos" : "Ver mais";
+          toggleH.style.display = allHours.length > 5 ? "" : "none";
+        }
+        if (subH) {
+          subH.textContent = `Top ${topHours.length} de ${allHours.length} por tempo`;
+        }
         document.getElementById("chart-top-hours").innerHTML = topHours.length
           ? topHours
               .map(
@@ -9213,10 +9647,20 @@
           : '<div style="font-size:12px;color:var(--muted)">Nenhum jogo com horas registradas.</div>';
 
         // ── TOP RATED ─────────────────────────────────────
-        const topRated = [...games]
+        const allRated = [...games]
           .filter((g) => g.rating > 0)
-          .sort((a, b) => b.rating - a.rating || b.hours - a.hours)
-          .slice(0, 5);
+          .sort((a, b) => b.rating - a.rating || b.hours - a.hours);
+        const showAllRated = topListState.rated;
+        const topRated = showAllRated ? allRated : allRated.slice(0, 5);
+        const toggleR = document.getElementById("top-rated-toggle");
+        const subR = document.getElementById("top-rated-sub");
+        if (toggleR) {
+          toggleR.textContent = showAllRated ? "Ver menos" : "Ver mais";
+          toggleR.style.display = allRated.length > 5 ? "" : "none";
+        }
+        if (subR) {
+          subR.textContent = `Top ${topRated.length} de ${allRated.length} avaliados`;
+        }
         document.getElementById("chart-top-rated").innerHTML = topRated.length
           ? topRated
               .map(
@@ -9576,12 +10020,14 @@
         if (!card) return;
         if (!games.length) {
           card.innerHTML = `<div style="padding:60px 40px;text-align:center;color:rgba(255,255,255,.4)"><div style="font-size:48px;margin-bottom:16px">🎮</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#fff;margin-bottom:8px">Biblioteca vazia</div><div style="font-size:13px">Adicione jogos para gerar seu Passaporte.</div></div>`;
-          document.getElementById("passport-download-btn").style.display =
-            "none";
+          const dlHdr = document.getElementById("passport-download-hdr");
+          if (dlHdr) dlHdr.style.display = "none";
           return;
         }
         renderPassportCard(card);
-        document.getElementById("passport-download-btn").style.display = "";
+        // show download in header
+        const dlHdr = document.getElementById("passport-download-hdr");
+        if (dlHdr) dlHdr.style.display = "";
       }
 
       document.getElementById("passport-generate-btn").onclick = () =>
@@ -9618,6 +10064,33 @@
       // ═══════════════════════════════════════════════════
       //  LISTS ENGINE
       // ═══════════════════════════════════════════════════
+
+      // ── Top-list show-more state ─────────────────────
+      const topListState = { hours: false, rated: false };
+      function toggleTopList(type) {
+        topListState[type] = !topListState[type];
+        renderStats();
+      }
+
+      // ── Extra filters (tags & years) toggle ─────────
+      let extraFiltersOpen = false;
+      function toggleExtraFilters() {
+        extraFiltersOpen = !extraFiltersOpen;
+        const body = document.getElementById("extra-filters-body");
+        const btn = document.getElementById("extra-filters-btn");
+        body.style.display = extraFiltersOpen ? "block" : "none";
+        btn.classList.toggle("open", extraFiltersOpen);
+      }
+
+      // ── Lists filter/sort state ──────────────────────
+      let listsSort = "recent";
+      function setListsSort(btn, sort) {
+        listsSort = sort;
+        document
+          .querySelectorAll(".lists-sort-btn")
+          .forEach((b) => b.classList.toggle("active", b === btn));
+        renderListsGrid();
+      }
 
       const LISTS_KEY = "gv_lists";
       const LIST_COLORS = [
@@ -9692,9 +10165,38 @@
           empty.style.display = "flex";
           return;
         }
+
+        // filter by search
+        const q = (document.getElementById("lists-search")?.value || "")
+          .toLowerCase()
+          .trim();
+        let filtered = q
+          ? lists.filter(
+              (l) =>
+                l.name.toLowerCase().includes(q) ||
+                (l.description || "").toLowerCase().includes(q),
+            )
+          : [...lists];
+
+        // sort
+        if (listsSort === "name")
+          filtered.sort((a, b) => a.name.localeCompare(b.name));
+        else if (listsSort === "count")
+          filtered.sort(
+            (a, b) => (b.entries || []).length - (a.entries || []).length,
+          );
+        else filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); // recent
+
+        if (!filtered.length) {
+          grid.innerHTML =
+            '<div style="padding:32px;text-align:center;color:var(--muted);font-size:13px">Nenhuma lista encontrada.</div>';
+          grid.style.display = "block";
+          empty.style.display = "none";
+          return;
+        }
         empty.style.display = "none";
         grid.style.display = "grid";
-        grid.innerHTML = lists
+        grid.innerHTML = filtered
           .map((l) => {
             const entries = l.entries || [];
             const covers = entries
@@ -9798,11 +10300,27 @@
 
       function openListDetail(listId) {
         currentListId = listId;
+        // Update content-header for list detail view
+        const l = lists.find((x) => x.id === listId);
+        if (l) {
+          const sub = document.getElementById("content-page-sub");
+          if (sub)
+            sub.textContent = `${(l.entries || []).length} jogo${(l.entries || []).length !== 1 ? "s" : ""}`;
+          const acts = document.getElementById("content-header-actions");
+          if (acts) acts.innerHTML = "";
+        }
         renderListDetail(listId);
       }
 
       document.getElementById("list-back-btn").onclick = () => {
         currentListId = null;
+        // restore subtitle and actions for lists grid
+        const sub = document.getElementById("content-page-sub");
+        if (sub)
+          sub.textContent = `${lists.length} lista${lists.length !== 1 ? "s" : ""} personalizadas`;
+        const acts = document.getElementById("content-header-actions");
+        if (acts)
+          acts.innerHTML = `<button class="btn-primary" onclick="openListEditor()">+ Nova Lista</button>`;
         renderListsGrid();
       };
 
@@ -9876,7 +10394,8 @@
 
       document.getElementById("list-editor-close").onclick = closeListEditor;
       document.getElementById("list-editor-cancel").onclick = closeListEditor;
-      document.getElementById("list-new-btn").onclick = () => openListEditor();
+      const _listNewBtn = document.getElementById("list-new-btn");
+      if (_listNewBtn) _listNewBtn.onclick = () => openListEditor();
 
       document.getElementById("list-editor-save").onclick = () => {
         const name = document.getElementById("list-name-input").value.trim();
