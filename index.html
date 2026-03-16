@@ -2493,31 +2493,58 @@ const IGDB = {
       if(s&&s.exp>Date.now()) return s.tok;
       const c=this.getCreds();
       if(!c?.id||!c?.secret) return null;
-      const r=await fetch(`https://id.twitch.tv/oauth2/token?client_id=${encodeURIComponent(c.id)}&client_secret=${encodeURIComponent(c.secret)}&grant_type=client_credentials`,{method:'POST'});
-      if(!r.ok) return null;
-      const d=await r.json();
-      if(!d.access_token) return null;
+      // Twitch token endpoint — direct fetch works from most origins
+      // but fall back to proxy if blocked (e.g. some GitHub Pages configs)
+      const tokenUrl = `https://id.twitch.tv/oauth2/token?client_id=${encodeURIComponent(c.id)}&client_secret=${encodeURIComponent(c.secret)}&grant_type=client_credentials`;
+      let d = null;
+      try {
+        const r = await fetch(tokenUrl, {method:'POST'});
+        if(r.ok) d = await r.json();
+      } catch{ /* will try proxy below */ }
+      // Fallback: route token request through proxy
+      if(!d?.access_token){
+        const PROXIED = `https://corsproxy.io/?url=${encodeURIComponent(tokenUrl)}`;
+        const r2 = await fetch(PROXIED, {method:'POST'});
+        if(r2.ok) d = await r2.json();
+      }
+      if(!d?.access_token) return null;
       localStorage.setItem(TOKEN_KEY,JSON.stringify({tok:d.access_token,exp:Date.now()+(d.expires_in-120)*1000}));
       return d.access_token;
     }catch{return null;}
   },
-  async query(endpoint,body){
-    const c=this.getCreds();
+  async query(endpoint, body){
+    const c = this.getCreds();
     if(!c?.id) return null;
-    const tok=await this.getToken();
+    const tok = await this.getToken();
     if(!tok) return null;
-    // IGDB blocks direct browser requests (CORS). We route through a proxy.
-    const PROXY='https://corsproxy.io/?url=';
-    const TARGET=`https://api.igdb.com/v4/${endpoint}`;
-    try{
-      const r=await fetch(PROXY+encodeURIComponent(TARGET),{
-        method:'POST',
-        headers:{'Client-ID':c.id,'Authorization':`Bearer ${tok}`,'Content-Type':'text/plain','x-requested-with':'XMLHttpRequest'},
-        body
-      });
-      if(!r.ok) return null;
-      return await r.json();
-    }catch{return null;}
+
+    const TARGET = `https://api.igdb.com/v4/${endpoint}`;
+
+    // Proxy fallback chain — tried in order until one succeeds.
+    // corsproxy.io can block github.io; allorigins and thingproxy are alternatives.
+    const PROXIES = [
+      url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+      url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+      url => `https://thingproxy.freeboard.io/fetch/${url}`,
+    ];
+
+    for(const makeProxy of PROXIES){
+      try{
+        const r = await fetch(makeProxy(TARGET), {
+          method: 'POST',
+          headers: {
+            'Client-ID': c.id,
+            'Authorization': `Bearer ${tok}`,
+            'Content-Type': 'text/plain',
+          },
+          body
+        });
+        if(!r.ok) continue;
+        const json = await r.json();
+        if(Array.isArray(json) || typeof json === 'object') return json;
+      } catch{ continue; }
+    }
+    return null;
   },
   async search(q){
     if(!q||q.length<2) return [];
@@ -3367,18 +3394,25 @@ document.getElementById('s-test').onclick = async () => {
   const sec = document.getElementById('s-secret').value.trim();
   const tr = document.getElementById('test-result');
   if(!id || !sec){ tr.className='test-result err'; tr.style.display='flex'; tr.textContent='⚠️ Preencha os campos primeiro.'; return; }
-  tr.className='test-result'; tr.style.display='flex'; tr.textContent='⏳ Autenticando...';
+  tr.className='test-result'; tr.style.display='flex'; tr.textContent='⏳ Obtendo token Twitch...';
   const prev = IGDB.getCreds();
   IGDB.saveCreds(id, sec); localStorage.removeItem(TOKEN_KEY);
   const tok = await IGDB.getToken();
-  if(tok){
-    const res = await IGDB.search('Zelda');
+  if(!tok){
+    if(prev) IGDB.saveCreds(prev.id, prev.secret); else localStorage.removeItem(CREDS_KEY);
+    tr.className = 'test-result err';
+    tr.textContent = '❌ Falha na autenticação. Verifique Client ID e Client Secret no Twitch Dev Console.';
+    return;
+  }
+  tr.textContent = '⏳ Testando conexão com IGDB...';
+  const res = await IGDB.search('Zelda');
+  if(res?.length){
     tr.className = 'test-result ok';
-    tr.textContent = res?.length ? `✅ Conexão OK! Encontrado "${res[0]?.name}" e mais ${res.length-1} resultados.` : '✅ Token obtido com sucesso!';
+    tr.textContent = `✅ Conexão OK! "${res[0]?.name}" encontrado via proxy.`;
   } else {
     if(prev) IGDB.saveCreds(prev.id, prev.secret); else localStorage.removeItem(CREDS_KEY);
     tr.className = 'test-result err';
-    tr.textContent = '❌ Falha na autenticação. Verifique suas credenciais Twitch.';
+    tr.innerHTML = '❌ Token válido mas API inacessível. Todos os proxies CORS falharam.<br><small style="opacity:.7">Tente novamente em alguns segundos — os proxies públicos podem estar sobrecarregados.</small>';
   }
 };
 
