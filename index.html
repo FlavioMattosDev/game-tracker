@@ -34,16 +34,33 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
 
+/* ── DASHBOARD LAYOUT ────────────────────────── */
+:root {
+  --topbar-h: 56px;
+  --sidebar-w: 220px;
+}
+
 /* ── TOPBAR ─────────────────────────────────── */
 #topbar {
-  position: sticky; top: 0; z-index: 100;
-  height: 56px; background: rgba(7,7,12,.92);
-  backdrop-filter: blur(18px); border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 24px; gap: 16px;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--topbar-h); background: rgba(7,7,12,.96);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 20px; gap: 14px;
 }
-.logo { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:var(--green); letter-spacing:-.03em; white-space:nowrap; }
-.logo span { color:var(--text); }
-#search-wrap { flex:1; max-width:400px; position:relative; }
+.topbar-logo {
+  font-family:'Syne',sans-serif; font-weight:800; font-size:16px;
+  color:var(--green); letter-spacing:-.03em; white-space:nowrap;
+  display:flex; align-items:center; gap:8px; text-decoration:none;
+  width: calc(var(--sidebar-w) - 20px); flex-shrink: 0;
+}
+.topbar-logo span { color:var(--text); }
+.topbar-logo-icon {
+  width: 28px; height: 28px; background: var(--green); border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: #07070C; flex-shrink: 0;
+}
+#search-wrap { flex:1; max-width:440px; position:relative; }
 #search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:13px; pointer-events:none; }
 #search { width:100%; height:34px; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:8px; padding:0 12px 0 34px; font-family:'Outfit',sans-serif; font-size:13px; color:var(--text); outline:none; transition:border-color .2s,background .2s; }
 #search::placeholder { color:var(--muted); }
@@ -57,33 +74,213 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
   font-family: 'Syne', sans-serif;
 }
 #cfg-btn:hover { border-color: var(--border2); color: var(--text); background: rgba(255,255,255,.06); }
+#cfg-btn.igdb-on { border-color: rgba(0,255,148,.3); color: var(--green); background: rgba(0,255,148,.05); }
+#cfg-btn.igdb-on #igdb-status-dot { display: inline-block !important; }
 .cfg-btn-label { font-size: 12px; }
+.igdb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
 #btn-add { display:flex; align-items:center; gap:6px; padding:0 16px; height:34px; background:var(--green); color:#07070C; font-family:'Syne',sans-serif; font-weight:700; font-size:12px; letter-spacing:.05em; text-transform:uppercase; border:none; border-radius:8px; cursor:pointer; transition:opacity .2s,transform .15s; white-space:nowrap; }
 #btn-add:hover { opacity:.85; transform:translateY(-1px); }
 
-/* ── STATS ──────────────────────────────────── */
-#page-content { max-width:1200px; margin:0 auto; width:100%; }
-#stats-bar { display:flex; gap:12px; flex-wrap:wrap; padding:16px 24px; border-bottom:1px solid var(--border); }
-.stat-card { display:flex; align-items:center; gap:10px; padding:10px 16px; background:var(--card); border:1px solid var(--border); border-radius:10px; flex:1; min-width:120px; transition:border-color .2s; }
-.stat-card:hover { border-color:var(--border2); }
-.stat-icon { font-size:18px; }
-.stat-val { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:20px; line-height:1; }
-.stat-lbl { font-size:10px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+/* ── SIDEBAR ─────────────────────────────────── */
+#sidebar {
+  position: fixed; top: var(--topbar-h); left: 0; bottom: 0;
+  width: var(--sidebar-w); z-index: 150;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+}
+#sidebar::-webkit-scrollbar { width: 3px; }
+
+/* Sidebar nav section */
+.sidebar-section-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 18px 18px 6px;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 10px; }
+.sidebar-nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 9px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; transition: all .18s;
+  border: none; background: none; width: 100%; text-align: left;
+  position: relative;
+}
+.sidebar-nav-item:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.sidebar-nav-item.active {
+  color: var(--text); background: rgba(0,255,148,.08);
+}
+.sidebar-nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 25%; bottom: 25%;
+  width: 3px; background: var(--green); border-radius: 0 3px 3px 0; left: -10px;
+}
+.sidebar-nav-icon { font-size: 16px; flex-shrink: 0; }
+.sidebar-nav-badge {
+  margin-left: auto; font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  background: rgba(255,255,255,.07); color: var(--muted);
+  padding: 1px 6px; border-radius: 20px;
+  transition: all .18s;
+}
+.sidebar-nav-item.active .sidebar-nav-badge {
+  background: rgba(0,255,148,.15); color: var(--green);
+}
+
+/* Sidebar stats mini */
+.sidebar-divider { height: 1px; background: var(--border); margin: 12px 18px; }
+.sidebar-stats { padding: 0 14px 12px; display: flex; flex-direction: column; gap: 6px; }
+.sidebar-stat-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 10px; border-radius: 8px;
+  background: rgba(255,255,255,.02); border: 1px solid var(--border);
+  transition: border-color .2s;
+}
+.sidebar-stat-row:hover { border-color: var(--border2); }
+.sidebar-stat-left { display: flex; align-items: center; gap: 8px; }
+.sidebar-stat-icon { font-size: 13px; }
+.sidebar-stat-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+.sidebar-stat-val {
+  font-family: 'JetBrains Mono', monospace; font-weight: 700;
+  font-size: 13px;
+}
+/* ── SIDEBAR DICE / RANDOM GAME ─────────────── */
+.sidebar-dice-section { padding: 12px 10px 0; }
+.sidebar-dice-btn {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; padding: 10px 12px; border-radius: 10px;
+  background: rgba(0,255,148,.06); border: 1px solid rgba(0,255,148,.18);
+  color: var(--green); cursor: pointer; transition: all .2s;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.sidebar-dice-btn:hover { background: rgba(0,255,148,.12); border-color: rgba(0,255,148,.35); }
+.dice-icon {
+  font-size: 22px; flex-shrink: 0;
+  display: inline-block; transition: transform .6s cubic-bezier(.34,1.56,.64,1);
+}
+.sidebar-dice-btn.rolling .dice-icon { animation: dice-spin .6s cubic-bezier(.34,1.56,.64,1); }
+@keyframes dice-spin {
+  0%   { transform: rotate(0deg) scale(1); }
+  30%  { transform: rotate(180deg) scale(1.4); }
+  70%  { transform: rotate(320deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+#dice-result {
+  margin: 8px 10px 0; padding: 9px 12px; border-radius: 10px;
+  background: rgba(0,255,148,.05); border: 1px solid rgba(0,255,148,.12);
+  display: none; cursor: pointer; transition: all .18s;
+}
+#dice-result:hover { background: rgba(0,255,148,.1); }
+#dice-result.show { display: block; animation: pop-in .2s ease; }
+.dice-result-label { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+.dice-result-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--text); line-height: 1.3; }
+.dice-result-status { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ── GOAL INLINE INPUT (settings) ───────────── */
+.goal-input-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+.goal-number-input {
+  width: 80px; background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; font-family: 'JetBrains Mono', monospace;
+  font-size: 16px; font-weight: 700; color: var(--text); outline: none;
+  text-align: center; transition: border-color .2s;
+}
+.goal-number-input:focus { border-color: rgba(0,255,148,.4); }
+
+/* ── MAIN WRAPPER ────────────────────────────── */
+#dashboard-body {
+  margin-top: var(--topbar-h);
+  margin-left: var(--sidebar-w);
+  min-height: calc(100vh - var(--topbar-h));
+  display: flex; flex-direction: column;
+}
+
+/* ── CONTENT HEADER (breadcrumb / page title) ── */
+#content-header {
+  padding: 16px 24px 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.content-page-title {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--text);
+}
+.content-page-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ── STATS (now in sidebar, legacy strip hidden) ──── */
+#stats-bar { display: none; }
+#page-content { max-width: unset; margin: 0; width: 100%; }
 
 /* ── FILTERS ────────────────────────────────── */
-#filter-row { display:flex; align-items:center; padding:0 24px; border-bottom:1px solid var(--border); overflow-x:auto; }
+#filter-row { display:flex; align-items:center; padding:0 24px; border-bottom:1px solid var(--border); overflow-x:auto; overflow-y:hidden; background: var(--bg); flex-wrap: nowrap; }
 #filter-row::-webkit-scrollbar { display:none; }
-.filter-tab { padding:14px 16px; background:none; border:none; border-bottom:2px solid transparent; font-family:'Syne',sans-serif; font-weight:700; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:color .2s,border-color .2s; white-space:nowrap; margin-bottom:-1px; display:flex; align-items:center; gap:6px; }
+.filter-tab { padding:14px 16px; background:none; border:none; border-bottom:2px solid transparent; font-family:'Syne',sans-serif; font-weight:700; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; transition:color .2s,border-color .2s; white-space:nowrap; margin-bottom:-1px; display:flex; align-items:center; gap:6px; flex-shrink:0; }
 .filter-tab:hover { color:#94A3B8; }
 .filter-tab.active { color:var(--text); border-bottom-color:var(--green); }
 .tab-count { display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 5px; border-radius:9px; font-size:10px; font-weight:700; background:rgba(255,255,255,.07); color:var(--muted); }
 .filter-tab.active .tab-count { background:rgba(0,255,148,.15); color:var(--green); }
-#sort-row { display:flex; align-items:center; gap:10px; padding:12px 24px; }
-#sort-row label { font-size:12px; color:var(--muted); }
-#sort-select { background:var(--card); border:1px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:12px; padding:5px 10px; border-radius:7px; outline:none; cursor:pointer; }
-#view-toggle { margin-left:auto; display:flex; gap:4px; }
+#sort-row { display:flex; align-items:center; gap:10px; padding:12px 24px; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; }
+#sort-row::-webkit-scrollbar { display:none; }
+#sort-row label { font-size:12px; color:var(--muted); white-space:nowrap; flex-shrink:0; }
+#sort-select { background:var(--card); border:1px solid var(--border); color:var(--text); font-family:'Outfit',sans-serif; font-size:12px; padding:5px 10px; border-radius:7px; outline:none; cursor:pointer; flex-shrink:0; }
+#view-toggle { margin-left:auto; display:flex; gap:4px; flex-shrink:0; }
 .view-btn { width:30px; height:30px; display:flex; align-items:center; justify-content:center; background:none; border:1px solid var(--border); border-radius:7px; cursor:pointer; font-size:13px; color:var(--muted); transition:all .2s; }
 .view-btn.active { background:rgba(255,255,255,.06); color:var(--text); border-color:var(--border2); }
+
+/* cfg-tabs horizontal scroll */
+.cfg-tabs {
+  display: flex; gap: 0; padding: 0 24px;
+  border-bottom: 1px solid var(--border); margin-top: 16px;
+  overflow-x: auto; overflow-y: hidden; flex-wrap: nowrap;
+}
+.cfg-tabs::-webkit-scrollbar { display: none; }
+.cfg-tab {
+  padding: 11px 16px; background: none; border: none;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; transition: color .2s, border-color .2s;
+  display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0;
+}
+.cfg-tab:hover { color: #94A3B8; }
+.cfg-tab.active { color: var(--text); border-bottom-color: var(--green); }
+
+/* ── CUSTOM PLATFORM SELECT ──────────────────── */
+.custom-select-wrap { position: relative; }
+.custom-select-trigger {
+  width: 100%; height: 42px; display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  border-radius: 9px; padding: 0 12px;
+  font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--text);
+  cursor: pointer; transition: border-color .2s, background .2s; text-align: left;
+}
+.custom-select-trigger:focus { outline: none; border-color: rgba(0,255,148,.35); }
+.custom-select-trigger:hover { border-color: var(--border2); }
+.custom-select-wrap.open .custom-select-trigger { border-color: rgba(0,255,148,.35); background: rgba(0,255,148,.02); }
+.custom-select-arrow { font-size: 11px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+.custom-select-wrap.open .custom-select-arrow { transform: rotate(180deg); }
+.custom-select-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: #14142a; border: 1px solid var(--border2);
+  border-radius: 12px; z-index: 80; overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,.7);
+  display: none; max-height: 280px; overflow-y: auto;
+  animation: pop-in .15s ease;
+}
+.custom-select-menu::-webkit-scrollbar { width: 4px; }
+.custom-select-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+.custom-select-wrap.open .custom-select-menu { display: block; }
+.custom-select-group {
+  padding: 8px 14px 4px;
+  font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted);
+}
+.custom-select-option {
+  padding: 9px 14px; cursor: pointer; font-size: 13px; color: var(--text);
+  transition: background .12s;
+}
+.custom-select-option:hover { background: rgba(255,255,255,.07); }
+.custom-select-option.selected { color: var(--green); background: rgba(0,255,148,.07); }
+.custom-select-option[data-val=""] { color: var(--muted); font-style: italic; }
 
 /* ── GAME GRID ──────────────────────────────── */
 #game-grid { padding:24px 24px 40px; display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); }
@@ -251,18 +448,41 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
 .d-info-lbl { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
 .d-info-val { font-size: 13px; color: var(--text); font-weight: 600; margin-top: 3px; overflow-wrap: break-word; word-break: break-word; }
 
-/* ── SCREENSHOTS ── */
-.screenshots-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
-.screenshots-strip::-webkit-scrollbar { height: 3px; }
-.ss-thumb { width: 160px; height: 90px; object-fit: cover; border-radius: 8px; flex-shrink: 0; border: 1px solid var(--border); transition: border-color .2s, transform .2s; cursor: pointer; }
-.ss-thumb:hover { border-color: var(--border2); transform: scale(1.03); }
+/* ── SCREENSHOTS CAROUSEL ───────────────────── */
+.screenshots-strip {
+  position: relative; overflow: hidden;
+  padding: 4px 0 8px; mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.screenshots-track {
+  display: flex; gap: 10px;
+  animation: ss-scroll 28s linear infinite;
+  width: max-content;
+}
+.screenshots-track:hover { animation-play-state: paused; }
+@keyframes ss-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ss-thumb {
+  width: 220px; height: 124px; object-fit: cover;
+  border-radius: 10px; flex-shrink: 0;
+  border: 1px solid var(--border);
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  cursor: pointer; display: block;
+}
+.ss-thumb:hover {
+  border-color: rgba(0,255,148,.4);
+  transform: scale(1.04);
+  box-shadow: 0 8px 28px rgba(0,0,0,.5);
+}
 
 /* ── NOTES ── */
 .d-notes-box { background: rgba(255,255,255,.02); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; min-width: 0; }
 #detail-notes-val { font-size: 13px; color: #94A3B8; line-height: 1.7; white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word; }
 #detail-notes-empty { font-size: 12px; color: var(--muted); font-style: italic; }
 
-/* ── SETTINGS MODAL (simplified) ───────────────── */
+/* ── SETTINGS MODAL (unified) ───────────────── */
 #settings-modal {
   background: var(--surface); border: 1px solid var(--border2);
   border-radius: 20px; width: 100%; max-width: 520px;
@@ -281,25 +501,22 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
 }
 .cfg-close:hover { background: rgba(255,255,255,.12); color: var(--text); }
 
-/* tab strip */
-.cfg-tabs {
-  display: flex; gap: 0; padding: 0 24px;
-  border-bottom: 1px solid var(--border); margin-top: 16px;
-}
-.cfg-tab {
-  padding: 11px 16px; background: none; border: none;
-  border-bottom: 2px solid transparent; margin-bottom: -1px;
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px;
-  letter-spacing: .07em; text-transform: uppercase;
-  color: var(--muted); cursor: pointer; transition: color .2s, border-color .2s;
-  display: flex; align-items: center; gap: 6px; white-space: nowrap;
-}
-.cfg-tab:hover { color: #94A3B8; }
-.cfg-tab.active { color: var(--text); border-bottom-color: var(--green); }
-
 /* panels */
 .cfg-panel { display: none; padding: 22px 24px 24px; }
 .cfg-panel.active { display: block; }
+
+/* IGDB panel */
+.cfg-hint {
+  font-size: 12px; color: var(--muted); line-height: 1.65;
+  background: rgba(255,255,255,.03); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 18px;
+}
+.cfg-hint a { color: var(--blue); text-decoration: none; }
+.cfg-hint a:hover { text-decoration: underline; }
+.cfg-hint code { background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+.test-result { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; display: none; align-items: center; gap: 8px; }
+.test-result.ok  { background: rgba(0,255,148,.08); border: 1px solid rgba(0,255,148,.2); color: var(--green); display: flex; }
+.test-result.err { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.2); color: var(--red); display: flex; }
 
 /* Tags panel */
 .tagmgr-list {
@@ -324,71 +541,28 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
 
 .cfg-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
 
-/* ── Backup panel ── */
-.backup-section { display:flex; flex-direction:column; gap:8px; }
-.backup-section-title { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--text); }
-.backup-desc { font-size:12px; color:var(--muted); line-height:1.65; margin:0; }
-.backup-desc code { background:rgba(255,255,255,.07); padding:1px 6px; border-radius:4px; font-size:11px; color:var(--green); }
-.backup-info { font-size:11px; color:var(--muted); margin-top:2px; }
-.backup-divider { height:1px; background:var(--border); margin:20px 0; }
-.backup-file-label {
-  display:inline-flex; align-items:center; gap:8px; cursor:pointer;
-  padding:8px 16px; border-radius:8px; font-size:12px; font-weight:700;
-  border:1px dashed var(--border2); color:var(--muted);
-  transition:all .2s; margin-top:4px;
+/* ── DELETE ─────────────────────────────────── */
+/* ── DUPLICATE MODAL ─────────────────────────── */
+#dup-modal {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 18px; padding: 28px; max-width: 440px; width: 100%;
+  animation: pop-in .2s ease;
 }
-.backup-file-label:hover { border-color:rgba(56,189,248,.4); color:var(--blue); background:rgba(56,189,248,.06); }
-.backup-file-label.has-file { border-color:rgba(0,255,148,.35); color:var(--green); background:rgba(0,255,148,.06); }
-.backup-import-status { font-size:12px; margin-top:8px; line-height:1.6; min-height:18px; }
-
-/* ── Passport panel ── */
-#passport-card {
-  width: 600px; min-height: 340px;
-  background: linear-gradient(135deg, #0d0d1a 0%, #12122a 60%, #0a1628 100%);
-  border-radius: 20px; padding: 32px;
-  font-family: 'Outfit', sans-serif; color: #fff;
-  position: relative; overflow: hidden;
-  box-sizing: border-box;
+#dup-modal .dup-icon { font-size: 36px; margin-bottom: 12px; }
+#dup-modal h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; margin-bottom: 8px; }
+#dup-modal p { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+.dup-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.dup-option-btn {
+  display: flex; flex-direction: column; gap: 3px; text-align: left;
+  padding: 14px 16px; border-radius: 12px; cursor: pointer;
+  border: 1px solid var(--border); background: rgba(255,255,255,.02);
+  transition: all .18s; width: 100%;
 }
-#passport-card::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 80% 20%, rgba(0,255,148,.08) 0%, transparent 60%),
-              radial-gradient(ellipse at 20% 80%, rgba(56,189,248,.06) 0%, transparent 50%);
-  pointer-events: none;
-}
-.pp-header { display:flex; align-items:center; gap:16px; margin-bottom:24px; position:relative; }
-.pp-avatar {
-  width:64px; height:64px; border-radius:14px; flex-shrink:0;
-  background: linear-gradient(135deg,#00FF94,#38BDF8);
-  display:flex; align-items:center; justify-content:center;
-  font-size:28px; box-shadow:0 8px 24px rgba(0,255,148,.25);
-}
-.pp-identity { flex:1; min-width:0; }
-.pp-name { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:-.02em; }
-.pp-tagline { font-size:12px; color:rgba(255,255,255,.45); margin-top:3px; }
-.pp-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:13px; color:rgba(255,255,255,.15); letter-spacing:.05em; }
-.pp-stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; position:relative; }
-.pp-stat {
-  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
-  border-radius:12px; padding:12px 10px; text-align:center;
-}
-.pp-stat-val { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:20px; line-height:1; }
-.pp-stat-lbl { font-size:10px; color:rgba(255,255,255,.4); margin-top:4px; text-transform:uppercase; letter-spacing:.06em; }
-.pp-section-lbl { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:8px; }
-.pp-games-row { display:flex; gap:8px; margin-bottom:20px; position:relative; }
-.pp-game-cover {
-  width:52px; height:70px; border-radius:7px; object-fit:cover; flex-shrink:0;
-  border:2px solid rgba(255,255,255,.1); background:rgba(255,255,255,.06);
-  display:flex; align-items:center; justify-content:center; font-size:18px;
-}
-.pp-game-cover img { width:100%; height:100%; object-fit:cover; border-radius:5px; }
-.pp-footer { display:flex; align-items:center; justify-content:space-between; position:relative; }
-.pp-genres { display:flex; gap:6px; flex-wrap:wrap; }
-.pp-genre { font-size:10px; padding:3px 9px; border-radius:20px; font-weight:700; background:rgba(0,255,148,.12); color:#00FF94; border:1px solid rgba(0,255,148,.2); }
-.pp-date { font-size:10px; color:rgba(255,255,255,.25); font-family:'JetBrains Mono',monospace; }
-
-/* ── DELETE CONFIRM ─────────────────────────────────── */
-#del-modal { background:var(--surface); border:1px solid rgba(248,113,113,.25); border-radius:14px; padding:28px; max-width:360px; width:100%; text-align:center; animation:pop-in .2s ease; }
+.dup-option-btn:hover { border-color: var(--border2); background: rgba(255,255,255,.06); }
+.dup-option-btn.primary { border-color: rgba(0,255,148,.25); background: rgba(0,255,148,.06); }
+.dup-option-btn.primary:hover { border-color: rgba(0,255,148,.45); background: rgba(0,255,148,.1); }
+.dup-option-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--text); }
+.dup-option-desc { font-size: 11px; color: var(--muted); }
 #del-modal h3 { font-family:'Syne',sans-serif; font-weight:800; margin-bottom:8px; }
 #del-modal p { font-size:13px; color:var(--muted); margin-bottom:20px; }
 .del-actions { display:flex; gap:10px; justify-content:center; }
@@ -400,28 +574,54 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
 #toast.show { transform:translateY(0); opacity:1; }
 
 /* ── LIGHTBOX ───────────────────────────────── */
-#lightbox { position:fixed; inset:0; z-index:600; background:rgba(0,0,0,.93); display:none; align-items:center; justify-content:center; cursor:zoom-out; }
+#lightbox {
+  position:fixed; inset:0; z-index:600;
+  background:rgba(0,0,0,.93); display:none;
+  align-items:center; justify-content:center;
+  cursor:zoom-out;
+}
 #lightbox.open { display:flex; }
-#lightbox img { max-width:92vw; max-height:88vh; border-radius:10px; box-shadow:0 24px 80px rgba(0,0,0,.8); }
-#lb-close { position:absolute; top:16px; right:16px; width:40px; height:40px; background:rgba(255,255,255,.1); border:none; border-radius:10px; cursor:pointer; font-size:20px; color:#fff; display:flex; align-items:center; justify-content:center; }
+#lb-img {
+  max-width:92vw; max-height:88vh;
+  border-radius:10px; box-shadow:0 24px 80px rgba(0,0,0,.8);
+  transition: opacity .2s ease, transform .2s ease;
+  cursor: default;
+}
+#lb-img.fading { opacity:0; transform:scale(.97); }
+#lb-close {
+  position:absolute; top:16px; right:16px;
+  width:40px; height:40px; background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.15); border-radius:10px;
+  cursor:pointer; font-size:18px; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  transition: background .18s; z-index:2;
+}
+#lb-close:hover { background:rgba(255,255,255,.22); }
+.lb-arrow {
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:48px; height:48px;
+  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.15);
+  border-radius:50%; cursor:pointer;
+  font-size:22px; color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  transition: background .18s, transform .18s, opacity .18s;
+  z-index:2; user-select:none;
+}
+.lb-arrow:hover { background:rgba(255,255,255,.22); transform:translateY(-50%) scale(1.08); }
+.lb-arrow:active { transform:translateY(-50%) scale(.95); }
+.lb-arrow.hidden { opacity:0; pointer-events:none; }
+#lb-prev { left:20px; }
+#lb-next { right:20px; }
+#lb-counter {
+  position:absolute; bottom:18px; left:50%; transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700;
+  color:rgba(255,255,255,.5); background:rgba(0,0,0,.5);
+  padding:4px 12px; border-radius:20px; letter-spacing:.06em;
+  pointer-events:none; z-index:2;
+}
 
-/* ── PAGE NAV ───────────────────────────────── */
-#page-nav {
-  display:flex; align-items:center; gap:0;
-  padding:0 24px; border-bottom:1px solid var(--border);
-  background:var(--bg);
-}
-.page-tab {
-  padding:13px 18px; background:none; border:none;
-  border-bottom:2px solid transparent; margin-bottom:-1px;
-  font-family:'Syne',sans-serif; font-weight:700; font-size:12px;
-  letter-spacing:.06em; text-transform:uppercase;
-  color:var(--muted); cursor:pointer; transition:color .2s,border-color .2s;
-  display:flex; align-items:center; gap:7px; white-space:nowrap;
-}
-.page-tab:hover { color:#94A3B8; }
-.page-tab.active { color:var(--text); border-bottom-color:var(--green); }
-.page-tab-icon { font-size:14px; }
+/* ── PAGE NAV (hidden — replaced by sidebar) ─── */
+#page-nav { display: none; }
 
 /* ── TAGS ────────────────────────────────────── */
 .tag-pill {
@@ -498,6 +698,124 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
 .tag-filter-btn:hover { border-color:var(--border2); color:var(--text); }
 .tag-filter-btn.active { background:rgba(167,139,250,.15); color:var(--purple); border-color:rgba(167,139,250,.3); }
 #tag-filter-lbl { font-size:11px; color:var(--muted); font-weight:600; white-space:nowrap; }
+/* ── TAG MANAGER MODAL ──────────────────────── */
+#tagmgr-modal {
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:18px; width:100%; max-width:440px; padding:28px;
+  animation:pop-in .2s ease;
+}
+.tagmgr-list {
+  display:flex; flex-wrap:wrap; gap:8px; min-height:52px;
+  margin:14px 0; background:rgba(255,255,255,.02);
+  border:1px solid var(--border); border-radius:10px; padding:12px;
+}
+.tagmgr-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 12px; border-radius:20px;
+  background:rgba(167,139,250,.12); color:var(--purple);
+  border:1px solid rgba(167,139,250,.2); font-size:12px; font-weight:700;
+}
+.tagmgr-del {
+  background:none; border:none; color:rgba(167,139,250,.5);
+  cursor:pointer; font-size:15px; line-height:1; padding:0; transition:color .15s;
+}
+.tagmgr-del:hover { color:var(--red); }
+.tagmgr-empty { font-size:12px; color:var(--muted); font-style:italic; }
+.tagmgr-create { display:flex; gap:8px; }
+.tagmgr-hint { font-size:11px; color:var(--muted); margin-top:12px; line-height:1.6; }
+
+/* ── BACKUP PANEL ────────────────────────────── */
+.backup-section { display:flex; flex-direction:column; gap:8px; }
+.backup-section-title { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--text); }
+.backup-desc { font-size:12px; color:var(--muted); line-height:1.65; margin:0; }
+.backup-desc code { background:rgba(255,255,255,.07); padding:1px 6px; border-radius:4px; font-size:11px; color:var(--green); }
+.backup-info { font-size:11px; color:var(--muted); margin-top:2px; }
+.backup-divider { height:1px; background:var(--border); margin:20px 0; }
+.backup-file-label {
+  display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+  padding:8px 16px; border-radius:8px; font-size:12px; font-weight:700;
+  border:1px dashed var(--border2); color:var(--muted);
+  transition:all .2s; margin-top:4px;
+}
+.backup-file-label:hover { border-color:rgba(56,189,248,.4); color:var(--blue); background:rgba(56,189,248,.06); }
+.backup-file-label.has-file { border-color:rgba(0,255,148,.35); color:var(--green); background:rgba(0,255,148,.06); }
+.backup-import-status { font-size:12px; margin-top:8px; line-height:1.6; min-height:18px; }
+
+/* ── PASSPORT PAGE (full main content) ──────── */
+#passport-page {
+  display: none; padding: 32px 24px 60px;
+  max-width: 760px;
+}
+#passport-page.active { display: block; }
+.passport-page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+}
+.passport-page-title {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--text);
+}
+.passport-page-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.passport-page-actions { display: flex; gap: 10px; flex-shrink: 0; }
+#passport-card-wrap {
+  border-radius: 18px; overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,.6);
+  display: inline-block; width: 100%;
+}
+#passport-card {
+  width: 100%; min-height: 340px;
+  background: linear-gradient(135deg,#0d0d1a 0%,#12122a 60%,#0a1628 100%);
+  border-radius: 0; padding: 40px 40px 36px;
+  font-family: 'Outfit',sans-serif; color: #fff;
+  position: relative; overflow: hidden; box-sizing: border-box;
+}
+#passport-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 80% 20%,rgba(0,255,148,.08) 0%,transparent 60%),
+              radial-gradient(ellipse at 20% 80%,rgba(56,189,248,.06) 0%,transparent 50%);
+  pointer-events: none;
+}
+
+/* ── SORTEADOR CONFIG (in prefs panel) ──────── */
+.dice-pool-options { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.dice-pool-option {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 9px 12px; border-radius: 9px; border: 1px solid var(--border);
+  background: rgba(255,255,255,.02); transition: border-color .15s;
+  font-size: 13px; color: var(--text);
+}
+.dice-pool-option:hover { border-color: var(--border2); }
+.dice-pool-option input[type=checkbox] { accent-color: var(--green); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
+.dice-pool-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.pp-header { display:flex; align-items:center; gap:16px; margin-bottom:24px; position:relative; }
+.pp-avatar {
+  width:64px; height:64px; border-radius:14px; flex-shrink:0;
+  background: linear-gradient(135deg,#00FF94,#38BDF8);
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; box-shadow:0 8px 24px rgba(0,255,148,.25);
+}
+.pp-identity { flex:1; min-width:0; }
+.pp-name { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:-.02em; }
+.pp-tagline { font-size:12px; color:rgba(255,255,255,.45); margin-top:3px; }
+.pp-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:13px; color:rgba(255,255,255,.15); letter-spacing:.05em; }
+.pp-stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; position:relative; }
+.pp-stat {
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+  border-radius:12px; padding:12px 10px; text-align:center;
+}
+.pp-stat-val { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:20px; line-height:1; }
+.pp-stat-lbl { font-size:10px; color:rgba(255,255,255,.4); margin-top:4px; text-transform:uppercase; letter-spacing:.06em; }
+.pp-section-lbl { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:8px; }
+.pp-games-row { display:flex; gap:8px; margin-bottom:20px; position:relative; }
+.pp-game-cover {
+  width:52px; height:70px; border-radius:7px; object-fit:cover; flex-shrink:0;
+  border:2px solid rgba(255,255,255,.1); background:rgba(255,255,255,.06);
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+}
+.pp-game-cover img { width:100%; height:100%; object-fit:cover; border-radius:5px; }
+.pp-footer { display:flex; align-items:center; justify-content:space-between; position:relative; }
+.pp-genres { display:flex; gap:6px; flex-wrap:wrap; }
+.pp-genre { font-size:10px; padding:3px 9px; border-radius:20px; font-weight:700; background:rgba(0,255,148,.12); color:#00FF94; border:1px solid rgba(0,255,148,.2); }
+.pp-date { font-size:10px; color:rgba(255,255,255,.25); font-family:'JetBrains Mono',monospace; }
 
 /* ── LISTS PAGE ──────────────────────────────── */
 .lists-page-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:24px; }
@@ -521,8 +839,32 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
 .list-card-cover-more { width:40px; height:54px; border-radius:6px; background:rgba(255,255,255,.05); border:1px dashed var(--border2); display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--muted); flex-shrink:0; }
 /* List detail */
 .list-detail-header { display:flex; align-items:center; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
-.list-back-btn { background:none; border:1px solid var(--border); border-radius:8px; color:var(--muted); padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; white-space:nowrap; }
-.list-back-btn:hover { color:var(--text); border-color:var(--border2); }
+/* ── LIST DETAIL GRID/LIST TOGGLE ───────────── */
+#list-detail-grid.list-view { grid-template-columns: 1fr; }
+#list-detail-grid.list-view .list-game-card {
+  flex-direction: row; align-items: center;
+  border-radius: 10px; overflow: hidden;
+}
+#list-detail-grid.list-view .list-game-card-cover {
+  width: 54px; height: 72px; aspect-ratio: unset;
+  border-radius: 0; flex-shrink: 0;
+}
+#list-detail-grid.list-view .list-game-card-body {
+  flex: 1; min-width: 0; padding: 10px 14px;
+}
+#list-detail-grid.list-view .list-game-card-foot {
+  border-top: none; border-left: 1px solid var(--border);
+  padding: 0 14px; flex-shrink: 0; min-width: 140px;
+}
+.list-detail-header { display:flex; align-items:center; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
+.list-back-btn {
+  background:none; border:1px solid var(--border); border-radius:8px;
+  color:var(--muted); padding:7px 14px; font-size:12px; font-weight:700;
+  cursor:pointer; transition:all .2s; white-space:nowrap;
+  font-family:'Syne',sans-serif; letter-spacing:.04em;
+  display:flex; align-items:center; gap:6px;
+}
+.list-back-btn:hover { color:var(--text); border-color:var(--border2); background:rgba(255,255,255,.04); }
 .list-detail-meta { flex:1; min-width:0; }
 .list-detail-name { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; }
 .list-detail-desc-text { font-size:12px; color:var(--muted); margin-top:2px; }
@@ -566,7 +908,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-se
 .list-color-swatch { width:28px; height:28px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:transform .15s, border-color .15s; }
 .list-color-swatch.active, .list-color-swatch:hover { transform:scale(1.2); border-color:#fff; }
 
-#stats-page { display:none; padding:24px; }
+#stats-page { display:none; padding:20px 24px 40px; }
 #stats-page.active { display:block; }
 
 .stats-section-title {
@@ -627,7 +969,7 @@ canvas.chart { width:100% !important; }
 .legend-val { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--muted); }
 
 /* ── CALENDAR PAGE ───────────────────────────── */
-#cal-page { display:none; padding:24px; }
+#cal-page { display:none; padding:20px 24px 40px; }
 
 .cal-header {
   display:flex; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap;
@@ -800,16 +1142,316 @@ canvas.chart { width:100% !important; }
   align-self:center; white-space:nowrap;
 }
 
+/* ── BULK ACTIONS ────────────────────────────── */
+#bulk-bar {
+  display: none; align-items: center; gap: 10px;
+  padding: 10px 24px; background: rgba(0,255,148,.06);
+  border-bottom: 1px solid rgba(0,255,148,.18);
+  flex-wrap: wrap; animation: pop-in .15s ease;
+}
+#bulk-bar.visible { display: flex; }
+.bulk-count {
+  font-family: 'JetBrains Mono', monospace; font-weight: 700;
+  font-size: 13px; color: var(--green); white-space: nowrap;
+}
+.bulk-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+  font-family: 'Syne', sans-serif; cursor: pointer; transition: all .18s;
+  border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text);
+  white-space: nowrap;
+}
+.bulk-btn:hover { background: rgba(255,255,255,.09); border-color: var(--border2); }
+.bulk-btn.danger { color: var(--red); border-color: rgba(248,113,113,.2); }
+.bulk-btn.danger:hover { background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.4); }
+.bulk-sep { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
+.bulk-cancel { margin-left: auto; color: var(--muted); }
+.bulk-cancel:hover { color: var(--text); }
+#bulk-status-menu, #bulk-tag-menu {
+  position: fixed; z-index: 310;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 6px; display: none;
+  box-shadow: 0 16px 48px rgba(0,0,0,.6);
+  animation: pop-in .15s ease; min-width: 160px;
+}
+#bulk-status-menu.open, #bulk-tag-menu.open { display: block; }
+.bulk-menu-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-radius: 8px; cursor: pointer;
+  font-size: 12px; font-weight: 700; font-family: 'Syne', sans-serif;
+  transition: background .12s; white-space: nowrap; color: var(--text);
+}
+.bulk-menu-item:hover { background: rgba(255,255,255,.07); }
+.bulk-menu-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.bulk-menu-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+
+/* Card checkbox overlay */
+.game-card { position: relative; }
+.card-checkbox-wrap {
+  position: absolute; top: 8px; left: 8px; z-index: 10;
+  display: none;
+}
+body.bulk-mode .card-checkbox-wrap { display: block; }
+body.bulk-mode .game-card { cursor: default; }
+body.bulk-mode .game-card .game-cover { opacity: .85; }
+.card-checkbox {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 2px solid rgba(255,255,255,.4); background: rgba(7,7,12,.7);
+  backdrop-filter: blur(4px); cursor: pointer; appearance: none;
+  transition: all .15s; display: block;
+}
+.card-checkbox:checked {
+  background: var(--green); border-color: var(--green);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%2307070C' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center;
+}
+body.bulk-mode .game-card.selected { border-color: var(--green); box-shadow: 0 0 0 2px rgba(0,255,148,.2); }
+
+/* Select-all button in sort row */
+#btn-bulk-toggle {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 12px; height: 30px; border-radius: 7px;
+  font-size: 11px; font-weight: 700; font-family: 'Syne', sans-serif;
+  border: 1px solid var(--border); background: rgba(255,255,255,.03);
+  color: var(--muted); cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+#btn-bulk-toggle:hover { border-color: var(--border2); color: var(--text); background: rgba(255,255,255,.06); }
+#btn-bulk-toggle.active { border-color: rgba(0,255,148,.3); color: var(--green); background: rgba(0,255,148,.05); }
+#content-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px 0; gap: 12px; flex-wrap: wrap;
+}
+.content-page-title {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
+  color: var(--text); display: flex; align-items: center; gap: 10px;
+}
+.content-page-sub {
+  font-size: 12px; color: var(--muted); margin-top: 2px;
+}
+.content-header-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ── CARD YEAR BADGE ─────────────────────────── */
+.card-year {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+  color: var(--blue); background: rgba(56,189,248,.1);
+  border: 1px solid rgba(56,189,248,.2); border-radius: 4px;
+  padding: 1px 5px; flex-shrink: 0;
+}
+/* grid view: pill overlaid on the cover, top-right */
+.card-year-overlay {
+  position: absolute; top: 8px; right: 8px; z-index: 4;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800;
+  color: #07070C; background: var(--green);
+  border-radius: 6px; padding: 2px 8px;
+  pointer-events: none; letter-spacing: .02em;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.game-card { border-left: 3px solid transparent; }
+.game-card[data-status="playing"]   { border-left-color: var(--green); }
+.game-card[data-status="completed"] { border-left-color: var(--blue); }
+.game-card[data-status="wishlist"]  { border-left-color: var(--yellow); }
+.game-card[data-status="paused"]    { border-left-color: var(--muted); }
+.game-card[data-status="dropped"]   { border-left-color: var(--red); }
+
+/* ── PROGRESS BAR (% jogado) ─────────────────── */
+.progress-wrap { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.progress-label { font-size: 11px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+#f-progress-wrap { display: none !important; }
+#f-progress-wrap.visible { display: flex !important; flex-direction: column; gap: 6px; }
+.progress-slider { width: 100%; accent-color: var(--green); cursor: pointer; }
+.progress-val-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+  color: var(--green); background: rgba(0,255,148,.1); border: 1px solid rgba(0,255,148,.2);
+  padding: 2px 9px; border-radius: 20px; white-space: nowrap;
+}
+
+/* ── GOALS WIDGET ────────────────────────────── */
+#goals-bar {
+  display: none; align-items: center; gap: 16px;
+  padding: 12px 24px; border-bottom: 1px solid var(--border);
+  background: rgba(0,255,148,.03);
+}
+#goals-bar.visible { display: flex; }
+.goal-label { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.goal-track { flex: 1; max-width: 220px; height: 6px; background: rgba(255,255,255,.07); border-radius: 3px; overflow: hidden; }
+.goal-fill { height: 100%; border-radius: 3px; background: var(--green); transition: width .6s ease; }
+.goal-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; }
+.goal-edit-btn {
+  font-size: 11px; color: var(--muted); background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; font-family: 'Syne', sans-serif;
+  font-weight: 700; transition: all .2s;
+}
+.goal-edit-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* ── QUICK STATUS POPOVER ────────────────────── */
+#status-popover {
+  position: fixed; z-index: 300;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 6px; display: none;
+  box-shadow: 0 16px 48px rgba(0,0,0,.6);
+  animation: pop-in .15s ease;
+}
+#status-popover.open { display: block; }
+.status-pop-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 8px; cursor: pointer;
+  font-size: 12px; font-weight: 700; font-family: 'Syne', sans-serif;
+  transition: background .15s; white-space: nowrap;
+}
+.status-pop-item:hover { background: rgba(255,255,255,.07); }
+.status-pop-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── MOBILE BOTTOM NAV ───────────────────────── */
+#mobile-bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(7,7,12,.97); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  height: 60px; padding: 0 8px;
+  align-items: center; justify-content: space-around;
+}
+.mob-nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 8px 12px; border-radius: 10px; cursor: pointer;
+  background: none; border: none; color: var(--muted); transition: color .18s;
+  font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.mob-nav-item.active { color: var(--green); }
+.mob-nav-icon { font-size: 20px; line-height: 1; }
+
+/* ── HEATMAP CALENDAR ────────────────────────── */
+#heatmap-section { margin-bottom: 28px; }
+.heatmap-grid { display: flex; gap: 3px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+.heatmap-col { display: flex; flex-direction: column; gap: 3px; }
+.heatmap-cell {
+  width: 12px; height: 12px; border-radius: 2px;
+  background: rgba(255,255,255,.06); cursor: pointer;
+  transition: transform .1s;
+}
+.heatmap-cell:hover { transform: scale(1.3); }
+.heatmap-cell.l1 { background: rgba(0,255,148,.25); }
+.heatmap-cell.l2 { background: rgba(0,255,148,.5); }
+.heatmap-cell.l3 { background: rgba(0,255,148,.8); }
+.heatmap-cell.l4 { background: var(--green); }
+.heatmap-months { display: flex; gap: 0; font-size: 10px; color: var(--muted); font-weight: 600; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+.heatmap-month-label { white-space: nowrap; }
+.heatmap-legend { display: flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 10px; color: var(--muted); }
+.heatmap-legend-cell { width: 10px; height: 10px; border-radius: 2px; }
+
+/* ── SHORTCUTS PANEL ────────────────────────── */
+.shortcut-group-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); padding: 14px 0 6px;
+}
+.shortcut-group-label:first-child { padding-top: 0; }
+.shortcut-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 4px; }
+.shortcut-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 10px; border-radius: 8px;
+  background: rgba(255,255,255,.02);
+}
+.shortcut-key {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 28px; height: 24px; padding: 0 7px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14);
+  border-radius: 6px; font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700; color: var(--text);
+  flex-shrink: 0;
+}
+.shortcut-combo { letter-spacing: -.02em; }
+.shortcut-plus { font-size: 12px; color: var(--muted); }
+.shortcut-desc { font-size: 12px; color: var(--muted); margin-left: 4px; }
+
+/* ── LISTS FILTER BAR ────────────────────────── */
+.lists-filter-bar {
+  padding: 12px 0 0;
+  margin-bottom: 4px;
+}
+.lists-sort-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0 16px; border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.lists-sort-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.lists-sort-btns { display: flex; gap: 4px; }
+.lists-sort-btn {
+  padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  font-family: 'Syne', sans-serif; letter-spacing: .04em;
+  border: 1px solid var(--border); background: none; color: var(--muted);
+  cursor: pointer; transition: all .18s; white-space: nowrap;
+}
+.lists-sort-btn:hover { border-color: var(--border2); color: var(--text); }
+.lists-sort-btn.active { background: rgba(0,255,148,.1); color: var(--green); border-color: rgba(0,255,148,.3); }
+
+/* ── EXTRA FILTERS TOGGLE (Tags & Anos) ──────── */
+#extra-filters-toggle-bar {
+  padding: 6px 24px 0;
+}
+#extra-filters-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 1px solid var(--border); border-radius: 20px;
+  padding: 4px 12px; font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; transition: all .18s;
+}
+#extra-filters-btn:hover { border-color: var(--border2); color: var(--text); }
+#extra-filters-btn.open { border-color: rgba(167,139,250,.35); color: var(--purple); background: rgba(167,139,250,.06); }
+#extra-filters-icon { font-size: 11px; transition: transform .15s; display: inline-block; }
+#extra-filters-btn.open #extra-filters-icon { transform: rotate(90deg); }
+
+/* ── SHOW MORE BUTTON ────────────────────────── */
+.show-more-btn {
+  font-size: 11px; font-weight: 700; font-family: 'Syne', sans-serif;
+  color: var(--muted); background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 3px 10px; cursor: pointer;
+  transition: all .18s; white-space: nowrap; flex-shrink: 0;
+}
+.show-more-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* ── STREAK WIDGET ───────────────────────────── */
+.streak-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+.streak-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px 20px; display: flex; align-items: center; gap: 14px; flex: 1; min-width: 180px;
+}
+.streak-icon { font-size: 28px; }
+.streak-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 28px; color: var(--orange); line-height: 1; }
+.streak-label { font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+
 /* ── RESPONSIVE ─────────────────────────────── */
+@media(max-width:900px) {
+  :root { --sidebar-w: 64px; }
+  .sidebar-section-label { display: none; }
+  .sidebar-nav-item { padding: 12px; justify-content: center; gap: 0; }
+  .sidebar-nav-item span:not(.sidebar-nav-icon) { display: none; }
+  .sidebar-nav-badge { display: none; }
+  .sidebar-stats { padding: 0 6px 12px; }
+  .sidebar-stat-row { padding: 7px 6px; justify-content: center; }
+  .sidebar-stat-label { display: none; }
+  .sidebar-stat-left { gap: 0; }
+  .sidebar-stat-val { font-size: 11px; }
+  .sidebar-dice-btn span:not(.dice-icon) { display: none; }
+  .sidebar-dice-btn { justify-content: center; padding: 10px; min-width: 0; width: 100%; }
+  .sidebar-dice-section { padding: 8px 6px 0; }
+  #dice-result { display: none !important; }
+  .sidebar-footer { display: none; }
+  .topbar-logo span { display: none; }
+  .topbar-logo-icon { margin: 0 auto; }
+}
 @media(max-width:640px) {
+  :root { --topbar-h: 52px; --sidebar-w: 0px; }
   html, body { overflow-x: hidden; width: 100%; }
+  body { padding-bottom: 60px; }
+  #sidebar { display: none; }
+  #mobile-bottom-nav { display: flex; }
+  #dashboard-body { margin-left: 0; }
   #detail-game-title { font-size:16px; }
   #detail-cover-img,#detail-cover-ph { width:64px; height:85px; }
   #detail-hero { height:160px; }
   #d-user-stats { grid-template-columns: repeat(2,1fr); }
   .d-info-grid { grid-template-columns:1fr; }
   #topbar { padding:0 14px; gap:10px; }
-  #stats-bar { padding:12px 14px; gap:8px; }
+  .topbar-logo { width: auto; }
   #filter-row, #page-nav { padding:0 14px; }
   #page-nav { overflow-x: auto; flex-wrap: nowrap; }
   #page-nav::-webkit-scrollbar { display: none; }
@@ -817,7 +1459,6 @@ canvas.chart { width:100% !important; }
   #game-grid { padding:0 14px 32px; gap:10px; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
   #modal,#settings-modal { padding:20px; }
   .form-grid { grid-template-columns:1fr; }
-  .logo { font-size:15px; }
   #btn-add .add-text { display:none; }
   .cfg-btn-label { display:none; }
   .charts-grid { grid-template-columns:1fr; }
@@ -832,43 +1473,135 @@ canvas.chart { width:100% !important; }
 
 <!-- TOPBAR -->
 <nav id="topbar">
-  <div class="logo">GAME<span>VAULT</span></div>
+  <div class="topbar-logo">
+    <div class="topbar-logo-icon">🎮</div>
+    GAME<span>VAULT</span>
+  </div>
   <div id="search-wrap">
     <span id="search-icon">🔍</span>
     <input type="text" id="search" placeholder="Buscar na biblioteca...">
   </div>
   <div class="topbar-right">
     <button id="cfg-btn" title="Configurações">
+      <span id="igdb-status-dot" class="igdb-dot" style="display:none"></span>
       ⚙️ <span class="cfg-btn-label">Configurações</span>
     </button>
     <button id="btn-add"><span>+</span><span class="add-text">Adicionar Jogo</span></button>
   </div>
 </nav>
 
-<!-- PAGE NAV -->
-<div id="page-nav">
-  <button class="page-tab active" data-page="library">
-    <span class="page-tab-icon">🎮</span> Biblioteca
-  </button>
-  <button class="page-tab" data-page="lists">
-    <span class="page-tab-icon">📋</span> Listas
-  </button>
-  <button class="page-tab" data-page="stats">
-    <span class="page-tab-icon">📊</span> Estatísticas
-  </button>
-  <button class="page-tab" data-page="calendar">
-    <span class="page-tab-icon">📅</span> Lançamentos
-  </button>
+<!-- PAGE NAV (hidden - legacy IDs kept for JS) -->
+<div id="page-nav" style="display:none">
+  <button class="page-tab active" data-page="library"><span class="page-tab-icon">🎮</span> Biblioteca</button>
+  <button class="page-tab" data-page="lists"><span class="page-tab-icon">📋</span> Listas</button>
+  <button class="page-tab" data-page="stats"><span class="page-tab-icon">📊</span> Estatísticas</button>
+  <button class="page-tab" data-page="calendar"><span class="page-tab-icon">📅</span> Lançamentos</button>
 </div>
-<div id="stats-bar">
-  <div class="stat-card"><span class="stat-icon">🎮</span><div><div class="stat-val" id="s-total" style="color:var(--text)">0</div><div class="stat-lbl">Total</div></div></div>
-  <div class="stat-card"><span class="stat-icon">▶️</span><div><div class="stat-val" id="s-playing" style="color:var(--green)">0</div><div class="stat-lbl">Jogando</div></div></div>
-  <div class="stat-card"><span class="stat-icon">✅</span><div><div class="stat-val" id="s-completed" style="color:var(--blue)">0</div><div class="stat-lbl">Zerados</div></div></div>
-  <div class="stat-card"><span class="stat-icon">⭐</span><div><div class="stat-val" id="s-wishlist" style="color:var(--yellow)">0</div><div class="stat-lbl">Wishlist</div></div></div>
-  <div class="stat-card"><span class="stat-icon">⏱️</span><div><div class="stat-val" id="s-hours" style="color:var(--purple)">0h</div><div class="stat-lbl">Horas</div></div></div>
+<!-- Hidden stats bar (IDs kept for JS) -->
+<div id="stats-bar" style="display:none">
+  <div class="stat-card"><span class="stat-icon">🎮</span><div><div class="stat-val" id="s-total">0</div><div class="stat-lbl">Total</div></div></div>
+  <div class="stat-card"><span class="stat-icon">▶️</span><div><div class="stat-val" id="s-playing">0</div><div class="stat-lbl">Jogando</div></div></div>
+  <div class="stat-card"><span class="stat-icon">✅</span><div><div class="stat-val" id="s-completed">0</div><div class="stat-lbl">Zerados</div></div></div>
+  <div class="stat-card"><span class="stat-icon">⭐</span><div><div class="stat-val" id="s-wishlist">0</div><div class="stat-lbl">Wishlist</div></div></div>
+  <div class="stat-card"><span class="stat-icon">⏱️</span><div><div class="stat-val" id="s-hours">0h</div><div class="stat-lbl">Horas</div></div></div>
 </div>
 
-<!-- FILTER TABS -->
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-section-label">Navegação</div>
+  <nav class="sidebar-nav">
+    <button class="sidebar-nav-item active" data-page="library">
+      <span class="sidebar-nav-icon">🎮</span>
+      <span>Biblioteca</span>
+      <span class="sidebar-nav-badge" id="sb-total">0</span>
+    </button>
+    <button class="sidebar-nav-item" data-page="lists">
+      <span class="sidebar-nav-icon">📋</span>
+      <span>Listas</span>
+      <span class="sidebar-nav-badge" id="sb-lists">0</span>
+    </button>
+    <button class="sidebar-nav-item" data-page="stats">
+      <span class="sidebar-nav-icon">📊</span>
+      <span>Estatísticas</span>
+    </button>
+    <button class="sidebar-nav-item" data-page="calendar">
+      <span class="sidebar-nav-icon">📅</span>
+      <span>Lançamentos</span>
+    </button>
+    <button class="sidebar-nav-item" data-page="passport">
+      <span class="sidebar-nav-icon">🎫</span>
+      <span>Passaporte</span>
+    </button>
+  </nav>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-label">Resumo</div>
+  <div class="sidebar-stats">
+    <div class="sidebar-stat-row">
+      <div class="sidebar-stat-left"><span class="sidebar-stat-icon">▶️</span><span class="sidebar-stat-label">Jogando</span></div>
+      <span class="sidebar-stat-val" id="sb-playing" style="color:var(--green)">0</span>
+    </div>
+    <div class="sidebar-stat-row">
+      <div class="sidebar-stat-left"><span class="sidebar-stat-icon">✅</span><span class="sidebar-stat-label">Zerados</span></div>
+      <span class="sidebar-stat-val" id="sb-completed" style="color:var(--blue)">0</span>
+    </div>
+    <div class="sidebar-stat-row">
+      <div class="sidebar-stat-left"><span class="sidebar-stat-icon">⭐</span><span class="sidebar-stat-label">Wishlist</span></div>
+      <span class="sidebar-stat-val" id="sb-wishlist" style="color:var(--yellow)">0</span>
+    </div>
+    <div class="sidebar-stat-row">
+      <div class="sidebar-stat-left"><span class="sidebar-stat-icon">⏱️</span><span class="sidebar-stat-label">Horas</span></div>
+      <span class="sidebar-stat-val" id="sb-hours" style="color:var(--purple)">0h</span>
+    </div>
+  </div>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- DICE / RANDOM GAME -->
+  <div class="sidebar-dice-section">
+    <button class="sidebar-dice-btn" id="sidebar-dice-btn">
+      <span class="dice-icon" id="dice-icon">🎲</span>
+      <span>Sortear jogo</span>
+    </button>
+    <div id="dice-result">
+      <div class="dice-result-label">Sorteado</div>
+      <div class="dice-result-title" id="dice-result-title">—</div>
+      <div class="dice-result-status" id="dice-result-status"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav id="mobile-bottom-nav">
+  <button class="mob-nav-item active" data-page="library"><span class="mob-nav-icon">🎮</span>Biblioteca</button>
+  <button class="mob-nav-item" data-page="lists"><span class="mob-nav-icon">📋</span>Listas</button>
+  <button class="mob-nav-item" data-page="stats"><span class="mob-nav-icon">📊</span>Stats</button>
+  <button class="mob-nav-item" data-page="calendar"><span class="mob-nav-icon">📅</span>Lançamentos</button>
+  <button class="mob-nav-item" data-page="passport"><span class="mob-nav-icon">🎫</span>Passaporte</button>
+</nav>
+
+<!-- QUICK STATUS POPOVER -->
+<div id="status-popover"></div>
+
+<!-- MAIN DASHBOARD BODY -->
+<div id="dashboard-body">
+
+<!-- CONTENT HEADER -->
+<div id="content-header">
+  <div>
+    <div class="content-page-title" id="content-page-title">🎮 Biblioteca</div>
+    <div class="content-page-sub" id="content-page-sub"></div>
+  </div>
+  <div id="content-header-actions"></div>
+</div>
+
+<!-- GOALS BAR -->
+<div id="goals-bar">
+  <span class="goal-label">🎯 Meta <span id="goal-year-label">2025</span>:</span>
+  <div class="goal-track"><div class="goal-fill" id="goal-fill" style="width:0%"></div></div>
+  <span class="goal-count" id="goal-count">0/0</span>
+</div>
+
+
 <div id="filter-row">
   <button class="filter-tab active" data-filter="all">Todos <span class="tab-count" id="c-all">0</span></button>
   <button class="filter-tab" data-filter="playing">Jogando <span class="tab-count" id="c-playing">0</span></button>
@@ -879,20 +1612,46 @@ canvas.chart { width:100% !important; }
 </div>
 <div id="sort-row">
   <label>Ordenar por</label>
-  <select id="sort-select"><option value="recent">Recente</option><option value="title">Título A-Z</option><option value="rating">Maior Nota</option><option value="hours">Mais Horas</option></select>
+  <select id="sort-select"><option value="recent">Recente</option><option value="title">Título A-Z</option><option value="rating">Maior Nota</option><option value="hours">Mais Horas</option><option value="year">Por Ano Zerado</option></select>
   <div id="view-toggle">
     <button class="view-btn active" id="vbtn-grid">⊞</button>
     <button class="view-btn" id="vbtn-list">☰</button>
   </div>
+  <button id="btn-bulk-toggle" title="Selecionar múltiplos jogos">☑ Selecionar</button>
 </div>
 
-<!-- TAG FILTER ROW -->
-<div id="tag-filter-row" class="hidden">
-  <span id="tag-filter-lbl">Tag:</span>
+<!-- BULK ACTION BAR -->
+<div id="bulk-bar">
+  <span class="bulk-count" id="bulk-count">0 selecionados</span>
+  <div class="bulk-sep"></div>
+  <button class="bulk-btn" id="bulk-select-all">✓ Selecionar todos</button>
+  <button class="bulk-btn" id="bulk-status-btn">🔄 Alterar status ▾</button>
+  <button class="bulk-btn" id="bulk-tag-btn">🏷️ Adicionar tag ▾</button>
+  <button class="bulk-btn danger" id="bulk-delete-btn">🗑 Excluir selecionados</button>
+  <button class="bulk-btn bulk-cancel" id="bulk-cancel-btn">✕ Cancelar</button>
 </div>
 
-<!-- YEAR FILTER ROW -->
-<div id="year-filter-row" class="hidden"></div>
+<!-- BULK STATUS DROPDOWN -->
+<div id="bulk-status-menu"></div>
+
+<!-- BULK TAG DROPDOWN -->
+<div id="bulk-tag-menu"></div>
+
+<!-- TAG + YEAR FILTER ROWS (collapsible) -->
+<div id="extra-filters-wrap" style="display:none">
+  <div id="extra-filters-toggle-bar">
+    <button id="extra-filters-btn" onclick="toggleExtraFilters()">
+      <span id="extra-filters-icon">▸</span>
+      <span id="extra-filters-label">Filtros</span>
+    </button>
+  </div>
+  <div id="extra-filters-body" style="display:none">
+    <div id="tag-filter-row" class="hidden">
+      <span id="tag-filter-lbl">Tag:</span>
+    </div>
+    <div id="year-filter-row" class="hidden"></div>
+  </div>
+</div>
 
 <div id="page-content">
 
@@ -912,6 +1671,9 @@ canvas.chart { width:100% !important; }
 <!-- STATS PAGE -->
 <div id="stats-page">
 
+  <!-- Streak row -->
+  <div class="streak-row" id="streak-row"></div>
+
   <!-- KPIs -->
   <div class="kpi-row" id="kpi-row"></div>
 
@@ -923,8 +1685,8 @@ canvas.chart { width:100% !important; }
         <div class="chart-title">Distribuição por Status</div>
         <div class="chart-sub">Como está sua biblioteca</div>
       </div>
-      <div style="display:flex;align-items:center;gap:20px;min-width:0">
-        <canvas id="chart-donut" width="130" height="130" style="flex-shrink:0"></canvas>
+      <div style="display:flex;align-items:center;justify-content:center;gap:24px;min-width:0;flex:1">
+        <canvas id="chart-donut" width="150" height="150" style="flex-shrink:0"></canvas>
         <div class="donut-legend" id="donut-legend"></div>
       </div>
     </div>
@@ -956,29 +1718,26 @@ canvas.chart { width:100% !important; }
       <div id="chart-genres" style="display:flex;flex-direction:column;gap:10px"></div>
     </div>
 
-    <!-- Games over time (full width) -->
-    <div class="chart-card full">
-      <div>
-        <div class="chart-title">Jogos Adicionados</div>
-        <div class="chart-sub">Últimos 12 meses</div>
-      </div>
-      <canvas id="chart-timeline" height="120"></canvas>
-    </div>
-
     <!-- Top by hours -->
     <div class="chart-card">
-      <div>
-        <div class="chart-title">Mais Horas Jogadas</div>
-        <div class="chart-sub">Top 5 por tempo</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div>
+          <div class="chart-title">Mais Horas Jogadas</div>
+          <div class="chart-sub" id="top-hours-sub">Top 5 por tempo</div>
+        </div>
+        <button class="show-more-btn" id="top-hours-toggle" onclick="toggleTopList('hours')">Ver mais</button>
       </div>
       <div id="chart-top-hours"></div>
     </div>
 
     <!-- Top rated -->
     <div class="chart-card">
-      <div>
-        <div class="chart-title">Melhores Notas</div>
-        <div class="chart-sub">Top 5 avaliados</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div>
+          <div class="chart-title">Melhores Notas</div>
+          <div class="chart-sub" id="top-rated-sub">Top 5 avaliados</div>
+        </div>
+        <button class="show-more-btn" id="top-rated-toggle" onclick="toggleTopList('rated')">Ver mais</button>
       </div>
       <div id="chart-top-rated"></div>
     </div>
@@ -992,13 +1751,21 @@ canvas.chart { width:100% !important; }
       <canvas id="chart-years" height="120"></canvas>
     </div>
 
+    <!-- Games over time (full width) — moved to end -->
+    <div class="chart-card full">
+      <div>
+        <div class="chart-title">Jogos Adicionados</div>
+        <div class="chart-sub">Últimos 12 meses</div>
+      </div>
+      <canvas id="chart-timeline" height="120"></canvas>
+    </div>
+
   </div>
 </div><!-- /stats-page -->
 
 <!-- CALENDAR PAGE -->
 <div id="cal-page">
   <div class="cal-header">
-    <div class="cal-title">📅 Lançamentos</div>
     <div class="cal-nav">
       <button class="cal-nav-btn" id="cal-prev">‹</button>
       <div class="cal-month-label" id="cal-month-label">—</div>
@@ -1014,12 +1781,20 @@ canvas.chart { width:100% !important; }
 
   <!-- Lists grid view -->
   <div id="lists-grid-view">
-    <div class="lists-page-header">
-      <div>
-        <h2 class="lists-page-title">📋 Minhas Listas</h2>
-        <p class="lists-page-sub">Organize seus jogos em coleções personalizadas</p>
+    <!-- Filter bar -->
+    <div class="lists-filter-bar">
+      <div style="position:relative;width:100%;max-width:400px">
+        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none">🔍</span>
+        <input type="text" id="lists-search" placeholder="Buscar lista..." class="form-input" style="padding-left:32px;height:34px;font-size:13px;width:100%" oninput="renderListsGrid()">
       </div>
-      <button class="btn-primary" id="list-new-btn">+ Nova Lista</button>
+    </div>
+    <div class="lists-sort-row">
+      <span class="lists-sort-label">Ordenar por</span>
+      <div class="lists-sort-btns">
+        <button class="lists-sort-btn active" data-sort="recent" onclick="setListsSort(this,'recent')">Recente</button>
+        <button class="lists-sort-btn" data-sort="name" onclick="setListsSort(this,'name')">A–Z</button>
+        <button class="lists-sort-btn" data-sort="count" onclick="setListsSort(this,'count')">Mais jogos</button>
+      </div>
     </div>
     <div id="lists-grid"></div>
     <div id="lists-empty" style="display:none">
@@ -1036,6 +1811,10 @@ canvas.chart { width:100% !important; }
       <button class="list-back-btn" id="list-back-btn">← Listas</button>
       <div class="list-detail-meta" id="list-detail-meta"></div>
       <div class="list-detail-actions">
+        <div style="display:flex;gap:4px;margin-right:4px">
+          <button class="view-btn active" id="lv-vbtn-grid" title="Grade" onclick="setListView('grid')">⊞</button>
+          <button class="view-btn" id="lv-vbtn-list" title="Lista" onclick="setListView('list')">☰</button>
+        </div>
         <button class="btn-ghost" id="list-edit-btn">✏️ Editar</button>
         <button class="btn-ghost" id="list-delete-btn" style="color:#f87171;border-color:rgba(248,113,113,.25)">🗑 Excluir</button>
         <button class="btn-primary" id="list-add-game-btn">+ Adicionar Jogo</button>
@@ -1051,7 +1830,21 @@ canvas.chart { width:100% !important; }
 
 </div><!-- /lists-page -->
 
+<!-- PASSPORT PAGE -->
+<div id="passport-page">
+  <div id="passport-card-wrap">
+    <div id="passport-card"></div>
+  </div>
+</div>
+<!-- Passport buttons (rendered into content-header-actions by JS) -->
+<div style="display:none">
+  <button id="passport-generate-btn">🔄 Atualizar</button>
+  <button id="passport-download-btn">⬇️ Baixar PNG</button>
+</div>
+
 </div><!-- /page-content -->
+
+</div><!-- /dashboard-body -->
 
 <!-- CAL DAY MODAL -->
 <div class="overlay" id="cal-day-overlay">
@@ -1119,7 +1912,7 @@ canvas.chart { width:100% !important; }
     </div>
     <div class="form-grid">
       <div class="form-field full">
-        <label>Título do Jogo *</label>
+        <label>Título do Jogo * <span class="igdb-badge" id="igdb-active-badge" style="display:none">IGDB ativo</span></label>
         <div id="igdb-field-wrap">
           <input type="text" class="form-input" id="f-title" placeholder="Ex: Elden Ring" autocomplete="off">
           <div id="igdb-dropdown"></div>
@@ -1136,18 +1929,66 @@ canvas.chart { width:100% !important; }
       </div>
       <div class="form-field">
         <label>Plataforma</label>
-        <select class="form-select" id="f-platform">
-          <option value="">Selecionar...</option>
-          <option>PC</option><option>PS5</option><option>PS4</option>
-          <option>Xbox</option><option>Switch</option><option>Mobile</option><option>Outro</option>
-        </select>
+        <div class="custom-select-wrap" id="platform-select-wrap">
+          <button type="button" class="custom-select-trigger" id="platform-trigger" onclick="togglePlatformMenu()">
+            <span id="platform-display">Selecionar...</span>
+            <span class="custom-select-arrow">▾</span>
+          </button>
+          <div class="custom-select-menu" id="platform-menu">
+            <div class="custom-select-option" data-val="" onclick="pickPlatform('')">Selecionar...</div>
+            <div class="custom-select-group">PC / Mobile</div>
+            <div class="custom-select-option" data-val="PC" onclick="pickPlatform('PC')">PC</div>
+            <div class="custom-select-option" data-val="Mac" onclick="pickPlatform('Mac')">Mac</div>
+            <div class="custom-select-option" data-val="Linux" onclick="pickPlatform('Linux')">Linux</div>
+            <div class="custom-select-option" data-val="Mobile" onclick="pickPlatform('Mobile')">Mobile</div>
+            <div class="custom-select-group">PlayStation</div>
+            <div class="custom-select-option" data-val="PS5" onclick="pickPlatform('PS5')">PS5</div>
+            <div class="custom-select-option" data-val="PS4" onclick="pickPlatform('PS4')">PS4</div>
+            <div class="custom-select-option" data-val="PS3" onclick="pickPlatform('PS3')">PS3</div>
+            <div class="custom-select-option" data-val="PS2" onclick="pickPlatform('PS2')">PS2</div>
+            <div class="custom-select-option" data-val="PS1" onclick="pickPlatform('PS1')">PS1</div>
+            <div class="custom-select-option" data-val="PS Vita" onclick="pickPlatform('PS Vita')">PS Vita</div>
+            <div class="custom-select-option" data-val="PSP" onclick="pickPlatform('PSP')">PSP</div>
+            <div class="custom-select-group">Xbox</div>
+            <div class="custom-select-option" data-val="Xbox Series X/S" onclick="pickPlatform('Xbox Series X/S')">Xbox Series X/S</div>
+            <div class="custom-select-option" data-val="Xbox One" onclick="pickPlatform('Xbox One')">Xbox One</div>
+            <div class="custom-select-option" data-val="Xbox 360" onclick="pickPlatform('Xbox 360')">Xbox 360</div>
+            <div class="custom-select-option" data-val="Xbox" onclick="pickPlatform('Xbox')">Xbox</div>
+            <div class="custom-select-group">Nintendo</div>
+            <div class="custom-select-option" data-val="Switch" onclick="pickPlatform('Switch')">Switch</div>
+            <div class="custom-select-option" data-val="Wii U" onclick="pickPlatform('Wii U')">Wii U</div>
+            <div class="custom-select-option" data-val="Wii" onclick="pickPlatform('Wii')">Wii</div>
+            <div class="custom-select-option" data-val="GameCube" onclick="pickPlatform('GameCube')">GameCube</div>
+            <div class="custom-select-option" data-val="N64" onclick="pickPlatform('N64')">Nintendo 64</div>
+            <div class="custom-select-option" data-val="SNES" onclick="pickPlatform('SNES')">SNES</div>
+            <div class="custom-select-option" data-val="NES" onclick="pickPlatform('NES')">NES</div>
+            <div class="custom-select-option" data-val="3DS" onclick="pickPlatform('3DS')">3DS</div>
+            <div class="custom-select-option" data-val="DS" onclick="pickPlatform('DS')">DS</div>
+            <div class="custom-select-option" data-val="Game Boy Advance" onclick="pickPlatform('Game Boy Advance')">Game Boy Advance</div>
+            <div class="custom-select-option" data-val="Game Boy" onclick="pickPlatform('Game Boy')">Game Boy</div>
+            <div class="custom-select-group">Sega</div>
+            <div class="custom-select-option" data-val="Mega Drive" onclick="pickPlatform('Mega Drive')">Mega Drive</div>
+            <div class="custom-select-option" data-val="Saturn" onclick="pickPlatform('Saturn')">Saturn</div>
+            <div class="custom-select-option" data-val="Dreamcast" onclick="pickPlatform('Dreamcast')">Dreamcast</div>
+            <div class="custom-select-option" data-val="Game Gear" onclick="pickPlatform('Game Gear')">Game Gear</div>
+            <div class="custom-select-group">Outro</div>
+            <div class="custom-select-option" data-val="Outro" onclick="pickPlatform('Outro')">Outro</div>
+          </div>
+        </div>
+        <!-- hidden input for form read -->
+        <input type="hidden" id="f-platform" value="">
       </div>
       <div class="form-field">
         <label>Status</label>
-        <select class="form-select" id="f-status">
+        <select class="form-select" id="f-status" onchange="onStatusChange(this.value)">
           <option value="playing">Jogando</option><option value="completed">Zerado</option>
           <option value="wishlist">Wishlist</option><option value="paused">Pausado</option><option value="dropped">Dropado</option>
         </select>
+      </div>
+      <div class="form-field full" id="f-progress-wrap">
+        <label>Progresso <span id="f-progress-pct-label" style="color:var(--green);font-family:'JetBrains Mono',monospace">0%</span></label>
+        <input type="range" class="progress-slider" id="f-progress" min="0" max="100" value="0"
+          oninput="document.getElementById('f-progress-pct-label').textContent=this.value+'%'">
       </div>
       <div class="form-field">
         <label>Nota (0–5)</label>
@@ -1167,12 +2008,12 @@ canvas.chart { width:100% !important; }
         <label>Período de Jogo</label>
         <div class="date-pair">
           <div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Início</div>
             <input type="date" class="form-input" id="f-date-start" title="Data de início">
-            <div style="font-size:10px;color:var(--muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Início</div>
           </div>
           <div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Fim / Zerado em</div>
             <input type="date" class="form-input" id="f-date-end" title="Data de fim">
-            <div style="font-size:10px;color:var(--muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Fim / Zerado em</div>
           </div>
         </div>
         <div class="date-info" id="date-duration" style="display:none"></div>
@@ -1180,10 +2021,6 @@ canvas.chart { width:100% !important; }
       <div class="form-field full">
         <label>Tags Personalizadas</label>
         <div class="tag-selector" id="tag-selector"></div>
-        <div class="tag-sel-actions">
-          <input type="text" class="tag-sel-new-input" id="tag-new-input" placeholder="Nova tag (ex: favorito, soulslike...)">
-          <button class="tag-sel-add-btn" id="tag-new-btn">+ Criar tag</button>
-        </div>
       </div>
       <div class="form-field full" id="color-row">
         <label>Cor da Capa</label>
@@ -1301,7 +2138,7 @@ canvas.chart { width:100% !important; }
   </div>
 </div>
 
-<!-- ══ SETTINGS MODAL (simplified: only Tags, Backup, Passport) ══════════════ -->
+<!-- ══ SETTINGS MODAL (unified) ══════════════════════════════ -->
 <div class="overlay" id="settings-overlay">
   <div id="settings-modal">
 
@@ -1311,15 +2148,42 @@ canvas.chart { width:100% !important; }
       <button class="cfg-close" id="settings-close">✕</button>
     </div>
 
-    <!-- tab strip (IGDB removido) -->
+    <!-- tab strip -->
     <div class="cfg-tabs">
-      <button class="cfg-tab active" data-cfg="tags">🏷️ Gerenciar Tags</button>
+      <button class="cfg-tab active" data-cfg="igdb">🎮 IGDB</button>
+      <button class="cfg-tab" data-cfg="tags">🏷️ Tags</button>
+      <button class="cfg-tab" data-cfg="prefs">🎯 Preferências</button>
+      <button class="cfg-tab" data-cfg="shortcuts">⌨️ Atalhos</button>
       <button class="cfg-tab" data-cfg="backup">📤 Backup</button>
-      <button class="cfg-tab" data-cfg="passport">🪪 Passport</button>
+    </div>
+
+    <!-- ── IGDB panel ── -->
+    <div class="cfg-panel active" id="cfg-igdb">
+      <div class="cfg-hint">
+        Crie um app em <a href="https://dev.twitch.tv/console/apps" target="_blank">dev.twitch.tv/console/apps</a> →
+        categoria <strong>Application Integration</strong> → URL de redirect <code>http://localhost</code>.
+        Suas credenciais ficam salvas <strong>apenas no seu navegador</strong>.
+      </div>
+      <div class="form-grid" style="grid-template-columns:1fr">
+        <div class="form-field">
+          <label>Client ID</label>
+          <input type="text" class="form-input" id="s-id" placeholder="abc123xyz...">
+        </div>
+        <div class="form-field">
+          <label>Client Secret</label>
+          <input type="password" class="form-input" id="s-secret" placeholder="••••••••••••••••••">
+        </div>
+      </div>
+      <div id="test-result" class="test-result"></div>
+      <div class="cfg-actions">
+        <button class="btn-ghost" id="s-cancel">Cancelar</button>
+        <button class="btn-ghost" id="s-test" style="color:var(--blue);border-color:rgba(56,189,248,.25)">Testar Conexão</button>
+        <button class="btn-primary" id="s-save">Salvar</button>
+      </div>
     </div>
 
     <!-- ── Tags panel ── -->
-    <div class="cfg-panel active" id="cfg-tags">
+    <div class="cfg-panel" id="cfg-tags">
       <div class="form-field">
         <label>Suas Tags</label>
         <div class="tagmgr-list" id="tagmgr-list"></div>
@@ -1337,12 +2201,94 @@ canvas.chart { width:100% !important; }
       </div>
     </div>
 
+    <!-- ── Preferências panel ── -->
+    <div class="cfg-panel" id="cfg-prefs">
+      <div class="backup-section">
+        <div class="backup-section-title">🎯 Meta anual de jogos</div>
+        <p class="backup-desc">Defina quantos jogos quer zerar este ano. Uma barra de progresso aparecerá na sua Biblioteca.</p>
+        <div class="goal-input-row">
+          <input type="number" class="goal-number-input" id="cfg-goal-input" min="0" max="999" placeholder="0">
+          <span style="font-size:13px;color:var(--muted)">jogos em <span id="cfg-goal-year" style="color:var(--text);font-weight:700"></span></span>
+        </div>
+        <div id="cfg-goal-status" style="font-size:12px;color:var(--muted);margin-top:8px"></div>
+        <div class="cfg-actions">
+          <button class="btn-primary" id="cfg-goal-save">Salvar Meta</button>
+          <button class="btn-ghost" id="cfg-goal-clear">Remover meta</button>
+        </div>
+      </div>
+
+      <div class="backup-divider"></div>
+
+      <div class="backup-section">
+        <div class="backup-section-title">🎲 Sorteador — status incluídos</div>
+        <p class="backup-desc">Quais status devem entrar no sorteio ao clicar em "Sortear jogo".</p>
+        <div class="dice-pool-options">
+          <label class="dice-pool-option">
+            <input type="checkbox" id="dice-pool-playing" checked>
+            <span class="dice-pool-dot" style="background:var(--green)"></span>
+            Jogando
+          </label>
+          <label class="dice-pool-option">
+            <input type="checkbox" id="dice-pool-paused" checked>
+            <span class="dice-pool-dot" style="background:var(--muted)"></span>
+            Pausado
+          </label>
+          <label class="dice-pool-option">
+            <input type="checkbox" id="dice-pool-wishlist" checked>
+            <span class="dice-pool-dot" style="background:var(--yellow)"></span>
+            Wishlist
+          </label>
+          <label class="dice-pool-option">
+            <input type="checkbox" id="dice-pool-dropped">
+            <span class="dice-pool-dot" style="background:var(--red)"></span>
+            Dropado
+          </label>
+          <label class="dice-pool-option">
+            <input type="checkbox" id="dice-pool-completed">
+            <span class="dice-pool-dot" style="background:var(--blue)"></span>
+            Zerado
+          </label>
+        </div>
+        <div class="cfg-actions">
+          <button class="btn-primary" id="cfg-dice-save">Salvar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Shortcuts panel ── -->
+    <div class="cfg-panel" id="cfg-shortcuts">
+      <div class="shortcut-group-label">Navegação</div>
+      <div class="shortcut-list">
+        <div class="shortcut-row"><span class="shortcut-key">1</span><span class="shortcut-desc">Ir para Biblioteca</span></div>
+        <div class="shortcut-row"><span class="shortcut-key">2</span><span class="shortcut-desc">Ir para Listas</span></div>
+        <div class="shortcut-row"><span class="shortcut-key">3</span><span class="shortcut-desc">Ir para Estatísticas</span></div>
+        <div class="shortcut-row"><span class="shortcut-key">4</span><span class="shortcut-desc">Ir para Lançamentos</span></div>
+        <div class="shortcut-row"><span class="shortcut-key">5</span><span class="shortcut-desc">Ir para Passaporte</span></div>
+      </div>
+      <div class="shortcut-group-label">Biblioteca</div>
+      <div class="shortcut-list">
+        <div class="shortcut-row"><span class="shortcut-key">N</span><span class="shortcut-desc">Adicionar novo jogo</span></div>
+        <div class="shortcut-row"><span class="shortcut-key">R</span><span class="shortcut-desc">Sortear jogo aleatório</span></div>
+        <div class="shortcut-row"><kbd class="shortcut-key shortcut-combo">Ctrl</kbd><span class="shortcut-plus">+</span><span class="shortcut-key">K</span><span class="shortcut-desc">Focar na busca</span></div>
+      </div>
+      <div class="shortcut-group-label">Modais</div>
+      <div class="shortcut-list">
+        <div class="shortcut-row"><kbd class="shortcut-key shortcut-combo">Ctrl</kbd><span class="shortcut-plus">+</span><span class="shortcut-key">↵</span><span class="shortcut-desc">Salvar formulário aberto</span></div>
+        <div class="shortcut-row"><span class="shortcut-key">Esc</span><span class="shortcut-desc">Fechar modal / popover</span></div>
+        <div class="shortcut-row"><span class="shortcut-key">←</span><span class="shortcut-key">→</span><span class="shortcut-desc">Navegar screenshots no lightbox</span></div>
+      </div>
+      <div class="shortcut-group-label">Seleção em lote</div>
+      <div class="shortcut-list">
+        <div class="shortcut-row"><span class="shortcut-key">Esc</span><span class="shortcut-desc">Cancelar modo de seleção</span></div>
+      </div>
+    </div>
+
     <!-- ── Backup panel ── -->
     <div class="cfg-panel" id="cfg-backup">
 
       <div class="backup-section">
         <div class="backup-section-title">⬆️ Exportar Biblioteca</div>
-        <p class="backup-desc">Salva todos os seus jogos, tags e listas em um arquivo <code>.json</code> no seu computador.</p>
+        <p class="backup-desc">Salva todos os seus jogos, tags e configurações em um arquivo <code>.json</code> no seu computador.</p>
         <div class="backup-info" id="backup-info-export"></div>
         <button class="btn-primary" id="backup-export-btn" style="margin-top:12px">⬇️ Baixar backup.json</button>
       </div>
@@ -1351,28 +2297,28 @@ canvas.chart { width:100% !important; }
 
       <div class="backup-section">
         <div class="backup-section-title">⬇️ Importar Biblioteca</div>
-        <p class="backup-desc">Restaura a biblioteca a partir de um arquivo <code>.json</code> exportado anteriormente. <strong style="color:var(--yellow)">⚠️ Os dados atuais serão substituídos.</strong></p>
+        <p class="backup-desc">Restaura a biblioteca a partir de um arquivo <code>.json</code> exportado anteriormente.</p>
         <label class="backup-file-label" id="backup-file-label">
           <input type="file" id="backup-import-input" accept=".json" style="display:none">
           📂 Escolher arquivo .json
         </label>
         <div class="backup-import-status" id="backup-import-status"></div>
+        <div id="backup-mode-row" style="display:none; gap:8px; margin-top:10px;">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text)">
+            <input type="radio" name="import-mode" id="import-mode-replace" value="replace" checked style="accent-color:var(--green)">
+            <span>Substituir tudo <span style="color:var(--yellow);font-size:11px">⚠️ destrói dados atuais</span></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--text)">
+            <input type="radio" name="import-mode" id="import-mode-merge" value="merge" style="accent-color:var(--green)">
+            <span>Mesclar com biblioteca atual <span style="color:var(--green);font-size:11px">✓ seguro</span></span>
+          </label>
+        </div>
         <div class="cfg-actions" style="margin-top:12px">
           <button class="btn-ghost" id="backup-cancel-import" style="display:none">Cancelar</button>
           <button class="btn-primary" id="backup-import-btn" style="display:none">✅ Confirmar Importação</button>
         </div>
       </div>
 
-    </div>
-
-    <!-- ── Passport panel ── -->
-    <div class="cfg-panel" id="cfg-passport">
-      <p class="backup-desc" style="margin-bottom:16px">Seu card de jogador — compartilhe sua jornada. Clique em <strong>Gerar</strong> para criar e depois em <strong>Baixar PNG</strong> para salvar.</p>
-      <div class="cfg-actions" style="margin-bottom:16px">
-        <button class="btn-primary" id="passport-generate-btn">🎨 Gerar Passport</button>
-        <button class="btn-ghost" id="passport-download-btn" style="display:none">⬇️ Baixar PNG</button>
-      </div>
-      <div id="passport-preview" style="display:none;overflow:auto;border-radius:12px;border:1px solid var(--border)"></div>
     </div>
 
   </div><!-- /settings-modal -->
@@ -1423,6 +2369,29 @@ canvas.chart { width:100% !important; }
   </div>
 </div>
 
+<!-- ══ DUPLICATE GAME MODAL ═══════════════════════════════════ -->
+<div class="overlay" id="dup-overlay">
+  <div id="dup-modal">
+    <div class="dup-icon">🎮</div>
+    <h3>Jogo já na biblioteca</h3>
+    <p id="dup-msg">Este jogo já existe. O que deseja fazer?</p>
+    <div class="dup-options">
+      <button class="dup-option-btn primary" id="dup-update-btn">
+        <span class="dup-option-title">✏️ Atualizar informações</span>
+        <span class="dup-option-desc">Substitui os dados do jogo existente pelas novas informações</span>
+      </button>
+      <button class="dup-option-btn" id="dup-newrun-btn">
+        <span class="dup-option-title">🔄 Novo run / Replay</span>
+        <span class="dup-option-desc">Adiciona como entrada separada — ideal para quem zerou novamente</span>
+      </button>
+      <button class="dup-option-btn" id="dup-cancel-btn">
+        <span class="dup-option-title">✕ Cancelar</span>
+        <span class="dup-option-desc">Volta ao formulário para continuar editando</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ DELETE CONFIRM ════════════════════════════════════════ -->
 <div class="overlay" id="del-overlay">
   <div id="del-modal">
@@ -1441,7 +2410,10 @@ canvas.chart { width:100% !important; }
 <!-- LIGHTBOX -->
 <div id="lightbox">
   <button id="lb-close">✕</button>
+  <button class="lb-arrow hidden" id="lb-prev">‹</button>
   <img id="lb-img" src="" alt="">
+  <button class="lb-arrow hidden" id="lb-next">›</button>
+  <div id="lb-counter"></div>
 </div>
 
 <script>
@@ -1449,6 +2421,8 @@ canvas.chart { width:100% !important; }
 //  CONSTANTS & STORAGE
 // ═══════════════════════════════════════════════════
 const STORAGE_KEY = 'gamevault_games';
+const CREDS_KEY   = 'gv_igdb_creds';
+const TOKEN_KEY   = 'gv_igdb_token';
 
 const COLORS = [
   {bg:'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)',accent:'#e94560'},
@@ -1470,8 +2444,21 @@ const STATUS = {
 };
 
 const PLATFORM_MAP = {
-  'PC (Microsoft Windows)':'PC','PlayStation 5':'PS5','PlayStation 4':'PS4',
-  'Xbox Series X|S':'Xbox','Xbox One':'Xbox','Nintendo Switch':'Switch','Android':'Mobile','iOS':'Mobile'
+  'PC (Microsoft Windows)':'PC','Mac':'Mac','Linux':'Linux',
+  'PlayStation 5':'PS5','PlayStation 4':'PS4','PlayStation 3':'PS3',
+  'PlayStation 2':'PS2','PlayStation':'PS1','PlayStation Vita':'PS Vita',
+  'PlayStation Portable':'PSP',
+  'Xbox Series X|S':'Xbox Series X/S','Xbox One':'Xbox One',
+  'Xbox 360':'Xbox 360','Xbox':'Xbox',
+  'Nintendo Switch':'Switch','Wii U':'Wii U','Wii':'Wii',
+  'Nintendo GameCube':'GameCube','Nintendo 64':'N64',
+  'Super Nintendo Entertainment System (SNES)':'SNES',
+  'Nintendo Entertainment System (NES)':'NES',
+  'Nintendo 3DS':'3DS','Nintendo DS':'DS',
+  'Game Boy Advance':'Game Boy Advance','Game Boy Color':'Game Boy','Game Boy':'Game Boy',
+  'Sega Mega Drive/Genesis':'Mega Drive','Sega Saturn':'Saturn',
+  'Dreamcast':'Dreamcast','Game Gear':'Game Gear',
+  'Android':'Mobile','iOS':'Mobile',
 };
 
 function loadGames(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch{return[];}}
@@ -1495,29 +2482,84 @@ if(!games.length){
 }
 
 // ═══════════════════════════════════════════════════
-//  IGDB API via Cloudflare Worker
+//  IGDB API
 // ═══════════════════════════════════════════════════
 const IGDB = {
-  // Não há mais funções getCreds, getToken, saveCreds
-  async query(endpoint, body) {
-    const WORKER_URL = 'https://igdb-proxy.flaviomdev.workers.dev';
-    const TARGET = `${WORKER_URL}/v4/${endpoint}`;
-    try {
-      const r = await fetch(TARGET, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: body
-      });
-      if (!r.ok) return null;
-      return await r.json();
-    } catch {
-      return null;
+  getCreds(){try{return JSON.parse(localStorage.getItem(CREDS_KEY));}catch{return null;}},
+  saveCreds(id,secret){localStorage.setItem(CREDS_KEY,JSON.stringify({id,secret}));localStorage.removeItem(TOKEN_KEY);},
+  async getToken(){
+    try{
+      const s=JSON.parse(localStorage.getItem(TOKEN_KEY)||'null');
+      if(s&&s.exp>Date.now()) return s.tok;
+      const c=this.getCreds();
+      if(!c?.id||!c?.secret) return null;
+      // Twitch token endpoint — direct fetch works from most origins
+      // but fall back to proxy if blocked (e.g. some GitHub Pages configs)
+      const tokenUrl = `https://id.twitch.tv/oauth2/token?client_id=${encodeURIComponent(c.id)}&client_secret=${encodeURIComponent(c.secret)}&grant_type=client_credentials`;
+      let d = null;
+      try {
+        const r = await fetch(tokenUrl, {method:'POST'});
+        if(r.ok) d = await r.json();
+      } catch{ /* will try proxy below */ }
+      // Fallback: route token request through proxy
+      if(!d?.access_token){
+        const PROXIED = `https://corsproxy.io/?url=${encodeURIComponent(tokenUrl)}`;
+        const r2 = await fetch(PROXIED, {method:'POST'});
+        if(r2.ok) d = await r2.json();
+      }
+      if(!d?.access_token) return null;
+      localStorage.setItem(TOKEN_KEY,JSON.stringify({tok:d.access_token,exp:Date.now()+(d.expires_in-120)*1000}));
+      return d.access_token;
+    }catch{return null;}
+  },
+  async query(endpoint, body){
+    const c = this.getCreds();
+    if(!c?.id) return null;
+    const tok = await this.getToken();
+    if(!tok) return null;
+
+    const TARGET = `https://api.igdb.com/v4/${endpoint}`;
+
+    // Proxy fallback chain — tried in order until one succeeds.
+    // corsproxy.io can block github.io; allorigins and thingproxy are alternatives.
+    const PROXIES = [
+      url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+      url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+      url => `https://thingproxy.freeboard.io/fetch/${url}`,
+    ];
+
+    for(const makeProxy of PROXIES){
+      try{
+        const r = await fetch(makeProxy(TARGET), {
+          method: 'POST',
+          headers: {
+            'Client-ID': c.id,
+            'Authorization': `Bearer ${tok}`,
+            'Content-Type': 'text/plain',
+          },
+          body
+        });
+        if(!r.ok) continue;
+        const json = await r.json();
+        if(Array.isArray(json) || typeof json === 'object') return json;
+      } catch{ continue; }
     }
+    return null;
   },
   async search(q){
     if(!q||q.length<2) return [];
-    const r=await this.query('games',`search "${q.replace(/"/g,"'")}"; fields name,cover.image_id,summary,genres.name,rating,first_release_date,involved_companies.company.name,platforms.name,screenshots.image_id; limit 8;`);
-    return Array.isArray(r)?r:[];
+    const r=await this.query('games',`search "${q.replace(/"/g,"'")}"; fields name,cover.image_id,summary,genres.name,rating,first_release_date,involved_companies.company.name,platforms.name,screenshots.image_id; limit 12;`);
+    if(!Array.isArray(r)) return [];
+    // Re-rank: exact match → startsWith → contains → original order, ties broken by rating
+    const ql = q.toLowerCase().trim();
+    return r.map(g => {
+      const nl = (g.name||'').toLowerCase();
+      const score = nl === ql ? 4
+        : nl.startsWith(ql) ? 3
+        : nl.includes(ql) ? 2
+        : 1;
+      return { ...g, _rank: score };
+    }).sort((a,b) => b._rank - a._rank || (b.rating||0) - (a.rating||0)).slice(0,8);
   },
   cover(id,sz='cover_big'){return `https://images.igdb.com/igdb/image/upload/t_${sz}/${id}.jpg`;},
   screen(id,sz='screenshot_big'){return `https://images.igdb.com/igdb/image/upload/t_${sz}/${id}.jpg`;},
@@ -1527,7 +2569,11 @@ const IGDB = {
 // ═══════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════
-let filter='all', sort='recent', query='', view='grid', currentPage='library';
+const PAGE_KEY  = 'gv_page';
+const GOAL_KEY  = 'gv_goal';
+const DICE_KEY  = 'gv_dice_pool';
+let filter='all', sort='recent', query='', view='grid';
+let currentPage = localStorage.getItem(PAGE_KEY) || 'library';
 let editId=null, delId=null, detailId=null;
 let stars=0, colorIdx=0, igdbSel=null;
 let acTimer=null, acList=[], acFocus=-1;
@@ -1535,6 +2581,9 @@ let currentTags=[], tagFilter=null, yearFilter=null;
 // Calendar state
 let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
 let calPlatFilter='all', calReleases=[], calLoading=false, calLoaded=false;
+// Goal state
+let goalTarget = parseInt(localStorage.getItem(GOAL_KEY)||'0');
+let dicePool   = JSON.parse(localStorage.getItem(DICE_KEY)||'["playing","paused","wishlist"]');
 
 // ═══════════════════════════════════════════════════
 //  HELPERS
@@ -1555,7 +2604,8 @@ function coverHtml(g,listMode=false){
   const fsz=listMode?24:46;
   const letter=`<div class="cover-inner" style="background:${c.bg}"><span class="cover-letter" style="font-size:${fsz}px">${g.title[0].toUpperCase()}</span></div>`;
   if(g.igdb?.cover_url){
-    return`<img class="cover-img" src="${g.igdb.cover_url}" alt="" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">${letter.replace('display:flex','display:none')}`;
+    return`<img class="cover-img" src="${g.igdb.cover_url}" alt="" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">${letter.replace('display:flex','display:none')}`.replace('display:none','display:none').replace('cover-inner','cover-inner');
+    // simplified: just use img with fallback
   }
   return letter;
 }
@@ -1574,10 +2624,18 @@ function makeCover(g,list){
 }
 
 function renderCard(g){
-  const genre = g.igdb?.genres?.[0] || (g.tags?.[0] || '');
   const allTags = [...(g.tags||[]), ...(g.igdb?.genres?.slice(0,2)||[])].slice(0,2);
+  const progressBar = (g.progress > 0)
+    ? `<div class="progress-wrap"><div class="goal-track" style="flex:1"><div class="goal-fill" style="width:${g.progress}%"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green)">${g.progress}%</span></div>` : '';
+  const selected = bulkSelected.has(g.id);
+  const checkHtml = `<label class="card-checkbox-wrap" onclick="event.stopPropagation()"><input type="checkbox" class="card-checkbox" ${selected?'checked':''} onchange="toggleBulkSelect('${g.id}',this.checked)"></label>`;
+  const selectedClass = selected ? ' selected' : '';
+  const yearBadge = (g.status==='completed' && g.dateEnd)
+    ? `<span class="card-year">${new Date(g.dateEnd).getFullYear()}</span>` : '';
+
   if(view==='list') return`
-<div class="game-card" onclick="openDetail('${g.id}')" data-id="${g.id}">
+<div class="game-card${selectedClass}" onclick="handleCardClick(event,'${g.id}')" data-id="${g.id}" data-status="${g.status}">
+  ${checkHtml}
   <div class="game-cover">${makeCover(g,true)}</div>
   <div class="game-body">
     <div class="game-title">${esc(g.title)}</div>
@@ -1585,11 +2643,13 @@ function renderCard(g){
       ${g.platform?`<span class="game-platform">${esc(g.platform)}</span>`:''}
       ${g.rating>0?`<div class="stars">${starsHtml(g.rating)}</div>`:''}
       ${g.hours>0?`<span class="game-hours">${g.hours}h</span>`:''}
+      ${yearBadge}
       ${allTags.map(t=>`<span class="card-tag">${esc(t)}</span>`).join('')}
     </div>
+    ${progressBar}
   </div>
   <div class="game-foot">
-    ${badgeHtml(g.status)}
+    <span onclick="event.stopPropagation();openStatusPopover(event,'${g.id}')">${badgeHtml(g.status)}</span>
     <div class="game-actions" onclick="event.stopPropagation()">
       <button class="icon-btn" onclick="openEdit('${g.id}')">✏️</button>
       <button class="icon-btn del" onclick="confirmDel('${g.id}')">🗑</button>
@@ -1598,10 +2658,12 @@ function renderCard(g){
 </div>`;
 
   return`
-<div class="game-card" onclick="openDetail('${g.id}')" data-id="${g.id}">
+<div class="game-card${selectedClass}" onclick="handleCardClick(event,'${g.id}')" data-id="${g.id}" data-status="${g.status}">
+  ${checkHtml}
   <div class="game-cover" style="position:relative">${makeCover(g,false)}
     <div class="cover-overlay"></div>
   </div>
+  ${yearBadge ? `<span class="card-year-overlay">${new Date(g.dateEnd).getFullYear()}</span>` : ''}
   <div class="game-body">
     <div class="game-title" title="${esc(g.title)}">${esc(g.title)}</div>
     <div class="game-meta">
@@ -1610,21 +2672,33 @@ function renderCard(g){
       ${g.hours>0?`<span class="game-hours">${g.hours}h</span>`:''}
       ${allTags.map(t=>`<span class="card-tag">${esc(t)}</span>`).join('')}
     </div>
+    ${progressBar}
   </div>
   <div class="game-foot">
-    ${badgeHtml(g.status)}
+    <span onclick="event.stopPropagation();openStatusPopover(event,'${g.id}')">${badgeHtml(g.status)}</span>
     <div class="game-actions" onclick="event.stopPropagation()">
       <button class="icon-btn" onclick="openEdit('${g.id}')">✏️</button>
       <button class="icon-btn del" onclick="confirmDel('${g.id}')">🗑</button>
     </div>
   </div>
-</div>`;
-}
+</div>`;}
+
 
 function getFiltered(){
   let a=[...games];
   if(filter!=='all') a=a.filter(g=>g.status===filter);
-  if(query){const q=query.toLowerCase();a=a.filter(g=>g.title.toLowerCase().includes(q));}
+  if(query){
+    const q=query.toLowerCase();
+    a=a.filter(g=>{
+      if(g.title.toLowerCase().includes(q)) return true;
+      if(g.platform?.toLowerCase().includes(q)) return true;
+      if(g.notes?.toLowerCase().includes(q)) return true;
+      if((g.tags||[]).some(t=>t.toLowerCase().includes(q))) return true;
+      if((g.igdb?.genres||[]).some(t=>t.toLowerCase().includes(q))) return true;
+      if(g.igdb?.developer?.toLowerCase().includes(q)) return true;
+      return false;
+    });
+  }
   if(tagFilter){
     a=a.filter(g=>{
       const userTags=(g.tags||[]).map(t=>t.toLowerCase());
@@ -1634,30 +2708,101 @@ function getFiltered(){
   }
   if(yearFilter){
     a=a.filter(g=>{
+      if(g.status !== 'completed') return false;
       const yr=g.dateEnd?new Date(g.dateEnd).getFullYear():null;
       return yr===yearFilter;
     });
   }
-  if(sort==='title') a.sort((a,b)=>a.title.localeCompare(b.title));
+  if(sort==='title')  a.sort((a,b)=>a.title.localeCompare(b.title));
   if(sort==='rating') a.sort((a,b)=>b.rating-a.rating);
-  if(sort==='hours') a.sort((a,b)=>b.hours-a.hours);
+  if(sort==='hours')  a.sort((a,b)=>b.hours-a.hours);
   if(sort==='recent') a.sort((a,b)=>b.createdAt-a.createdAt);
+  if(sort==='year')   a.sort((a,b)=>{
+    const ya = a.dateEnd ? new Date(a.dateEnd).getFullYear() : 0;
+    const yb = b.dateEnd ? new Date(b.dateEnd).getFullYear() : 0;
+    return yb - ya;
+  });
   return a;
 }
 
 function render(){
-  // stats bar numbers
+  // stats bar numbers (kept for legacy compatibility)
   document.getElementById('s-total').textContent=games.length;
   document.getElementById('s-playing').textContent=games.filter(g=>g.status==='playing').length;
   document.getElementById('s-completed').textContent=games.filter(g=>g.status==='completed').length;
   document.getElementById('s-wishlist').textContent=games.filter(g=>g.status==='wishlist').length;
   const h=games.reduce((s,g)=>s+(parseFloat(g.hours)||0),0);
   document.getElementById('s-hours').textContent=h%1===0?h+'h':h.toFixed(1)+'h';
+
+  // ── sidebar stats ──
+  document.getElementById('sb-total').textContent=games.length;
+  document.getElementById('sb-playing').textContent=games.filter(g=>g.status==='playing').length;
+  document.getElementById('sb-completed').textContent=games.filter(g=>g.status==='completed').length;
+  document.getElementById('sb-wishlist').textContent=games.filter(g=>g.status==='wishlist').length;
+  document.getElementById('sb-hours').textContent=h%1===0?h+'h':h.toFixed(1)+'h';
+  document.getElementById('sb-lists').textContent=lists.length;
+
+  // ── sidebar nav + mobile nav active state ──
+  document.querySelectorAll('.sidebar-nav-item, .mob-nav-item').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.page===currentPage);
+  });
+
+  // ── persist page ──
+  localStorage.setItem(PAGE_KEY, currentPage);
+
+  // ── content header ──
+  const PAGE_TITLES = {
+    library:  ['🎮 Biblioteca',  `${games.length} jogo${games.length!==1?'s':''} na coleção`],
+    lists:    ['📋 Listas',      `${lists.length} lista${lists.length!==1?'s':''} personalizadas`],
+    stats:    ['📊 Estatísticas','Análise da sua biblioteca'],
+    calendar: ['📅 Lançamentos', 'Jogos próximos e recentes'],
+    passport: ['🎫 Passaporte',  'Seu card de jogador'],
+  };
+  const [ptitle, psub] = PAGE_TITLES[currentPage] || ['GameVault',''];
+  document.getElementById('content-page-title').textContent = ptitle;
+  document.getElementById('content-page-sub').textContent   = psub;
+  // Always show content-header
+  document.getElementById('content-header').style.display = '';
+  // Populate right-side actions per page
+  const actionsEl = document.getElementById('content-header-actions');
+  if(actionsEl){
+    if(currentPage==='lists' && !currentListId){
+      actionsEl.innerHTML = `<button class="btn-primary" id="list-new-btn-hdr" onclick="openListEditor()">+ Nova Lista</button>`;
+    } else if(currentPage==='passport'){
+      actionsEl.innerHTML = `
+        <button class="btn-primary" onclick="document.getElementById('passport-generate-btn').click()">🔄 Atualizar</button>
+        <button class="btn-ghost" id="passport-download-hdr" style="display:none" onclick="document.getElementById('passport-download-btn').click()">⬇️ Baixar PNG</button>`;
+    } else {
+      actionsEl.innerHTML = '';
+    }
+  }
+
+  // ── goals bar (library only) ──
+  const goalsBar = document.getElementById('goals-bar');
+  const completedThisYear = games.filter(g=>g.status==='completed'&&g.dateEnd&&new Date(g.dateEnd).getFullYear()===new Date().getFullYear()).length;
+  if(currentPage==='library' && goalTarget > 0){
+    goalsBar.classList.add('visible');
+    const pct = Math.min(100, Math.round(completedThisYear/goalTarget*100));
+    document.getElementById('goal-fill').style.width = pct+'%';
+    document.getElementById('goal-count').textContent = `${completedThisYear}/${goalTarget} zerados`;
+    document.getElementById('goal-year-label').textContent = new Date().getFullYear();
+  } else {
+    goalsBar.classList.remove('visible');
+  }
   // tab counts
   const cnt={all:games.length,playing:0,completed:0,wishlist:0,paused:0,dropped:0};
   games.forEach(g=>{if(cnt[g.status]!==undefined)cnt[g.status]++;});
   Object.keys(cnt).forEach(k=>{const e=document.getElementById('c-'+k);if(e)e.textContent=cnt[k];});
-
+  // cfg btn igdb status indicator
+  const creds=IGDB.getCreds();
+  const cfgBtn=document.getElementById('cfg-btn');
+  const activeBadge=document.getElementById('igdb-active-badge');
+  if(creds?.id&&creds?.secret){
+    cfgBtn.classList.add('igdb-on');
+  }else{
+    cfgBtn.classList.remove('igdb-on');
+  }
+  if(activeBadge) activeBadge.style.display=creds?.id&&creds?.secret?'inline':'none';
   // tag filter row — separate personal tags and IGDB genres
   const personalTagSet=new Set();
   const igdbGenreSet=new Set();
@@ -1701,17 +2846,18 @@ function render(){
   // ── Year filter row ──
   const yearRow = document.getElementById('year-filter-row');
   const completedYears = [...new Set(
-    games.filter(g => g.dateEnd)
+    games.filter(g => g.status==='completed' && g.dateEnd)
          .map(g => new Date(g.dateEnd).getFullYear())
   )].sort((a,b) => b-a);
 
+  // Reset stale yearFilter
   if(yearFilter && !completedYears.includes(yearFilter)) yearFilter = null;
 
   if(completedYears.length > 0){
     yearRow.classList.remove('hidden');
     yearRow.innerHTML = '<span id="year-filter-lbl">📅 Zerado em:</span>';
     completedYears.forEach(yr => {
-      const count = games.filter(g => g.dateEnd && new Date(g.dateEnd).getFullYear()===yr).length;
+      const count = games.filter(g => g.status==='completed' && g.dateEnd && new Date(g.dateEnd).getFullYear()===yr).length;
       const btn = document.createElement('button');
       btn.className = 'year-filter-btn' + (yearFilter===yr ? ' active' : '');
       btn.textContent = `${yr} (${count})`;
@@ -1723,40 +2869,64 @@ function render(){
     yearFilter = null;
   }
 
+  // Show extra-filters-wrap only when there's something inside (stored for library section below)
+  const hasTags = personalTagSet.size > 0 || igdbGenreSet.size > 0;
+  const hasYears = completedYears.length > 0;
+
   // page visibility
-  const libPage=document.getElementById('library-page');
-  const statsPageEl=document.getElementById('stats-page');
-  const calPageEl=document.getElementById('cal-page');
-  const listsPageEl=document.getElementById('lists-page');
+  const libPage      = document.getElementById('library-page');
+  const statsPageEl  = document.getElementById('stats-page');
+  const calPageEl    = document.getElementById('cal-page');
+  const listsPageEl  = document.getElementById('lists-page');
+  const passportPage = document.getElementById('passport-page');
+  const filterRow    = document.getElementById('filter-row');
+  const sortRowEl    = document.getElementById('sort-row');
+  const extraWrap    = document.getElementById('extra-filters-wrap');
+
+  // Hide all pages and extra rows
+  [libPage,statsPageEl,calPageEl,listsPageEl,passportPage].forEach(p=>{ if(p) p.style.display='none'; });
+  sortRowEl.style.display='none';
+  if(extraWrap) extraWrap.style.display='none';
+
   if(currentPage==='stats'){
-    libPage.style.display='none'; statsPageEl.style.display='block'; calPageEl.style.display='none'; listsPageEl.style.display='none';
-    document.getElementById('filter-row').style.display='none';
-    document.getElementById('sort-row').style.display='none';
-    document.getElementById('tag-filter-row').style.display='none';
-    document.getElementById('year-filter-row').style.display='none';
-    renderStats(); return;
+    statsPageEl.style.display='block'; renderStats(); return;
   }
   if(currentPage==='calendar'){
-    libPage.style.display='none'; statsPageEl.style.display='none'; calPageEl.style.display='block'; listsPageEl.style.display='none';
-    document.getElementById('filter-row').style.display='none';
-    document.getElementById('sort-row').style.display='none';
-    document.getElementById('tag-filter-row').style.display='none';
-    document.getElementById('year-filter-row').style.display='none';
-    renderCalendar(); return;
+    calPageEl.style.display='block'; renderCalendar(); return;
   }
   if(currentPage==='lists'){
-    libPage.style.display='none'; statsPageEl.style.display='none'; calPageEl.style.display='none'; listsPageEl.style.display='block';
-    document.getElementById('filter-row').style.display='none';
-    document.getElementById('sort-row').style.display='none';
-    document.getElementById('tag-filter-row').style.display='none';
-    document.getElementById('year-filter-row').style.display='none';
-    renderListsPage(); return;
+    listsPageEl.style.display='block'; renderListsPage(); return;
   }
-  libPage.style.display='block'; statsPageEl.style.display='none'; calPageEl.style.display='none'; listsPageEl.style.display='none';
-  document.getElementById('filter-row').style.display='flex';
-  document.getElementById('sort-row').style.display='flex';
-  document.getElementById('tag-filter-row').style.display='';
-  document.getElementById('year-filter-row').style.display='';
+  if(currentPage==='passport'){
+    passportPage.classList.add('active');
+    passportPage.style.display='block';
+    renderPassportPage(); return;
+  }
+  // library (default)
+  libPage.style.display='block';
+  filterRow.style.display='flex';
+  sortRowEl.style.display='flex';
+  // show extra filters toggle only when tags or years exist
+  if(extraWrap) extraWrap.style.display = (hasTags || hasYears) ? 'block' : 'none';
+
+  if(currentPage==='stats'){
+    statsPageEl.style.display='block'; renderStats(); return;
+  }
+  if(currentPage==='calendar'){
+    calPageEl.style.display='block'; renderCalendar(); return;
+  }
+  if(currentPage==='lists'){
+    listsPageEl.style.display='block'; renderListsPage(); return;
+  }
+  if(currentPage==='passport'){
+    passportPage.classList.add('active');
+    passportPage.style.display='block';
+    renderPassportPage(); return;
+  }
+  // library (default)
+  libPage.style.display='block';
+  filterRow.style.display='flex';
+  sortRowEl.style.display='flex';
   // grid
   const filtered=getFiltered();
   const grid=document.getElementById('game-grid');
@@ -1791,6 +2961,7 @@ function openDetail(id){
   }
 
   document.getElementById('detail-game-title').textContent=g.title;
+  // hero sub: developer · year only (platforms go in info chips below)
   const sub=[ig.developer,ig.year].filter(Boolean).join(' · ');
   document.getElementById('detail-game-sub').textContent=sub;
   document.getElementById('detail-genres').innerHTML=(ig.genres||[]).map(gn=>`<span class="d-genre">${esc(gn)}</span>`).join('');
@@ -1830,14 +3001,23 @@ function openDetail(id){
   document.getElementById('d-info-grid').innerHTML=infoItems.map(([l,v])=>`
     <div class="d-info-card"><div class="d-info-lbl">${esc(l)}</div><div class="d-info-val">${esc(String(v))}</div></div>`).join('');
 
-  // screenshots
+  // screenshots — infinite carousel
   const ssSec=document.getElementById('d-ss-section');
   const ssEl=document.getElementById('d-screenshots');
   if(ig.screenshots?.length){
     ssSec.style.display='block';
-    ssEl.innerHTML=ig.screenshots.slice(0,8).map(sid=>
-      `<img class="ss-thumb" src="${IGDB.screen(sid)}" loading="lazy" onclick="openLightbox('${IGDB.screen(sid,'screenshot_huge')}')" alt="screenshot">`
-    ).join('');
+    const imgs = ig.screenshots.slice(0,8);
+    const hugeUrls = imgs.map(sid => IGDB.screen(sid,'screenshot_huge'));
+    const urlsJson = JSON.stringify(hugeUrls).replace(/"/g,'&quot;');
+    const makeThumb = (sid, i) =>
+      `<img class="ss-thumb" src="${IGDB.screen(sid)}" loading="lazy"
+        onclick="openLightbox('${IGDB.screen(sid,'screenshot_huge')}',JSON.parse(this.dataset.urls))"
+        data-urls="${urlsJson}" data-idx="${i}" alt="screenshot">`;
+    const set = imgs.map(makeThumb).join('');
+    const track = imgs.length >= 3
+      ? `<div class="screenshots-track">${set}${set}</div>`
+      : `<div class="screenshots-track" style="animation:none">${set}</div>`;
+    ssEl.innerHTML = track;
   }else ssSec.style.display='none';
 
   // dates
@@ -1875,12 +3055,53 @@ document.getElementById('d-del-btn').onclick=()=>{const id=detailId;closeDetail(
 // ═══════════════════════════════════════════════════
 //  LIGHTBOX
 // ═══════════════════════════════════════════════════
-function openLightbox(url){
-  document.getElementById('lb-img').src=url;
+// ── Lightbox with prev/next navigation ───────────
+let lbUrls = [], lbIdx = 0;
+
+function openLightbox(url, urls){
+  lbUrls = urls || [url];
+  lbIdx  = lbUrls.indexOf(url);
+  if(lbIdx < 0) lbIdx = 0;
+  _lbShow(lbIdx);
   document.getElementById('lightbox').classList.add('open');
 }
-document.getElementById('lb-close').onclick=()=>document.getElementById('lightbox').classList.remove('open');
-document.getElementById('lightbox').onclick=function(e){if(e.target===this||e.target.id==='lb-img')this.classList.remove('open');};
+
+function _lbShow(idx){
+  const img     = document.getElementById('lb-img');
+  const counter = document.getElementById('lb-counter');
+  const prev    = document.getElementById('lb-prev');
+  const next    = document.getElementById('lb-next');
+
+  img.classList.add('fading');
+  setTimeout(()=>{
+    img.src = lbUrls[idx];
+    img.onload = ()=>img.classList.remove('fading');
+    // fallback if already cached (onload won't fire)
+    if(img.complete) img.classList.remove('fading');
+  }, 160);
+
+  counter.textContent = lbUrls.length > 1 ? `${idx+1} / ${lbUrls.length}` : '';
+  counter.style.display = lbUrls.length > 1 ? '' : 'none';
+  prev.classList.toggle('hidden', lbUrls.length <= 1);
+  next.classList.toggle('hidden', lbUrls.length <= 1);
+}
+
+function lbClose(){ document.getElementById('lightbox').classList.remove('open'); }
+function lbPrev(e){ e.stopPropagation(); lbIdx=(lbIdx-1+lbUrls.length)%lbUrls.length; _lbShow(lbIdx); }
+function lbNext(e){ e.stopPropagation(); lbIdx=(lbIdx+1)%lbUrls.length; _lbShow(lbIdx); }
+
+document.getElementById('lb-close').onclick = lbClose;
+document.getElementById('lb-prev').onclick   = lbPrev;
+document.getElementById('lb-next').onclick   = lbNext;
+document.getElementById('lightbox').onclick  = function(e){
+  if(e.target===this || e.target.id==='lb-img') lbClose();
+};
+document.addEventListener('keydown', e=>{
+  if(!document.getElementById('lightbox').classList.contains('open')) return;
+  if(e.key==='ArrowLeft')  { lbPrev(e); }
+  if(e.key==='ArrowRight') { lbNext(e); }
+  if(e.key==='Escape')     { lbClose(); }
+});
 
 // ═══════════════════════════════════════════════════
 //  ADD / EDIT MODAL
@@ -1919,7 +3140,11 @@ function openAdd(){
   ['f-title','f-hours','f-notes','f-date-start','f-date-end'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-platform').value='';
   document.getElementById('f-status').value='playing';
+  document.getElementById('f-progress').value='0';
+  document.getElementById('f-progress-pct-label').textContent='0%';
   document.getElementById('date-duration').style.display='none';
+  setPlatformDisplay('');
+  onStatusChange('playing');
   setStars(0); buildSwatches(); showIGDBPreview(null); closeAC(); renderTagSelector();
   document.getElementById('add-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('f-title').focus(),60);
@@ -1932,8 +3157,12 @@ function openEdit(id){
   currentTags=[...(g.tags||[])];
   document.getElementById('modal-title').textContent='Editar Jogo';
   document.getElementById('f-title').value=g.title;
-  document.getElementById('f-platform').value=g.platform||'';
+  setPlatformDisplay(g.platform||'');
   document.getElementById('f-status').value=g.status;
+  const prog = g.progress||0;
+  document.getElementById('f-progress').value=prog;
+  document.getElementById('f-progress-pct-label').textContent=prog+'%';
+  onStatusChange(g.status);
   document.getElementById('f-hours').value=g.hours||'';
   document.getElementById('f-notes').value=g.notes||'';
   document.getElementById('f-date-start').value=g.dateStart||'';
@@ -1945,6 +3174,10 @@ function openEdit(id){
 }
 
 function closeModal(){document.getElementById('add-overlay').classList.remove('open');closeAC();}
+
+// pending game object while waiting for duplicate resolution
+let _pendingGame = null;
+let _dupExistingId = null;
 
 function saveGame(){
   const title=document.getElementById('f-title').value.trim();
@@ -1959,6 +3192,7 @@ function saveGame(){
     status:document.getElementById('f-status').value,
     rating:stars,
     hours:parseFloat(document.getElementById('f-hours').value)||0,
+    progress: parseInt(document.getElementById('f-progress').value)||0,
     colorIdx, notes:document.getElementById('f-notes').value.trim(),
     tags:currentTags.length?[...currentTags]:undefined,
     dateStart:document.getElementById('f-date-start').value||undefined,
@@ -1966,10 +3200,61 @@ function saveGame(){
     igdb:igdbSel||undefined,
     createdAt:editId?(games.find(g=>g.id===editId)?.createdAt||Date.now()):Date.now(),
   };
-  if(editId) games=games.map(g=>g.id===editId?game:g), showToast('✅ Jogo atualizado!');
-  else games.unshift(game), showToast('🎮 Jogo adicionado!');
+
+  // Only check duplicates when adding a new game (not editing)
+  if(!editId){
+    const dup = games.find(g => {
+      // Match by IGDB ID if both have one
+      if(game.igdb?.id && g.igdb?.id) return String(game.igdb.id) === String(g.igdb.id);
+      // Otherwise match by title (case-insensitive)
+      return g.title.toLowerCase() === title.toLowerCase();
+    });
+    if(dup){
+      _pendingGame = game;
+      _dupExistingId = dup.id;
+      document.getElementById('dup-msg').innerHTML =
+        `<strong style="color:var(--text)">${esc(dup.title)}</strong> já está na biblioteca como <span style="color:${STATUS[dup.status]?.color}">${STATUS[dup.status]?.label}</span>. O que deseja fazer?`;
+      document.getElementById('dup-overlay').classList.add('open');
+      return;
+    }
+  }
+
+  _commitSave(game, editId ? 'update' : 'add');
+}
+
+function _commitSave(game, mode){
+  if(mode === 'update'){
+    // Preserve original id and createdAt
+    game.id = _dupExistingId || game.id;
+    game.createdAt = games.find(g=>g.id===game.id)?.createdAt || game.createdAt;
+    games = games.map(g => g.id===game.id ? game : g);
+    showToast('✅ Jogo atualizado!');
+  } else {
+    games.unshift(game);
+    showToast('🎮 Jogo adicionado!');
+  }
+  _pendingGame = null; _dupExistingId = null;
   saveGames(games); closeModal(); render();
 }
+
+function closeDupModal(){
+  document.getElementById('dup-overlay').classList.remove('open');
+  _pendingGame = null; _dupExistingId = null;
+}
+
+document.getElementById('dup-update-btn').onclick = () => {
+  const g = _pendingGame; if(!g) return;
+  document.getElementById('dup-overlay').classList.remove('open');
+  _commitSave(g, 'update');
+};
+document.getElementById('dup-newrun-btn').onclick = () => {
+  const g = _pendingGame; if(!g) return;
+  document.getElementById('dup-overlay').classList.remove('open');
+  _pendingGame = null; _dupExistingId = null;
+  _commitSave({...g, id: uid(), createdAt: Date.now()}, 'add');
+};
+document.getElementById('dup-cancel-btn').onclick = closeDupModal;
+document.getElementById('dup-overlay').onclick = function(e){ if(e.target===this) closeDupModal(); };
 
 // ═══════════════════════════════════════════════════
 //  IGDB AUTOCOMPLETE
@@ -2013,7 +3298,7 @@ function pickAC(i){
   document.getElementById('f-title').value=r.name;
   // auto-fill platform
   if(!document.getElementById('f-platform').value&&data.platforms.length){
-    for(const p of data.platforms){if(PLATFORM_MAP[p]){document.getElementById('f-platform').value=PLATFORM_MAP[p];break;}}
+    for(const p of data.platforms){if(PLATFORM_MAP[p]){setPlatformDisplay(PLATFORM_MAP[p]);break;}}
   }
   showIGDBPreview(data);
   closeAC();
@@ -2023,7 +3308,7 @@ document.getElementById('f-title').addEventListener('input',function(){
   const q=this.value.trim();
   clearTimeout(acTimer);
   if(!q||q.length<2){closeAC();return;}
-  // Não há mais verificação de credenciais locais
+  if(!IGDB.getCreds()?.id) return;
   renderAC([],true);
   acTimer=setTimeout(async()=>{
     const res=await IGDB.search(q);
@@ -2061,12 +3346,18 @@ function doDel(){
 }
 
 // ═══════════════════════════════════════════════════
-//  SETTINGS MODAL (simplified)
+//  SETTINGS MODAL (unified)
 // ═══════════════════════════════════════════════════
-let cfgActiveTab = 'tags';
+let cfgActiveTab = 'igdb';
 
-function openSettings(tab='tags'){
+function openSettings(tab='igdb'){
   cfgActiveTab = tab;
+  // populate IGDB fields
+  const c = IGDB.getCreds();
+  document.getElementById('s-id').value = c?.id || '';
+  document.getElementById('s-secret').value = c?.secret || '';
+  const tr = document.getElementById('test-result');
+  tr.className = 'test-result'; tr.style.display = 'none'; tr.textContent = '';
   // populate tags
   renderTagMgrList();
   // set active tab
@@ -2088,10 +3379,45 @@ document.querySelectorAll('.cfg-tab').forEach(btn => {
 });
 
 document.getElementById('settings-close').onclick = closeSettings;
+document.getElementById('s-cancel').onclick = closeSettings;
 document.getElementById('settings-overlay').onclick = function(e){ if(e.target === this) closeSettings(); };
 
+document.getElementById('s-save').onclick = () => {
+  const id = document.getElementById('s-id').value.trim();
+  const sec = document.getElementById('s-secret').value.trim();
+  if(!id || !sec){ showToast('⚠️ Preencha ambos os campos.'); return; }
+  IGDB.saveCreds(id, sec); closeSettings(); render(); showToast('✅ Credenciais IGDB salvas!');
+};
+
+document.getElementById('s-test').onclick = async () => {
+  const id = document.getElementById('s-id').value.trim();
+  const sec = document.getElementById('s-secret').value.trim();
+  const tr = document.getElementById('test-result');
+  if(!id || !sec){ tr.className='test-result err'; tr.style.display='flex'; tr.textContent='⚠️ Preencha os campos primeiro.'; return; }
+  tr.className='test-result'; tr.style.display='flex'; tr.textContent='⏳ Obtendo token Twitch...';
+  const prev = IGDB.getCreds();
+  IGDB.saveCreds(id, sec); localStorage.removeItem(TOKEN_KEY);
+  const tok = await IGDB.getToken();
+  if(!tok){
+    if(prev) IGDB.saveCreds(prev.id, prev.secret); else localStorage.removeItem(CREDS_KEY);
+    tr.className = 'test-result err';
+    tr.textContent = '❌ Falha na autenticação. Verifique Client ID e Client Secret no Twitch Dev Console.';
+    return;
+  }
+  tr.textContent = '⏳ Testando conexão com IGDB...';
+  const res = await IGDB.search('Zelda');
+  if(res?.length){
+    tr.className = 'test-result ok';
+    tr.textContent = `✅ Conexão OK! "${res[0]?.name}" encontrado via proxy.`;
+  } else {
+    if(prev) IGDB.saveCreds(prev.id, prev.secret); else localStorage.removeItem(CREDS_KEY);
+    tr.className = 'test-result err';
+    tr.innerHTML = '❌ Token válido mas API inacessível. Todos os proxies CORS falharam.<br><small style="opacity:.7">Tente novamente em alguns segundos — os proxies públicos podem estar sobrecarregados.</small>';
+  }
+};
+
 document.getElementById('tagmgr-done').onclick = closeSettings;
-document.getElementById('cfg-btn').onclick = () => openSettings('tags');
+document.getElementById('cfg-btn').onclick = () => openSettings('igdb');
 
 // ═══════════════════════════════════════════════════
 //  TOAST
@@ -2116,13 +3442,7 @@ document.getElementById('del-confirm').onclick=doDel;
 document.getElementById('add-overlay').onclick=function(e){if(e.target===this)closeModal();};
 document.getElementById('del-overlay').onclick=function(e){if(e.target===this)closeDel();};
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeModal();closeDel();closeDetail();closeSettings();closeTagMgr();closeAC();
-    document.getElementById('cal-day-overlay').classList.remove('open');
-    document.getElementById('cal-game-overlay').classList.remove('open');
-  }
-  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&document.getElementById('add-overlay').classList.contains('open')) saveGame();
-});
+// (keyboard shortcuts handled in navigateTo section above)
 
 document.querySelectorAll('.filter-tab').forEach(btn=>{
   btn.onclick=()=>{
@@ -2251,18 +3571,19 @@ function toggleTag(tag){
 }
 
 // Inline "create + auto-select" from modal
-document.getElementById('tag-new-btn').onclick=function(){
+const _tagNewBtn = document.getElementById('tag-new-btn');
+if(_tagNewBtn) _tagNewBtn.onclick=function(){
   const input=document.getElementById('tag-new-input');
+  if(!input) return;
   const val=input.value.trim();
   if(!val) return;
   if(createGlobalTag(val)){
-    currentTags.push(val); // auto-select the new tag
+    currentTags.push(val);
     input.value='';
     renderTagSelector();
-    renderTagMgrList(); // keep manager in sync if open
+    renderTagMgrList();
     showToast(`🏷️ Tag "${val}" criada e selecionada!`);
   }else{
-    // tag already exists — just select it
     const existing=globalTags.find(t=>t.toLowerCase()===val.toLowerCase());
     if(existing&&!currentTags.includes(existing)){
       currentTags.push(existing);
@@ -2271,8 +3592,9 @@ document.getElementById('tag-new-btn').onclick=function(){
     input.value='';
   }
 };
-document.getElementById('tag-new-input').addEventListener('keydown',e=>{
-  if(e.key==='Enter'){e.preventDefault();document.getElementById('tag-new-btn').click();}
+const _tagNewInput = document.getElementById('tag-new-input');
+if(_tagNewInput) _tagNewInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();document.getElementById('tag-new-btn')?.click();}
 });
 
 // ═══════════════════════════════════════════════════
@@ -2299,7 +3621,7 @@ const DAY_NAMES=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
 // Two-step fetch: 1) release_dates (minimal fields) → 2) games by ID (full details)
 async function fetchReleases(year, month) {
-  // Não há verificação de credenciais locais
+  if (!IGDB.getCreds()?.id) return null;
   const from = Math.floor(new Date(year, month, 1) / 1000);
   const to   = Math.floor(new Date(year, month + 1, 0, 23, 59, 59) / 1000);
 
@@ -2505,10 +3827,17 @@ async function openCalGame(igdbId) {
     const sids = details?.[0]?.screenshots;
     if (sids?.length) {
       ssWrap.style.display = 'block';
-      ssEl.innerHTML = sids.slice(0,8).map(s =>
+      const imgs = sids.slice(0,8);
+      const hugeUrls = imgs.map(s => IGDB.screen(s.image_id,'screenshot_huge'));
+      const urlsJson = JSON.stringify(hugeUrls).replace(/"/g,'&quot;');
+      const set = imgs.map((s,i) =>
         `<img class="ss-thumb" src="${IGDB.screen(s.image_id,'screenshot_big')}" loading="lazy"
-          onclick="openLightbox('${IGDB.screen(s.image_id,'screenshot_huge')}')" alt="screenshot">`
+          onclick="openLightbox('${IGDB.screen(s.image_id,'screenshot_huge')}',JSON.parse(this.dataset.urls))"
+          data-urls="${urlsJson}" data-idx="${i}" alt="screenshot">`
       ).join('');
+      ssEl.innerHTML = imgs.length >= 3
+        ? `<div class="screenshots-track">${set}${set}</div>`
+        : `<div class="screenshots-track" style="animation:none">${set}</div>`;
     }
   } catch(e) { /* screenshots optional */ }
 }
@@ -2573,7 +3902,12 @@ async function renderCalendar() {
   const body = document.getElementById('cal-body');
   document.getElementById('cal-month-label').textContent = `${MONTH_NAMES[calMonth]} ${calYear}`;
 
-  // Não há verificação de credenciais locais; sempre tenta buscar.
+  if (!IGDB.getCreds()?.id) {
+    body.innerHTML = `<div class="cal-no-igdb"><div class="empty-icon">🔗</div><h3>IGDB não configurado</h3><p>Configure suas credenciais IGDB em ⚙️ Configurações para ver os lançamentos do mês.</p><button class="btn-primary" onclick="openSettings('igdb')" style="margin-top:8px">Configurar IGDB</button></div>`;
+    document.getElementById('cal-plat-filter').innerHTML = '';
+    return;
+  }
+
   body.innerHTML = `<div class="cal-loading">⏳ Buscando lançamentos de ${MONTH_NAMES[calMonth]} ${calYear}...</div>`;
   document.getElementById('cal-plat-filter').innerHTML = '';
 
@@ -2581,7 +3915,7 @@ async function renderCalendar() {
     const releases = await fetchReleases(calYear, calMonth);
 
     if (releases === null) {
-      body.innerHTML = `<div class="cal-no-igdb"><div class="empty-icon">🔑</div><h3>Falha na autenticação</h3><p>Verifique se o worker está funcionando corretamente.</p></div>`;
+      body.innerHTML = `<div class="cal-no-igdb"><div class="empty-icon">🔑</div><h3>Falha na autenticação</h3><p>Verifique suas credenciais IGDB em ⚙️ Configurações.</p><button class="btn-primary" onclick="openSettings('igdb')" style="margin-top:8px">Verificar credenciais</button></div>`;
       return;
     }
 
@@ -2619,15 +3953,334 @@ document.getElementById('cal-next').onclick=()=>{
 };
 
 // ═══════════════════════════════════════════════════
-//  PAGE NAVIGATION
+//  BULK ACTIONS
 // ═══════════════════════════════════════════════════
-document.querySelectorAll('.page-tab').forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll('.page-tab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    currentPage=btn.dataset.page;
-    render();
-  };
+let bulkMode = false;
+let bulkSelected = new Set();
+
+function enterBulkMode(){
+  bulkMode = true;
+  bulkSelected.clear();
+  document.body.classList.add('bulk-mode');
+  document.getElementById('btn-bulk-toggle').classList.add('active');
+  document.getElementById('btn-bulk-toggle').textContent = '✕ Sair';
+  document.getElementById('bulk-bar').classList.add('visible');
+  updateBulkBar();
+  render();
+}
+
+function exitBulkMode(){
+  bulkMode = false;
+  bulkSelected.clear();
+  document.body.classList.remove('bulk-mode');
+  document.getElementById('btn-bulk-toggle').classList.remove('active');
+  document.getElementById('btn-bulk-toggle').textContent = '☑ Selecionar';
+  document.getElementById('bulk-bar').classList.remove('visible');
+  closeBulkMenus();
+  render();
+}
+
+function toggleBulkSelect(id, checked){
+  if(checked) bulkSelected.add(id);
+  else bulkSelected.delete(id);
+  updateBulkBar();
+  // update card selected class live without full re-render
+  const card = document.querySelector(`.game-card[data-id="${id}"]`);
+  if(card) card.classList.toggle('selected', checked);
+}
+
+function handleCardClick(e, id){
+  if(bulkMode){
+    e.stopPropagation();
+    const nowSelected = !bulkSelected.has(id);
+    toggleBulkSelect(id, nowSelected);
+    // sync checkbox inside the card
+    const cb = document.querySelector(`.game-card[data-id="${id}"] .card-checkbox`);
+    if(cb) cb.checked = nowSelected;
+  } else {
+    openDetail(id);
+  }
+}
+
+function updateBulkBar(){
+  const n = bulkSelected.size;
+  const el = document.getElementById('bulk-count');
+  el.textContent = n === 0 ? 'Nenhum selecionado' : `${n} jogo${n!==1?'s':''} selecionado${n!==1?'s':''}`;
+  const actBtns = document.querySelectorAll('#bulk-status-btn,#bulk-tag-btn,#bulk-delete-btn');
+  actBtns.forEach(b => b.style.opacity = n ? '1' : '.4');
+  actBtns.forEach(b => b.style.pointerEvents = n ? '' : 'none');
+}
+
+function closeBulkMenus(){
+  document.getElementById('bulk-status-menu').classList.remove('open');
+  document.getElementById('bulk-tag-menu').classList.remove('open');
+}
+
+// Select All
+document.getElementById('bulk-select-all').onclick = () => {
+  const filtered = getFiltered();
+  const allIds = filtered.map(g=>g.id);
+  const allSelected = allIds.every(id => bulkSelected.has(id));
+  if(allSelected){ allIds.forEach(id=>bulkSelected.delete(id)); }
+  else { allIds.forEach(id=>bulkSelected.add(id)); }
+  updateBulkBar();
+  render();
+};
+
+// Toggle bulk mode button
+document.getElementById('btn-bulk-toggle').onclick = () => {
+  if(bulkMode) exitBulkMode(); else enterBulkMode();
+};
+
+// Cancel
+document.getElementById('bulk-cancel-btn').onclick = exitBulkMode;
+
+// Status dropdown
+document.getElementById('bulk-status-btn').onclick = (e) => {
+  if(!bulkSelected.size) return;
+  closeBulkMenus();
+  const menu = document.getElementById('bulk-status-menu');
+  menu.innerHTML = Object.entries(STATUS).map(([k,s])=>`
+    <div class="bulk-menu-item" onclick="bulkSetStatus('${k}')">
+      <span class="bulk-menu-dot" style="background:${s.color}"></span>${s.label}
+    </div>`).join('');
+  const rect = e.currentTarget.getBoundingClientRect();
+  menu.style.top  = (rect.bottom + 6 + window.scrollY)+'px';
+  menu.style.left = rect.left+'px';
+  menu.classList.add('open');
+  setTimeout(()=>document.addEventListener('click', ()=>menu.classList.remove('open'), {once:true}), 10);
+};
+
+function bulkSetStatus(status){
+  bulkSelected.forEach(id=>{
+    const g = games.find(x=>x.id===id); if(!g) return;
+    g.status = status;
+    if(status==='completed' && !g.dateEnd) g.dateEnd = new Date().toISOString().slice(0,10);
+    if(status==='playing'   && !g.dateStart) g.dateStart = new Date().toISOString().slice(0,10);
+  });
+  saveGames(games);
+  closeBulkMenus();
+  const n = bulkSelected.size;
+  showToast(`✅ ${n} jogo${n!==1?'s':''} → "${STATUS[status].label}"`);
+  exitBulkMode();
+}
+
+// Tag dropdown
+document.getElementById('bulk-tag-btn').onclick = (e) => {
+  if(!bulkSelected.size) return;
+  closeBulkMenus();
+  const menu = document.getElementById('bulk-tag-menu');
+  if(!globalTags.length){
+    menu.innerHTML = `<div class="bulk-menu-item" style="color:var(--muted);pointer-events:none">Nenhuma tag criada</div>`;
+  } else {
+    menu.innerHTML = globalTags.map(t=>`
+      <div class="bulk-menu-item" onclick="bulkAddTag('${esc(t)}')">
+        <span style="font-size:14px">🏷️</span>${esc(t)}
+      </div>`).join('');
+  }
+  const rect = e.currentTarget.getBoundingClientRect();
+  menu.style.top  = (rect.bottom + 6 + window.scrollY)+'px';
+  menu.style.left = rect.left+'px';
+  menu.classList.add('open');
+  setTimeout(()=>document.addEventListener('click', ()=>menu.classList.remove('open'), {once:true}), 10);
+};
+
+function bulkAddTag(tag){
+  let changed = 0;
+  bulkSelected.forEach(id=>{
+    const g = games.find(x=>x.id===id); if(!g) return;
+    if(!g.tags) g.tags = [];
+    if(!g.tags.includes(tag)){ g.tags.push(tag); changed++; }
+  });
+  saveGames(games);
+  closeBulkMenus();
+  showToast(`🏷️ Tag "${tag}" adicionada em ${changed} jogo${changed!==1?'s':''}`);
+  exitBulkMode();
+}
+
+// Bulk delete
+document.getElementById('bulk-delete-btn').onclick = () => {
+  if(!bulkSelected.size) return;
+  const n = bulkSelected.size;
+  if(!confirm(`Remover ${n} jogo${n!==1?'s':''} permanentemente?`)) return;
+  games = games.filter(g=>!bulkSelected.has(g.id));
+  saveGames(games);
+  showToast(`🗑 ${n} jogo${n!==1?'s':''} removido${n!==1?'s':''}.`);
+  exitBulkMode();
+};
+
+// ── Custom Platform Select ────────────────────────
+function togglePlatformMenu(){
+  const wrap = document.getElementById('platform-select-wrap');
+  wrap.classList.toggle('open');
+}
+function pickPlatform(val){
+  document.getElementById('f-platform').value = val;
+  document.getElementById('platform-display').textContent = val || 'Selecionar...';
+  document.getElementById('platform-display').style.color = val ? '' : 'var(--muted)';
+  // update selected state
+  document.querySelectorAll('#platform-menu .custom-select-option').forEach(o=>{
+    o.classList.toggle('selected', o.dataset.val === val);
+  });
+  document.getElementById('platform-select-wrap').classList.remove('open');
+}
+function setPlatformDisplay(val){
+  document.getElementById('f-platform').value = val||'';
+  document.getElementById('platform-display').textContent = val || 'Selecionar...';
+  document.getElementById('platform-display').style.color = val ? '' : 'var(--muted)';
+  document.querySelectorAll('#platform-menu .custom-select-option').forEach(o=>{
+    o.classList.toggle('selected', o.dataset.val === val);
+  });
+}
+// Close dropdown when clicking outside
+document.addEventListener('click', e=>{
+  const wrap = document.getElementById('platform-select-wrap');
+  if(wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+});
+
+// ── onStatusChange: show/hide progress field ──────
+function onStatusChange(val){
+  const wrap = document.getElementById('f-progress-wrap');
+  wrap.classList.add('visible');
+}
+
+// ── Quick Status Popover ──────────────────────────
+let _popGameId = null;
+function openStatusPopover(e, gameId){
+  e.stopPropagation();
+  _popGameId = gameId;
+  const pop = document.getElementById('status-popover');
+  pop.innerHTML = Object.entries(STATUS).map(([k,s])=>`
+    <div class="status-pop-item" onclick="quickSetStatus('${gameId}','${k}')">
+      <span class="status-pop-dot" style="background:${s.color}"></span>
+      ${s.label}
+    </div>`).join('');
+  const rect = e.currentTarget.getBoundingClientRect();
+  pop.style.top  = (rect.bottom + 6 + window.scrollY) + 'px';
+  pop.style.left = Math.min(rect.left, window.innerWidth - 170) + 'px';
+  pop.classList.add('open');
+  setTimeout(()=>document.addEventListener('click', closePopoverOnce, {once:true}), 10);
+}
+function closePopoverOnce(){ document.getElementById('status-popover').classList.remove('open'); }
+function quickSetStatus(gameId, newStatus){
+  const g = games.find(x=>x.id===gameId); if(!g) return;
+  g.status = newStatus;
+  if(newStatus === 'completed' && !g.dateEnd) g.dateEnd = new Date().toISOString().slice(0,10);
+  if(newStatus === 'playing'   && !g.dateStart) g.dateStart = new Date().toISOString().slice(0,10);
+  saveGames(games);
+  document.getElementById('status-popover').classList.remove('open');
+  render();
+  showToast(`✅ Status alterado para "${STATUS[newStatus].label}"`);
+}
+
+// ── Sidebar Dice / Random Game ────────────────────
+document.getElementById('sidebar-dice-btn').onclick = function() {
+  const pool = games.filter(g => dicePool.includes(g.status));
+  if(!pool.length){ showToast('⚠️ Nenhum jogo nos status selecionados. Configure em Configurações → Preferências.'); return; }
+  const btn = this;
+  const isCompact = window.innerWidth <= 900;
+  btn.classList.add('rolling');
+  let ticks = 0;
+  const total = 8;
+  const interval = setInterval(()=>{
+    const tmp = pool[Math.floor(Math.random()*pool.length)];
+    if(!isCompact){
+      document.getElementById('dice-result-title').textContent = tmp.title;
+      document.getElementById('dice-result-status').textContent = STATUS[tmp.status]?.label || '';
+      document.getElementById('dice-result').classList.add('show');
+    }
+    ticks++;
+    if(ticks >= total){
+      clearInterval(interval);
+      btn.classList.remove('rolling');
+      const winner = pool[Math.floor(Math.random()*pool.length)];
+      if(isCompact){
+        showToast(`🎲 ${winner.title}!`);
+        setTimeout(()=>openDetail(winner.id), 600);
+      } else {
+        document.getElementById('dice-result-title').textContent = winner.title;
+        document.getElementById('dice-result-status').textContent = STATUS[winner.status]?.label || '';
+        document.getElementById('dice-result').onclick = ()=>openDetail(winner.id);
+      }
+    }
+  }, 80);
+};
+
+// ── Annual Goal (settings panel) ─────────────────
+function openGoalPanel(){
+  document.getElementById('cfg-goal-year').textContent = new Date().getFullYear();
+  document.getElementById('cfg-goal-input').value = goalTarget || '';
+  const completed = games.filter(g=>g.status==='completed'&&g.dateEnd&&new Date(g.dateEnd).getFullYear()===new Date().getFullYear()).length;
+  document.getElementById('cfg-goal-status').textContent = goalTarget
+    ? `Progresso atual: ${completed} de ${goalTarget} jogo${goalTarget!==1?'s':''}`
+    : 'Sem meta definida.';
+  // Load dice pool checkboxes
+  ['playing','paused','wishlist','dropped','completed'].forEach(s=>{
+    const cb = document.getElementById('dice-pool-'+s);
+    if(cb) cb.checked = dicePool.includes(s);
+  });
+}
+document.getElementById('cfg-goal-save').onclick = ()=>{
+  const val = parseInt(document.getElementById('cfg-goal-input').value)||0;
+  goalTarget = Math.max(0, val);
+  localStorage.setItem(GOAL_KEY, goalTarget);
+  openGoalPanel();
+  render();
+  showToast(goalTarget>0 ? `🎯 Meta: ${goalTarget} jogos!` : '🎯 Meta removida.');
+};
+document.getElementById('cfg-goal-clear').onclick = ()=>{
+  goalTarget = 0;
+  localStorage.setItem(GOAL_KEY, 0);
+  document.getElementById('cfg-goal-input').value = '';
+  openGoalPanel();
+  render();
+  showToast('🎯 Meta removida.');
+};
+document.getElementById('cfg-dice-save').onclick = ()=>{
+  dicePool = ['playing','paused','wishlist','dropped','completed'].filter(s=>{
+    const cb = document.getElementById('dice-pool-'+s);
+    return cb && cb.checked;
+  });
+  localStorage.setItem(DICE_KEY, JSON.stringify(dicePool));
+  showToast(`🎲 Sorteador configurado: ${dicePool.length} status`);
+};
+document.querySelectorAll('.cfg-tab').forEach(btn=>{
+  if(btn.dataset.cfg==='prefs') btn.addEventListener('click', openGoalPanel);
+});
+
+// ── PAGE NAVIGATION ────────────────────────────────
+function navigateTo(page) {
+  if(bulkMode) exitBulkMode();
+  currentPage = page;
+  document.querySelectorAll('.page-tab').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.sidebar-nav-item, .mob-nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  render();
+}
+document.querySelectorAll('.page-tab').forEach(btn=>{ btn.onclick=()=>navigateTo(btn.dataset.page); });
+document.querySelectorAll('.sidebar-nav-item, .mob-nav-item').forEach(btn=>{ btn.onclick=()=>navigateTo(btn.dataset.page); });
+
+// ── Keyboard Shortcuts ────────────────────────────
+document.addEventListener('keydown', e => {
+  const activeEl = document.activeElement;
+  const inInput  = ['INPUT','TEXTAREA','SELECT'].includes(activeEl.tagName);
+  if(e.key==='Escape'){
+    closeModal(); closeDel(); closeDetail(); closeSettings(); closeTagMgr(); closeAC(); closeBulkMenus(); closeDupModal();
+    document.getElementById('cal-day-overlay').classList.remove('open');
+    document.getElementById('cal-game-overlay').classList.remove('open');
+    document.getElementById('status-popover').classList.remove('open');
+    if(bulkMode) exitBulkMode();
+    return;
+  }
+  if((e.ctrlKey||e.metaKey) && e.key==='Enter' && document.getElementById('add-overlay').classList.contains('open')){ saveGame(); return; }
+  if((e.ctrlKey||e.metaKey) && e.key==='k'){ e.preventDefault(); document.getElementById('search').focus(); return; }
+  if(inInput) return;
+  if(e.key==='n' || e.key==='N'){ openAdd(); return; }
+  if(e.key==='1'){ navigateTo('library');  return; }
+  if(e.key==='2'){ navigateTo('lists');    return; }
+  if(e.key==='3'){ navigateTo('stats');    return; }
+  if(e.key==='4'){ navigateTo('calendar'); return; }
+  if(e.key==='5'){ navigateTo('passport'); return; }
+  if(e.key==='r' || e.key==='R'){ document.getElementById('sidebar-dice-btn').click(); return; }
 });
 
 // ═══════════════════════════════════════════════════
@@ -2643,7 +4296,43 @@ function destroyChart(id){
 function renderStats(){
   if(!games.length) return;
 
-  // ── KPIs ──────────────────────────────────────────
+  // ── STREAK ────────────────────────────────────────
+  const completedAll = games.filter(g=>g.dateEnd).sort((a,b)=>new Date(b.dateEnd)-new Date(a.dateEnd));
+  let currentStreak=0, longestStreak=0, prevMonth=null;
+  const monthsWithCompletion = new Set(completedAll.map(g=>{
+    const d=new Date(g.dateEnd); return `${d.getFullYear()}-${d.getMonth()}`;
+  }));
+  const now = new Date();
+  for(let i=0;i<36;i++){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    const key = `${d.getFullYear()}-${d.getMonth()}`;
+    if(monthsWithCompletion.has(key)) currentStreak++;
+    else break;
+  }
+  let run=0;
+  for(let i=35;i>=0;i--){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    if(monthsWithCompletion.has(`${d.getFullYear()}-${d.getMonth()}`)){run++; longestStreak=Math.max(longestStreak,run);}
+    else run=0;
+  }
+  const avgDays = completedAll.filter(g=>g.dateStart&&g.dateEnd).reduce((acc,g,_,arr)=>{
+    const ms = new Date(g.dateEnd)-new Date(g.dateStart);
+    return acc + ms/(1000*60*60*24)/arr.length;
+  }, 0);
+  document.getElementById('streak-row').innerHTML = `
+    <div class="streak-card">
+      <span class="streak-icon">🔥</span>
+      <div><div class="streak-val" style="color:var(--orange)">${currentStreak}</div><div class="streak-label">Meses consecutivos<br>com jogo zerado</div></div>
+    </div>
+    <div class="streak-card">
+      <span class="streak-icon">🏆</span>
+      <div><div class="streak-val" style="color:var(--yellow)">${longestStreak}</div><div class="streak-label">Recorde de meses<br>zerand seguidos</div></div>
+    </div>
+    <div class="streak-card">
+      <span class="streak-icon">⚡</span>
+      <div><div class="streak-val" style="color:var(--blue)">${avgDays>0?Math.round(avgDays)+'d':'—'}</div><div class="streak-label">Média de dias<br>para zerar um jogo</div></div>
+    </div>`;
+
   const totalHours=games.reduce((s,g)=>s+(parseFloat(g.hours)||0),0);
   const rated=games.filter(g=>g.rating>0);
   const avgRating=rated.length?(rated.reduce((s,g)=>s+g.rating,0)/rated.length).toFixed(1):'-';
@@ -2730,7 +4419,6 @@ function renderStats(){
 
   // ── TIMELINE ─────────────────────────────────────
   destroyChart('timeline');
-  const now=new Date();
   const months=[]; const monthLabels=[];
   for(let i=11;i>=0;i--){
     const d=new Date(now.getFullYear(),now.getMonth()-i,1);
@@ -2752,7 +4440,13 @@ function renderStats(){
   });
 
   // ── TOP BY HOURS ──────────────────────────────────
-  const topHours=[...games].filter(g=>g.hours>0).sort((a,b)=>b.hours-a.hours).slice(0,5);
+  const allHours=[...games].filter(g=>g.hours>0).sort((a,b)=>b.hours-a.hours);
+  const showAllHours = topListState.hours;
+  const topHours = showAllHours ? allHours : allHours.slice(0,5);
+  const toggleH = document.getElementById('top-hours-toggle');
+  const subH = document.getElementById('top-hours-sub');
+  if(toggleH){ toggleH.textContent = showAllHours ? 'Ver menos' : 'Ver mais'; toggleH.style.display = allHours.length > 5 ? '' : 'none'; }
+  if(subH){ subH.textContent = `Top ${topHours.length} de ${allHours.length} por tempo`; }
   document.getElementById('chart-top-hours').innerHTML=topHours.length
     ?topHours.map((g,i)=>`
       <div class="top-game-row">
@@ -2767,7 +4461,13 @@ function renderStats(){
     :'<div style="font-size:12px;color:var(--muted)">Nenhum jogo com horas registradas.</div>';
 
   // ── TOP RATED ─────────────────────────────────────
-  const topRated=[...games].filter(g=>g.rating>0).sort((a,b)=>b.rating-a.rating||b.hours-a.hours).slice(0,5);
+  const allRated=[...games].filter(g=>g.rating>0).sort((a,b)=>b.rating-a.rating||b.hours-a.hours);
+  const showAllRated = topListState.rated;
+  const topRated = showAllRated ? allRated : allRated.slice(0,5);
+  const toggleR = document.getElementById('top-rated-toggle');
+  const subR = document.getElementById('top-rated-sub');
+  if(toggleR){ toggleR.textContent = showAllRated ? 'Ver menos' : 'Ver mais'; toggleR.style.display = allRated.length > 5 ? '' : 'none'; }
+  if(subR){ subR.textContent = `Top ${topRated.length} de ${allRated.length} avaliados`; }
   document.getElementById('chart-top-rated').innerHTML=topRated.length
     ?topRated.map((g,i)=>`
       <div class="top-game-row">
@@ -2783,6 +4483,7 @@ function renderStats(){
 
   // ── Zerados por Ano ──────────────────────────────
   const yearCard = document.getElementById('chart-year-card');
+  // Use dateEnd regardless of status — any game with completion date counts
   const completedWithDate = games.filter(g => g.dateEnd);
   if(!completedWithDate.length){
     yearCard.style.display='none';
@@ -2796,6 +4497,7 @@ function renderStats(){
     const years = Object.keys(yearMap).sort();
     const counts = years.map(y => yearMap[y]);
     destroyChart('years');
+    // Re-use existing canvas but reset its size to prevent runaway growth
     const canvas = document.getElementById('chart-years');
     canvas.style.height = '160px';
     canvas.style.maxHeight = '160px';
@@ -2847,7 +4549,7 @@ function openBackupPanel() {
   if (info) {
     const gCount = games.length;
     const tCount = globalTags.length;
-    const sizeKb = (JSON.stringify({ games, tags: globalTags, lists }).length / 1024).toFixed(1);
+    const sizeKb = (JSON.stringify({ games, tags: globalTags }).length / 1024).toFixed(1);
     info.textContent = `📦 ${gCount} jogo(s) · ${tCount} tag(s) · ~${sizeKb} KB`;
   }
   // Reset import state
@@ -2860,11 +4562,13 @@ function resetImportState() {
   const cancelBtn = document.getElementById('backup-cancel-import');
   const importBtn = document.getElementById('backup-import-btn');
   const input = document.getElementById('backup-import-input');
+  const modeRow = document.getElementById('backup-mode-row');
   if (lbl) { lbl.classList.remove('has-file'); lbl.childNodes[lbl.childNodes.length - 1].textContent = ' 📂 Escolher arquivo .json'; }
   if (status) status.innerHTML = '';
   if (cancelBtn) cancelBtn.style.display = 'none';
   if (importBtn) importBtn.style.display = 'none';
   if (input) input.value = '';
+  if (modeRow) { modeRow.style.display='none'; document.getElementById('import-mode-replace').checked=true; }
 }
 
 // ── Export ──────────────────────────────────────
@@ -2874,7 +4578,6 @@ document.getElementById('backup-export-btn').onclick = () => {
     exportedAt: new Date().toISOString(),
     games,
     tags: globalTags,
-    lists: lists,
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url  = URL.createObjectURL(blob);
@@ -2897,6 +4600,7 @@ document.getElementById('backup-import-input').onchange = function() {
   const importBtn = document.getElementById('backup-import-btn');
 
   lbl.classList.add('has-file');
+  // Update label text node
   lbl.childNodes[lbl.childNodes.length - 1].textContent = ` ✅ ${file.name}`;
   status.innerHTML = '<span style="color:var(--muted)">Lendo arquivo...</span>';
 
@@ -2911,7 +4615,9 @@ document.getElementById('backup-import-input').onchange = function() {
       status.innerHTML = `
         <span style="color:var(--green)">✔ Arquivo válido</span>
         <span style="color:var(--muted);margin-left:10px">${gCount} jogos · ${tCount} tags · exportado em ${exported}</span>
-        <br><span style="color:var(--yellow);font-size:11px">⚠️ Os ${games.length} jogos atuais serão substituídos.</span>`;
+        <br><span style="color:var(--yellow);font-size:11px">⚠️ Os ${games.length} jogos atuais serão substituídos se escolher "Substituir".</span>`;
+      document.getElementById('backup-mode-row').style.display='flex';
+      document.getElementById('backup-mode-row').style.flexDirection='column';
       cancelBtn.style.display = '';
       importBtn.style.display = '';
       importBtn._pendingData = data;
@@ -2928,19 +4634,23 @@ document.getElementById('backup-import-input').onchange = function() {
 document.getElementById('backup-import-btn').onclick = function() {
   const data = this._pendingData;
   if (!data) return;
-  games = data.games;
-  saveGames(games);
-  if (Array.isArray(data.tags) && data.tags.length) {
-    globalTags = data.tags;
-    saveGlobalTags();
+  const mode = document.querySelector('input[name="import-mode"]:checked')?.value || 'replace';
+  if(mode === 'merge'){
+    const existing = new Map(games.map(g=>[g.title.toLowerCase(), true]));
+    const incoming = (data.games||[]).filter(g=>!existing.has(g.title.toLowerCase()));
+    games = [...games, ...incoming];
+    if(Array.isArray(data.tags)) data.tags.forEach(t=>{ if(!globalTags.includes(t)) globalTags.push(t); });
+    saveGames(games); saveGlobalTags();
+    closeSettings(); render();
+    showToast(`✅ ${incoming.length} novo(s) jogo(s) mesclados!`);
+  } else {
+    games = data.games;
+    saveGames(games);
+    if (Array.isArray(data.tags) && data.tags.length) { globalTags = data.tags; saveGlobalTags(); }
+    if (Array.isArray(data.lists)){ lists=data.lists; saveLists(lists); }
+    closeSettings(); render();
+    showToast(`✅ ${games.length} jogos importados com sucesso!`);
   }
-  if (Array.isArray(data.lists)) {
-    lists = data.lists;
-    saveLists(lists);
-  }
-  closeSettings();
-  render();
-  showToast(`✅ ${games.length} jogos importados com sucesso!`);
 };
 
 document.getElementById('backup-cancel-import').onclick = resetImportState;
@@ -2965,6 +4675,7 @@ function buildPassportData() {
   games.forEach(g => { (g.igdb?.genres||[]).forEach(t=>allGenres.push(typeof t==='string'?t:t)); (g.tags||[]).forEach(t=>allGenres.push(t)); });
   const genreFreq  = allGenres.reduce((a,t)=>{a[t]=(a[t]||0)+1;return a;},{});
   const topGenres  = Object.entries(genreFreq).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+  // recent completed or any games for covers
   const recentGames = [...completed].sort((a,b)=>(b.dateEnd||b.createdAt||0)-(a.dateEnd||a.createdAt||0)).slice(0,6);
   if(recentGames.length < 6) {
     const others = games.filter(g=>g.status!=='completed').sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
@@ -2973,8 +4684,8 @@ function buildPassportData() {
   return { totalHours, completed: completed.length, total: games.length, avgRating, topGenres, recentGames, rated: rated.length };
 }
 
-function renderPassportCard(preview) {
-  if (!games.length) { showToast('⚠️ Adicione jogos antes de gerar o Passport.'); return; }
+function renderPassportCard(target) {
+  if (!games.length) { showToast('⚠️ Adicione jogos antes de gerar o Passaporte.'); return; }
   const d = buildPassportData();
   const hoursStr = d.totalHours % 1 === 0 ? d.totalHours+'h' : d.totalHours.toFixed(1)+'h';
   const dateStr  = new Date().toLocaleDateString('pt-BR',{month:'short',year:'numeric'}).toUpperCase();
@@ -2989,70 +4700,61 @@ function renderPassportCard(preview) {
 
   const genresHtml = d.topGenres.map(g=>`<span class="pp-genre">${esc(g)}</span>`).join('');
 
-  preview.innerHTML = `
-  <div id="passport-card">
+  target.innerHTML = `
     <div class="pp-header">
       <div class="pp-avatar">🎮</div>
       <div class="pp-identity">
-        <div class="pp-name">Gaming Passport</div>
+        <div class="pp-name">Gaming Passaporte</div>
         <div class="pp-tagline">${d.total} jogo${d.total!==1?'s':''} na biblioteca · ${d.completed} zerado${d.completed!==1?'s':''}</div>
       </div>
       <div class="pp-logo">GAMEVAULT</div>
     </div>
-
     <div class="pp-stats-row">
-      <div class="pp-stat">
-        <div class="pp-stat-val" style="color:#00FF94">${hoursStr}</div>
-        <div class="pp-stat-lbl">Horas</div>
-      </div>
-      <div class="pp-stat">
-        <div class="pp-stat-val" style="color:#38BDF8">${d.completed}</div>
-        <div class="pp-stat-lbl">Zerados</div>
-      </div>
-      <div class="pp-stat">
-        <div class="pp-stat-val" style="color:#FCD34D">${d.avgRating}${d.avgRating!=='—'?'★':''}</div>
-        <div class="pp-stat-lbl">Nota Média</div>
-      </div>
-      <div class="pp-stat">
-        <div class="pp-stat-val" style="color:#A78BFA">${d.total}</div>
-        <div class="pp-stat-lbl">Total</div>
-      </div>
+      <div class="pp-stat"><div class="pp-stat-val" style="color:#00FF94">${hoursStr}</div><div class="pp-stat-lbl">Horas</div></div>
+      <div class="pp-stat"><div class="pp-stat-val" style="color:#38BDF8">${d.completed}</div><div class="pp-stat-lbl">Zerados</div></div>
+      <div class="pp-stat"><div class="pp-stat-val" style="color:#FCD34D">${d.avgRating}${d.avgRating!=='—'?'★':''}</div><div class="pp-stat-lbl">Nota Média</div></div>
+      <div class="pp-stat"><div class="pp-stat-val" style="color:#A78BFA">${d.total}</div><div class="pp-stat-lbl">Total</div></div>
     </div>
-
-    ${d.recentGames.length ? `
-    <div class="pp-section-lbl">Jogos Recentes</div>
-    <div class="pp-games-row">${coversHtml}</div>
-    ` : ''}
-
+    ${d.recentGames.length ? `<div class="pp-section-lbl">Jogos Recentes</div><div class="pp-games-row">${coversHtml}</div>` : ''}
     <div class="pp-footer">
       <div class="pp-genres">${genresHtml}</div>
       <div class="pp-date">${dateStr}</div>
-    </div>
-  </div>`;
+    </div>`;
 }
 
-document.getElementById('passport-generate-btn').onclick = () => {
-  const preview = document.getElementById('passport-preview');
-  preview.style.display = 'block';
-  renderPassportCard(preview);
-  document.getElementById('passport-download-btn').style.display = '';
-};
+// ── Passport Page ─────────────────────────────────
+function renderPassportPage() {
+  const card = document.getElementById('passport-card');
+  if(!card) return;
+  if(!games.length){
+    card.innerHTML = `<div style="padding:60px 40px;text-align:center;color:rgba(255,255,255,.4)"><div style="font-size:48px;margin-bottom:16px">🎮</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#fff;margin-bottom:8px">Biblioteca vazia</div><div style="font-size:13px">Adicione jogos para gerar seu Passaporte.</div></div>`;
+    const dlHdr = document.getElementById('passport-download-hdr');
+    if(dlHdr) dlHdr.style.display='none';
+    return;
+  }
+  renderPassportCard(card);
+  // show download in header
+  const dlHdr = document.getElementById('passport-download-hdr');
+  if(dlHdr) dlHdr.style.display='';
+}
+
+document.getElementById('passport-generate-btn').onclick = () => renderPassportPage();
 
 document.getElementById('passport-download-btn').onclick = async () => {
   const card = document.getElementById('passport-card');
-  if (!card) return;
+  if(!card) return;
   const btn = document.getElementById('passport-download-btn');
   btn.textContent = '⏳ Gerando...'; btn.disabled = true;
   try {
     const canvas = await html2canvas(card, {
       scale: 2, useCORS: true, allowTaint: false,
-      backgroundColor: null, logging: false,
+      backgroundColor: '#0d0d1a', logging: false,
     });
     const a = document.createElement('a');
     a.download = `gamevault-passport-${new Date().toISOString().slice(0,10)}.png`;
     a.href = canvas.toDataURL('image/png');
     a.click();
-    showToast('✅ Passport salvo como PNG!');
+    showToast('✅ Passaporte salvo como PNG!');
   } catch(e) {
     showToast('❌ Erro ao gerar PNG. Tente novamente.');
     console.error(e);
@@ -3061,22 +4763,48 @@ document.getElementById('passport-download-btn').onclick = async () => {
   }
 };
 
-document.querySelectorAll('.cfg-tab').forEach(btn => {
-  if (btn.dataset.cfg === 'passport') {
-    btn.addEventListener('click', () => {
-      document.getElementById('passport-preview').style.display = 'none';
-      document.getElementById('passport-download-btn').style.display = 'none';
-    });
-  }
-});
-
 
 // ═══════════════════════════════════════════════════
 //  LISTS ENGINE
 // ═══════════════════════════════════════════════════
 
+// ── Top-list show-more state ─────────────────────
+const topListState = { hours: false, rated: false };
+function toggleTopList(type) {
+  topListState[type] = !topListState[type];
+  renderStats();
+}
+
+// ── Extra filters (tags & years) toggle ─────────
+let extraFiltersOpen = false;
+function toggleExtraFilters() {
+  extraFiltersOpen = !extraFiltersOpen;
+  const body = document.getElementById('extra-filters-body');
+  const btn  = document.getElementById('extra-filters-btn');
+  body.style.display = extraFiltersOpen ? 'block' : 'none';
+  btn.classList.toggle('open', extraFiltersOpen);
+}
+
+// ── Lists filter/sort state ──────────────────────
+let listsSort = 'recent';
+function setListsSort(btn, sort) {
+  listsSort = sort;
+  document.querySelectorAll('.lists-sort-btn').forEach(b => b.classList.toggle('active', b === btn));
+  renderListsGrid();
+}
+
 const LISTS_KEY = 'gv_lists';
 const LIST_COLORS = ['#00FF94','#38BDF8','#A78BFA','#FB923C','#F472B6','#FCD34D','#34D399','#F87171'];
+
+let listView = 'grid'; // 'grid' | 'list'
+
+function setListView(mode) {
+  listView = mode;
+  const grid = document.getElementById('list-detail-grid');
+  grid.classList.toggle('list-view', mode === 'list');
+  document.getElementById('lv-vbtn-grid').classList.toggle('active', mode === 'grid');
+  document.getElementById('lv-vbtn-list').classList.toggle('active', mode === 'list');
+}
 
 function loadLists(){ try{ return JSON.parse(localStorage.getItem(LISTS_KEY))||[]; }catch{ return []; } }
 function saveLists(a){ localStorage.setItem(LISTS_KEY, JSON.stringify(a)); }
@@ -3110,8 +4838,22 @@ function renderListsGrid() {
   const grid  = document.getElementById('lists-grid');
   const empty = document.getElementById('lists-empty');
   if (!lists.length) { grid.innerHTML=''; grid.style.display='none'; empty.style.display='flex'; return; }
+
+  // filter by search
+  const q = (document.getElementById('lists-search')?.value||'').toLowerCase().trim();
+  let filtered = q ? lists.filter(l => l.name.toLowerCase().includes(q) || (l.description||'').toLowerCase().includes(q)) : [...lists];
+
+  // sort
+  if(listsSort === 'name')  filtered.sort((a,b) => a.name.localeCompare(b.name));
+  else if(listsSort === 'count') filtered.sort((a,b) => (b.entries||[]).length - (a.entries||[]).length);
+  else filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0)); // recent
+
+  if (!filtered.length) {
+    grid.innerHTML='<div style="padding:32px;text-align:center;color:var(--muted);font-size:13px">Nenhuma lista encontrada.</div>';
+    grid.style.display='block'; empty.style.display='none'; return;
+  }
   empty.style.display='none'; grid.style.display='grid';
-  grid.innerHTML = lists.map(l => {
+  grid.innerHTML = filtered.map(l => {
     const entries = l.entries || [];
     const covers  = entries.slice(0,4).map(e => {
       if (e.igdbData?.cover_url) return `<div class="list-card-cover"><img src="${e.igdbData.cover_url}"></div>`;
@@ -3140,6 +4882,10 @@ function renderListDetail(listId) {
     <div class="list-detail-name" style="border-left:3px solid ${l.color||LIST_COLORS[0]};padding-left:10px">${esc(l.name)}</div>
     ${l.description ? `<div class="list-detail-desc-text">${esc(l.description)}</div>` : ''}`;
 
+  // sync view buttons
+  document.getElementById('lv-vbtn-grid').classList.toggle('active', listView === 'grid');
+  document.getElementById('lv-vbtn-list').classList.toggle('active', listView === 'list');
+
   const entries = l.entries || [];
   const grid  = document.getElementById('list-detail-grid');
   const empty = document.getElementById('list-detail-empty');
@@ -3148,7 +4894,9 @@ function renderListDetail(listId) {
     grid.innerHTML=''; grid.style.display='none'; empty.style.display='flex';
     return;
   }
-  empty.style.display='none'; grid.style.display='grid';
+  empty.style.display='none';
+  grid.style.display = listView === 'list' ? 'grid' : 'grid';
+  grid.classList.toggle('list-view', listView === 'list');
 
   grid.innerHTML = entries.map(entry => {
     const d = entry.igdbData || {};
@@ -3177,9 +4925,28 @@ function renderListDetail(listId) {
   }).join('');
 }
 
-function openListDetail(listId) { currentListId=listId; renderListDetail(listId); }
+function openListDetail(listId) {
+  currentListId=listId;
+  // Update content-header for list detail view
+  const l = lists.find(x=>x.id===listId);
+  if(l){
+    const sub = document.getElementById('content-page-sub');
+    if(sub) sub.textContent = `${(l.entries||[]).length} jogo${(l.entries||[]).length!==1?'s':''}`;
+    const acts = document.getElementById('content-header-actions');
+    if(acts) acts.innerHTML = '';
+  }
+  renderListDetail(listId);
+}
 
-document.getElementById('list-back-btn').onclick = () => { currentListId=null; renderListsGrid(); };
+document.getElementById('list-back-btn').onclick = () => {
+  currentListId=null;
+  // restore subtitle and actions for lists grid
+  const sub = document.getElementById('content-page-sub');
+  if(sub) sub.textContent = `${lists.length} lista${lists.length!==1?'s':''} personalizadas`;
+  const acts = document.getElementById('content-header-actions');
+  if(acts) acts.innerHTML = `<button class="btn-primary" onclick="openListEditor()">+ Nova Lista</button>`;
+  renderListsGrid();
+};
 
 // ── Entry operations ─────────────────────────────────────────
 function removeEntryFromList(listId, igdbId) {
@@ -3189,13 +4956,17 @@ function removeEntryFromList(listId, igdbId) {
 }
 
 function addIgdbEntryToLib(listId, igdbId) {
+  // Find the entry to get its igdbData, then open the add modal pre-filled
   const l = lists.find(x => x.id===listId); if(!l) return;
   const entry = (l.entries||[]).find(e => String(e.igdbId)===String(igdbId));
   if (!entry?.igdbData) return;
+  // Pre-fill modal with IGDB data (same as picking from autocomplete)
+  const d = entry.igdbData;
   openAdd();
+  // small delay to let modal open first
   setTimeout(() => {
-    document.getElementById('f-title').value = entry.igdbData.name || '';
-    showIGDBPreview(entry.igdbData);
+    document.getElementById('f-title').value = d.name || '';
+    showIGDBPreview(d);
   }, 50);
 }
 
@@ -3227,7 +4998,8 @@ function closeListEditor() { document.getElementById('list-editor-overlay').clas
 
 document.getElementById('list-editor-close').onclick  = closeListEditor;
 document.getElementById('list-editor-cancel').onclick = closeListEditor;
-document.getElementById('list-new-btn').onclick        = () => openListEditor();
+const _listNewBtn = document.getElementById('list-new-btn');
+if(_listNewBtn) _listNewBtn.onclick = () => openListEditor();
 
 document.getElementById('list-editor-save').onclick = () => {
   const name = document.getElementById('list-name-input').value.trim();
@@ -3299,7 +5071,7 @@ function renderLpResults(results) {
         </div>
         <div class="lp-result-actions">
           <button class="btn-add-to-lib" style="${inList?'background:rgba(0,255,148,.18);border-color:rgba(0,255,148,.5)':''}"
-            onclick="toggleIgdbInList(${JSON.stringify(JSON.stringify(r))})">
+            onclick="toggleIgdbInList(${results.indexOf(r)})">
             ${inList ? '✔ Na lista' : '＋ Adicionar à lista'}
           </button>
           ${inLib ? `<span class="lp-in-list-badge">✔ Na biblioteca</span>` : ''}
@@ -3309,8 +5081,9 @@ function renderLpResults(results) {
   }).join('');
 }
 
-function toggleIgdbInList(rJson) {
-  const r = JSON.parse(rJson);
+function toggleIgdbInList(idx) {
+  const r = lpAcList[idx];
+  if(!r) return;
   const l = lists.find(x => x.id===gamePicker_listId); if(!l) return;
   if (!l.entries) l.entries = [];
   const igdbId = r.id;
@@ -3336,6 +5109,7 @@ function toggleIgdbInList(rJson) {
     });
   }
   saveLists(lists);
+  // Re-render the current results to update button state
   renderLpResults(lpAcList);
   if (currentListId===gamePicker_listId) renderListDetail(gamePicker_listId);
   else if (currentPage==='lists') renderListsGrid();
@@ -3353,7 +5127,12 @@ document.getElementById('game-picker-search').addEventListener('input', function
   document.getElementById('lp-results-list').innerHTML =
     `<p style="color:var(--muted);font-size:13px;text-align:center;padding:32px 0">🔍 Buscando...</p>`;
   lpAcTimer = setTimeout(async () => {
-    // Não há verificação de credenciais; sempre tenta buscar
+    const creds = IGDB.getCreds();
+    if (!creds?.id || !creds?.secret) {
+      document.getElementById('lp-results-list').innerHTML =
+        `<p style="color:var(--yellow);font-size:13px;text-align:center;padding:24px 0">⚠️ Configure o IGDB em Configurações para buscar jogos.</p>`;
+      return;
+    }
     const results = await IGDB.search(q);
     lpAcList = results;
     renderLpResults(results);
@@ -3387,7 +5166,68 @@ document.getElementById('backup-import-btn').onclick = function() {
 Chart.defaults.color='#64748B';
 Chart.defaults.font.family="'Outfit', sans-serif";
 Chart.defaults.borderColor='rgba(255,255,255,.06)';
-render();
+
+// Restore persisted page on load
+// ═══════════════════════════════════════════════════
+//  HORIZONTAL SCROLL — wheel + click-drag
+// ═══════════════════════════════════════════════════
+(function addHScroll(){
+  const SELECTORS = ['#filter-row','#sort-row','.cfg-tabs','#tag-filter-row','#year-filter-row'];
+
+  function applyTo(el){
+    if(!el || el._hscroll) return;
+    el._hscroll = true;
+
+    // Mouse-wheel → horizontal scroll
+    el.addEventListener('wheel', e => {
+      if(Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // already horizontal
+      if(e.deltaY === 0) return;
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+    }, { passive: false });
+
+    // Click-drag scroll
+    let isDown = false, startX = 0, scrollStart = 0;
+    el.addEventListener('mousedown', e => {
+      // Only drag on the container itself or non-interactive children
+      if(e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT' ||
+         e.target.tagName === 'INPUT'  || e.target.tagName === 'LABEL') return;
+      isDown = true;
+      startX = e.pageX;
+      scrollStart = el.scrollLeft;
+      el.style.cursor = 'grabbing';
+      el.style.userSelect = 'none';
+    });
+    document.addEventListener('mouseup', () => {
+      if(!isDown) return;
+      isDown = false;
+      el.style.cursor = '';
+      el.style.userSelect = '';
+    });
+    document.addEventListener('mousemove', e => {
+      if(!isDown) return;
+      const dx = e.pageX - startX;
+      el.scrollLeft = scrollStart - dx;
+    });
+  }
+
+  // Apply to static elements immediately
+  SELECTORS.forEach(sel => {
+    document.querySelectorAll(sel).forEach(applyTo);
+  });
+
+  // Re-apply after settings modal opens (cfg-tabs may not be visible yet)
+  const origOpenSettings = window.openSettings;
+  if(origOpenSettings) {
+    window.openSettings = function(...args){
+      origOpenSettings.apply(this, args);
+      setTimeout(()=> document.querySelectorAll('.cfg-tabs').forEach(applyTo), 50);
+    };
+  }
+})();
+
+navigateTo(currentPage);
+
 </script>
 </body>
 </html>
